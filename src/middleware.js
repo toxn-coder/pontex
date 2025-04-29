@@ -14,8 +14,11 @@ export async function middleware(request) {
     }
 
     try {
-      // طلب API للتحقق من idToken
-      const response = await fetch(`${request.nextUrl.origin}/api/verify-token`, {
+      const url = request.nextUrl.clone();
+      url.pathname = '/api/verify-token'; // بدون origin
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/verify-token`, {
+
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ idToken }),
