@@ -5,6 +5,7 @@ import { Phone, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { db } from '@/app/api/firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import Head from 'next/head';
 
 export default function ContactUs() {
   const [contactInfo, setContactInfo] = useState({
@@ -12,7 +13,7 @@ export default function ContactUs() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const address = ' كفر الشيخ - شارع ابراهيم مغازي تقسيم 2 , بجوار فوري';
+  const address = 'كفر الشيخ - شارع ابراهيم مغازي تقسيم 2 , بجوار فوري';
   const googleMapsLink = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13663.633556506917!2d30.952876897115022!3d31.112278161688636!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14f7ab154467f3bf%3A0x23f2fc217b3adbf9!2z2LnYsdmI2LMg2KfZhNi02KfZhQ!5e0!3m2!1sar!2seg!4v1745721237455!5m2!1sar!2seg';
 
   // جلب معلومات الاتصال من Firestore
@@ -38,6 +39,17 @@ export default function ContactUs() {
 
   return (
     <div className="min-h-screen bg-[var(--clr-primary)] py-12 px-4">
+      <Head>
+        <title>اتصل بنا - مطعم شاورما السوري</title>
+        <meta name="description" content="تواصلوا معنا عبر الهاتف أو زورونا في موقعنا. نحن هنا لخدمتكم!" />
+        <meta name="keywords" content="مطعم شاورما, كفر الشيخ, اتصل بنا, خدمة العملاء" />
+        <meta name="robots" content="index, follow" />
+        <meta property="og:title" content="اتصل بنا - مطعم شاورما السوري" />
+        <meta property="og:description" content="تواصلوا معنا عبر الهاتف أو زورونا في موقعنا. نحن هنا لخدمتكم!" />
+        <meta property="og:image" content="رابط صورة مميزة للمطعم" />
+        <meta property="og:url" content="رابط الصفحة الخاصة بك" />
+      </Head>
+
       <div className="max-w-6xl mx-auto">
         {/* رأس الصفحة */}
         <motion.div
@@ -96,34 +108,32 @@ export default function ContactUs() {
                   </div>
                 )}
 
-                  <div className="flex items-center gap-3">
-                    <MapPin className="w-6 h-6 text-yellow-600" />
-                    <div>
-                      <p className="text-sm text-gray-600">العنوان</p>
-                      <p className="text-gray-800 font-medium">{address}</p>
-                    </div>
+                <div className="flex items-center gap-3">
+                  <MapPin className="w-6 h-6 text-yellow-600" />
+                  <div>
+                    <p className="text-sm text-gray-600">العنوان</p>
+                    <p className="text-gray-800 font-medium">{address}</p>
                   </div>
-
+                </div>
               </div>
             </motion.div>
 
-
-              <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="bg-white rounded-2xl shadow-xl overflow-hidden"
-              >
-                <iframe
-                  src={googleMapsLink}
-                  width="100%"
-                  height="400"
-                  style={{ border: 0 }}
-                  allowFullScreen=""
-                  loading="lazy"
-                  title="خريطة الموقع"
-                />
-              </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="bg-white rounded-2xl shadow-xl overflow-hidden"
+            >
+              <iframe
+                src={googleMapsLink}
+                width="100%"
+                height="400"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                title="خريطة الموقع"
+              />
+            </motion.div>
           </div>
         )}
       </div>
