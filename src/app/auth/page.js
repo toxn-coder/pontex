@@ -21,13 +21,19 @@ export default function Login() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const idToken = await userCredential.user.getIdToken();
-      // تخزين idToken في ملف تعريف الارتباط عبر طلب API
-      await fetch('/api/set-token', {
+    
+      const res = await fetch('/api/set-token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ idToken }),
       });
-      router.push('/auth/dashboard'); // إعادة توجيه إلى لوحة التحكم
+    
+      if (res.ok) {
+        router.push('/auth/dashboard'); // ✅ فقط إذا تم حفظ التوكن بنجاح
+      } else {
+        const data = await res.json();
+        setError(data.error || 'فشل حفظ التوكن.');
+      }
     } catch (err) {
       console.error('Login error:', err);
       switch (err.code) {
@@ -44,6 +50,7 @@ export default function Login() {
     } finally {
       setIsLoading(false);
     }
+    
   };
 
   return (
