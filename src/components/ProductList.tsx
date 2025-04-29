@@ -5,10 +5,25 @@ import { doc, updateDoc, arrayRemove, arrayUnion, onSnapshot } from 'firebase/fi
 import { db } from '@/app/api/firebase';
 import { Pencil, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image'; // استيراد Image من next/image
 
-export default function ProductList({ sectionId }) {
-  const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+// تعريف واجهة للمنتج
+interface Product {
+  name: string;
+  price: string;
+  image: string;
+  description: string;
+  rating: number;
+}
+
+// تعريف واجهة للخاصيات (props)
+interface ProductListProps {
+  sectionId: string;
+}
+
+export default function ProductList({ sectionId }: ProductListProps) {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<Product & { oldProduct?: Product } | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -31,32 +46,44 @@ export default function ProductList({ sectionId }) {
 
     fetchUserData();
 
-    const unsubscribe = onSnapshot(doc(db, 'menuParts', sectionId), (snap) => {
-      if (snap.exists()) {
-        const data = snap.data();
-        setProducts(data.products || []);
+    const unsubscribe = onSnapshot(
+      doc(db, 'menuParts', sectionId),
+      (snap) => {
+        if (snap.exists()) {
+          const data = snap.data();
+          setProducts(data.products || []);
+          setLoading(false);
+        }
+      },
+      (error) => {
+        console.error('فشل في جلب المنتجات:', error);
         setLoading(false);
       }
-    });
+    );
 
     return () => unsubscribe();
   }, [sectionId]);
 
-  const handleDelete = async (product) => {
+  const handleDelete = async (product: Product) => {
     setLoading(true);
-    const ref = doc(db, 'menuParts', sectionId);
-    await updateDoc(ref, {
-      products: arrayRemove(product),
-    });
-    setLoading(false);
+    try {
+      const ref = doc(db, 'menuParts', sectionId);
+      await updateDoc(ref, {
+        products: arrayRemove(product),
+      });
+    } catch (error) {
+      console.error('فشل في حذف المنتج:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleEdit = (product) => {
+  const handleEdit = (product: Product) => {
     setSelectedProduct({ ...product, oldProduct: product });
     setEditDialogOpen(true);
   };
 
-  const handleImageUpload = async (e) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -86,10 +113,12 @@ export default function ProductList({ sectionId }) {
 
       xhr.onerror = () => {
         setUploading(false);
+        console.error('فشل في رفع الصورة');
       };
 
       xhr.send(formDataImage);
     } catch (error) {
+      console.error('حدث خطأ أثناء رفع الصورة:', error);
       setUploading(false);
     }
   };
@@ -98,25 +127,30 @@ export default function ProductList({ sectionId }) {
     if (!selectedProduct) return;
     setLoading(true);
 
-    const ref = doc(db, 'menuParts', sectionId);
+    try {
+      const ref = doc(db, 'menuParts', sectionId);
 
-    await updateDoc(ref, {
-      products: arrayRemove(selectedProduct.oldProduct),
-    });
+      await updateDoc(ref, {
+        products: arrayRemove(selectedProduct.oldProduct),
+      });
 
-    await updateDoc(ref, {
-      products: arrayUnion({
-        name: selectedProduct.name,
-        price: selectedProduct.price,
-        image: selectedProduct.image,
-        description: selectedProduct.description,
-        rating: selectedProduct.rating,
-      }),
-    });
+      await updateDoc(ref, {
+        products: arrayUnion({
+          name: selectedProduct.name,
+          price: selectedProduct.price,
+          image: selectedProduct.image,
+          description: selectedProduct.description,
+          rating: selectedProduct.rating,
+        }),
+      });
 
-    setEditDialogOpen(false);
-    setSelectedProduct(null);
-    setLoading(false);
+      setEditDialogOpen(false);
+      setSelectedProduct(null);
+    } catch (error) {
+      console.error('فشل في تحديث المنتج:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -135,7 +169,7 @@ export default function ProductList({ sectionId }) {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <AnimatePresence>
-              {products.map((product, idx) => (
+              {products.map((product: Product, idx) => (
                 <motion.div
                   key={idx}
                   initial={{ opacity: 0, y: 20 }}
@@ -144,9 +178,11 @@ export default function ProductList({ sectionId }) {
                   transition={{ duration: 0.3, delay: idx * 0.1 }}
                   className="bg-gray-700 rounded-lg shadow p-4 flex flex-col justify-between"
                 >
-                  <img
+                  <Image
                     src={product.image}
                     alt={product.name}
+                    width={384} // العرض بالبكسل (افتراضي بناءً على w-full)
+                    height={192} // الارتفاع بالبكسل (48 * 4 = 192px)
                     className="h-48 w-full object-cover rounded-md mb-4"
                   />
                   <h3 className="text-xl font-bold text-white">{product.name}</h3>
@@ -226,9 +262,11 @@ export default function ProductList({ sectionId }) {
                   )}
                   {selectedProduct.image && (
                     <div className="mt-2">
-                      <img
+                      <Image
                         src={selectedProduct.image}
                         alt="معاينة الصورة"
+                        width={384} // العرض بالبكسل (افتراضي بناءً على w-full)
+                        height={192} // الارتفاع بالبكسل (48 * 4 = 192px)
                         className="w-full h-48 object-cover rounded-lg border border-gray-600"
                       />
                     </div>

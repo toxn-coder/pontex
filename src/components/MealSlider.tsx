@@ -10,14 +10,33 @@ import 'swiper/css/effect-coverflow';
 import { ChevronLeft, ChevronRight, ShoppingCart, Star } from 'lucide-react';
 import { useCart } from '@/app/CartContext';
 
-export default function MealSlider({ auto = false, title, products = [] }) {
-  const prevRef = useRef(null);
-  const nextRef = useRef(null);
-  const swiperRef = useRef(null);
+interface Meal {
+  name: string;
+  description: string;
+  image: string;
+  price: string;
+  rating: string | number;
+}
+
+interface MealSliderProps {
+  auto?: boolean;
+  title: string;
+  products: Meal[];
+}
+
+export default function MealSlider({ auto = false, title, products = [] }: MealSliderProps) {
+  const prevRef = useRef<HTMLButtonElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const swiperRef = useRef<any>(null); // نوع any لتسهيل التعامل مع Swiper instance
   const { addToCart } = useCart();
 
   useEffect(() => {
-    if (swiperRef.current && swiperRef.current.params && swiperRef.current.params.navigation) {
+    if (
+      swiperRef.current &&
+      swiperRef.current.params &&
+      swiperRef.current.params.navigation &&
+      typeof swiperRef.current.params.navigation !== 'boolean'
+    ) {
       swiperRef.current.params.navigation.prevEl = prevRef.current;
       swiperRef.current.params.navigation.nextEl = nextRef.current;
       swiperRef.current.navigation.init();
@@ -30,14 +49,14 @@ export default function MealSlider({ auto = false, title, products = [] }) {
       <div className="relative z-10">
         <div className="flex justify-between items-center mb-10">
           <h2 className="text-3xl font-bold text-white text-center w-full">
-            <span className="text-yellow-500 text-center w-full">{title}</span>
+            <span className="text-yellow-500">{title}</span>
           </h2>
           <div className="flex gap-2">
             <button
               ref={prevRef}
               className="bg-yellow-600 p-2 rounded-lg shadow-md hover:bg-yellow-500 transition text-white"
             >
-            <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-5 h-5" />
             </button>
             <button
               ref={nextRef}
@@ -101,12 +120,13 @@ export default function MealSlider({ auto = false, title, products = [] }) {
                     <div className="flex justify-between items-center mt-auto">
                       <p className="text-yellow-500 font-bold text-lg">{price}</p>
                       <button
-                        onClick={() => addToCart(meal)}
-                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center gap-2 transform hover:scale-105"
-                      >
-                        <ShoppingCart className="w-4 h-4" />
-                        <span>أضف للسلة</span>
-                      </button>
+  onClick={() => addToCart({ ...meal, id: index.toString(), quantity: 1, price: Number(meal.price) })}
+  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center gap-2 transform hover:scale-105"
+>
+  <ShoppingCart className="w-4 h-4" />
+  <span>أضف للسلة</span>
+</button>
+
                     </div>
                   </div>
                 </div>

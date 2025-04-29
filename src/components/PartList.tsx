@@ -8,10 +8,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
 const PartsList = () => {
-  const [parts, setParts] = useState([]);
+  const [parts, setParts] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showConfirm, setShowConfirm] = useState(null);
-  const [showEditDialog, setShowEditDialog] = useState(null);
+  const [showConfirm, setShowConfirm] = useState<string | null>(null);
+  const [showEditDialog, setShowEditDialog] = useState<string | null>(null);
   const [newPartName, setNewPartName] = useState('');
   const [error, setError] = useState('');
   const [currentUserRole, setCurrentUserRole] = useState('');
@@ -29,7 +29,15 @@ const PartsList = () => {
 
         // جلب الأقسام
         const snapshot = await getDocs(collection(db, 'menuParts'));
-        const partNames = snapshot.docs.map((doc) => doc.id);
+        let partNames = snapshot.docs.map((doc) => doc.id);
+
+        // فرز الأقسام بحيث يكون "الأكثر مبيعًا" في البداية
+        partNames = partNames.sort((a, b) => {
+          if (a === 'الأكثر مبيعًا') return -1;
+          if (b === 'الأكثر مبيعًا') return 1;
+          return a.localeCompare(b); // فرز باقي الأقسام أبجديًا
+        });
+
         setParts(partNames);
       } catch (error) {
         console.error('فشل في جلب البيانات:', error);
@@ -41,9 +49,11 @@ const PartsList = () => {
     fetchData();
   }, []);
 
-  const handleDelete = async (part) => {
+  const handleDelete = async (part: string) => {
     try {
+      // استخدام part مباشرة كمعرف لأنه هو المعرف نفسه
       await deleteDoc(doc(db, 'menuParts', part));
+      // تصفية الأقسام باستخدام part مباشرة
       setParts(parts.filter((p) => p !== part));
       setShowConfirm(null);
     } catch (error) {
@@ -51,7 +61,7 @@ const PartsList = () => {
     }
   };
 
-  const openEditDialog = (part) => {
+  const openEditDialog = (part: string) => {
     setShowEditDialog(part);
     setNewPartName(part);
     setError('');
@@ -70,7 +80,7 @@ const PartsList = () => {
 
     try {
       // جلب البيانات القديمة
-      const oldDocRef = doc(db, 'menuParts', showEditDialog);
+      const oldDocRef = doc(db, 'menuParts', showEditDialog as string);
       const oldDocSnap = await getDoc(oldDocRef);
       if (!oldDocSnap.exists()) {
         throw new Error('القسم غير موجود');
@@ -83,8 +93,14 @@ const PartsList = () => {
       // حذف المستند القديم
       await deleteDoc(oldDocRef);
 
-      // تحديث القائمة
-      setParts(parts.map((p) => (p === showEditDialog ? newPartName : p)));
+      // تحديث القائمة مع الحفاظ على ترتيب "الأكثر مبيعًا"
+      let updatedParts = parts.map((p) => (p === showEditDialog ? newPartName : p));
+      updatedParts = updatedParts.sort((a, b) => {
+        if (a === 'الأكثر مبيعًا') return -1;
+        if (b === 'الأكثر مبيعًا') return 1;
+        return a.localeCompare(b);
+      });
+      setParts(updatedParts);
       setShowEditDialog(null);
       setNewPartName('');
     } catch (error) {
@@ -127,7 +143,7 @@ const PartsList = () => {
                           عرض القسم
                         </motion.button>
                       </Link>
-                      {currentUserRole === 'admin' && (
+                      {currentUserRole === 'admin' && part !== 'الأكثر مبيعًا' && (
                         <>
                           <motion.button
                             whileHover={{ scale: 1.05 }}

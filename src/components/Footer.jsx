@@ -57,7 +57,10 @@ const Footer = () => {
                 <Image
                   src="/logo.ico"
                   alt="شعار مطعم الشاورما الأصيل"
-                  fill
+                  size="fill"
+
+                  width={64}
+                  height={64}
                   className="object-contain rounded"
                 />
               </div>

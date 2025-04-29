@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { db } from '@/app/api/firebase';
-import { collection, doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { Instagram, Twitter, Facebook, Send, Mail, Phone, Plus, Save, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 

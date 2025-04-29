@@ -13,6 +13,7 @@ import AdminBranchesManager from '@/components/AdminBranchesManager';
 import UserManager from '@/components/UserManager';
 import ChangePassword from '@/components/ChangePassword';
 
+
 export default function Dashboard() {
   const [userId, setUserId] = useState('');
   const [userRole, setUserRole] = useState('');
@@ -66,6 +67,9 @@ export default function Dashboard() {
                 <span className="text-yellow-500">
                   {userRole === 'admin' ? 'مدير' : userRole === 'supervisor' ? 'مشرف' : 'غير معروف'}
                 </span>
+                {userId && (
+                  <span className="text-yellow-500"> ({userId})</span>
+                )}
               </p>
             )}
           </div>
@@ -150,6 +154,7 @@ export default function Dashboard() {
         >
           <ChangePassword />
         </motion.div>
+
       </div>
     </div>
   );

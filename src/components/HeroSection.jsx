@@ -13,7 +13,7 @@ const HeroSection = ({
   return (
     <div className="relative overflow-hidden bg-[var(--clr-primary)] text-white">
       {/* Overlay Pattern */}
-      <div className="absolute inset-0 opacity-10 bg-[url('/pattern.png')] bg-repeat"></div>
+      <div className="absolute inset-0 opacity-10 bg-[url('/placeholder.svg')] bg-repeat"></div>
       
       {/* Content Container */}
       <div className="container mx-auto px-4 py-16 md:py-24 lg:py-32 relative z-10">
@@ -55,8 +55,6 @@ const HeroSection = ({
                 {buttonText}
                 <ArrowRight className="mr-2" size={20} />
               </button>
-              
-
             </div>
           </div>
           
@@ -65,16 +63,16 @@ const HeroSection = ({
             <div className="relative w-full h-64 md:h-96 lg:h-auto aspect-square mx-auto lg:max-w-lg">
               {/* Main circular image */}
               <div className="absolute inset-0 bg-amber-600 rounded-full overflow-hidden border-8 border-amber-800/30 shadow-2xl">
-                {/* Uncommment and replace with your actual image path */}
+                {/* Main Image */}
                 <Image 
                   src="https://res.cloudinary.com/do88eynar/image/upload/v1745714086/c5x9swyg3xwtbfvhd9wl.webp" 
                   alt="طبق شهي من مطعمنا" 
-                  layout="fill" 
-                  objectFit="cover" 
+                  fill
+                  style={{ objectFit: 'cover' }}
+                  priority
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
-                
               </div>
-              
             </div>
           </div>
         </div>

@@ -6,8 +6,6 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/app/api/firebase';
 import { Mail, Lock, LogIn } from 'lucide-react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
-
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

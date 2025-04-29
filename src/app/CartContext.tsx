@@ -1,11 +1,39 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-const CartContext = createContext();
+// تعريف واجهة لنوع القيم التي سيوفرها الـ Context
+interface CartItem {
+  id: number | string;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
 
-export function CartProvider({ children }) {
-  const [cartItems, setCartItems] = useState([]);
+interface CartContextType {
+  cartItems: CartItem[];
+  totalPrice: number;
+  totalItems: number;
+  cartBadgeAnimation: boolean;
+  addToCart: (meal: CartItem) => void;
+  updateQuantity: (id: number | string, change: number) => void;
+  removeItem: (id: number | string) => void;
+}
+
+// إنشاء الـ Context مع قيمة افتراضية
+const CartContext = createContext<CartContextType>({
+  cartItems: [],
+  totalPrice: 0,
+  totalItems: 0,
+  cartBadgeAnimation: false,
+  addToCart: () => {},
+  updateQuantity: () => {},
+  removeItem: () => {},
+});
+
+export function CartProvider({ children }: { children: ReactNode }) {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartBadgeAnimation, setCartBadgeAnimation] = useState(false);
 
   // تحميل البيانات من localStorage على العميل فقط
@@ -39,7 +67,7 @@ export function CartProvider({ children }) {
   }, [cartItems]);
 
   // إضافة عنصر إلى السلة
-  const addToCart = (meal) => {
+  const addToCart = (meal: CartItem) => {
     setCartItems((prev) => {
       const existingItem = prev.find((item) => item.name === meal.name);
       if (existingItem) {
@@ -61,7 +89,7 @@ export function CartProvider({ children }) {
   };
 
   // تغيير كمية منتج
-  const updateQuantity = (id, change) => {
+  const updateQuantity = (id: number | string, change: number) => {
     setCartItems((prev) =>
       prev.map((item) =>
         item.id === id ? { ...item, quantity: Math.max(1, item.quantity + change) } : item
@@ -70,7 +98,7 @@ export function CartProvider({ children }) {
   };
 
   // حذف منتج من السلة
-  const removeItem = (id) => {
+  const removeItem = (id: number | string) => {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
@@ -91,4 +119,10 @@ export function CartProvider({ children }) {
   );
 }
 
-export const useCart = () => useContext(CartContext);
+export const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return context;
+};

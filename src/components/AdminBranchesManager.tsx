@@ -3,12 +3,25 @@
 import { useState, useEffect } from 'react';
 import { db } from '@/app/api/firebase';
 import { collection, doc, setDoc, deleteDoc, getDocs } from 'firebase/firestore';
-import { MapPin, Phone, Clock, Save, Edit, Trash2, Image as ImageIcon, X } from 'lucide-react';
+import { Save, Edit, Trash2, Image as ImageIcon, X } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Image from 'next/image'; // استيراد Image من next/image
+
+// تعريف واجهة لنوع الفرع
+interface Branch {
+  id: string;
+  name: string;
+  image: string;
+  address: string;
+  phone: string;
+  workingHours: string;
+  googleMapsLink: string;
+}
 
 export default function AdminBranchesManager() {
-  const [branches, setBranches] = useState([]);
-  const [newBranch, setNewBranch] = useState({
+  const [branches, setBranches] = useState<Branch[]>([]); // تحديد نوع branches
+  const [newBranch, setNewBranch] = useState<Branch>({
+    id: '',
     name: '',
     image: '',
     address: '',
@@ -16,9 +29,9 @@ export default function AdminBranchesManager() {
     workingHours: '',
     googleMapsLink: '',
   });
-  const [imageFile, setImageFile] = useState(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [status, setStatus] = useState(null);
+  const [status, setStatus] = useState<'success' | 'error' | null>(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [currentUserRole, setCurrentUserRole] = useState('');
 
@@ -40,7 +53,7 @@ export default function AdminBranchesManager() {
         const branchesList = branchesSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-        }));
+        })) as Branch[];
         setBranches(branchesList);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -52,13 +65,13 @@ export default function AdminBranchesManager() {
   }, []);
 
   // التعامل مع تغيير المدخلات
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewBranch({ ...newBranch, [e.target.name]: e.target.value });
   };
 
   // التعامل مع اختيار الصورة
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
       // التحقق من حجم الصورة (الحد الأقصى 5 ميغابايت)
       if (file.size > 5 * 1024 * 1024) {
@@ -86,7 +99,7 @@ export default function AdminBranchesManager() {
   };
 
   // رفع الصورة إلى Cloudinary
-  const uploadImageToCloudinary = async (file) => {
+  const uploadImageToCloudinary = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', 'shawarma');
@@ -135,19 +148,34 @@ export default function AdminBranchesManager() {
         workingHours: newBranch.workingHours,
         googleMapsLink: newBranch.googleMapsLink,
       });
-      setBranches((prev) =>
-        newBranch.id
-          ? prev.map((b) => (b.id === newBranch.id ? { id: branchId, ...newBranch, image: imageUrl } : b))
-          : [...prev, { id: branchId, ...newBranch, image: imageUrl }]
-      );
-      setNewBranch({ name: '', image: '', address: '', phone: '', workingHours: '', googleMapsLink: '' });
+
+      // تحديث الحالة بدون تعارض في id
+      setBranches((prev) => {
+        // إنشاء كائن فرع جديد بدون تعارض في id
+        const updatedBranch: Branch = {
+          id: branchId,
+          name: newBranch.name,
+          image: imageUrl || '',
+          address: newBranch.address,
+          phone: newBranch.phone,
+          workingHours: newBranch.workingHours,
+          googleMapsLink: newBranch.googleMapsLink,
+        };
+
+        return newBranch.id
+          ? prev.map((b) => (b.id === newBranch.id ? updatedBranch : b))
+          : [...prev, updatedBranch];
+      });
+
+      setNewBranch({ id: '', name: '', image: '', address: '', phone: '', workingHours: '', googleMapsLink: '' });
       setImageFile(null);
       setStatus('success');
       setErrorMessage('تم حفظ الفرع بنجاح!');
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error saving branch:', error);
       setStatus('error');
-      setErrorMessage(error.message || 'حدث خطأ أثناء حفظ الفرع. حاول مرة أخرى.');
+      // تحديد نوع error كـ Error للوصول إلى message
+      setErrorMessage(error instanceof Error ? error.message : 'حدث خطأ أثناء حفظ الفرع. حاول مرة أخرى.');
     } finally {
       setIsSaving(false);
       setTimeout(() => {
@@ -158,7 +186,7 @@ export default function AdminBranchesManager() {
   };
 
   // حذف فرع
-  const handleDeleteBranch = async (branchId) => {
+  const handleDeleteBranch = async (branchId: string) => {
     if (!confirm('هل أنت متأكد من حذف هذا الفرع؟')) return;
 
     try {
@@ -166,15 +194,15 @@ export default function AdminBranchesManager() {
       setBranches((prev) => prev.filter((b) => b.id !== branchId));
       setStatus('success');
       setErrorMessage('تم حذف الفرع بنجاح!');
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error deleting branch:', error);
       setStatus('error');
-      setErrorMessage('فشل حذف الفرع. حاول مرة أخرى.');
+      setErrorMessage(error instanceof Error ? error.message : 'فشل حذف الفرع. حاول مرة أخرى.');
     }
   };
 
   // تعديل فرع
-  const handleEditBranch = (branch) => {
+  const handleEditBranch = (branch: Branch) => {
     setNewBranch(branch);
     setImageFile(null);
   };
@@ -225,10 +253,12 @@ export default function AdminBranchesManager() {
                 />
                 {newBranch.image && (
                   <div className="mt-2 flex items-center gap-2">
-                    <img
+                    <Image
                       src={newBranch.image}
                       alt="معاينة الصورة"
-                      className="w-32 h-32 object-cover rounded-lg"
+                      width={128} // العرض بالبكسل (32 * 4 = 128px)
+                      height={128} // الارتفاع بالبكسل (32 * 4 = 128px)
+                      className="object-cover rounded-lg"
                     />
                     <button
                       onClick={handleRemoveImage}
@@ -317,10 +347,12 @@ export default function AdminBranchesManager() {
                 >
                   <div className="flex items-center gap-4">
                     {branch.image && (
-                      <img
+                      <Image
                         src={branch.image}
                         alt={branch.name}
-                        className="w-16 h-16 object-cover rounded-lg"
+                        width={64} // العرض بالبكسل (16 * 4 = 64px)
+                        height={64} // الارتفاع بالبكسل (16 * 4 = 64px)
+                        className="object-cover rounded-lg"
                       />
                     )}
                     <div>

@@ -6,8 +6,14 @@ import { db } from '@/app/api/firebase';
 import { Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
+import Image from 'next/image'; // استيراد Image من next/image
 
-export default function DialogAddProduct({ sectionId }) {
+// تعريف واجهة للخاصيات (props)
+interface DialogAddProductProps {
+  sectionId: string;
+}
+
+export default function DialogAddProduct({ sectionId }: DialogAddProductProps) {
   const [open, setOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -20,12 +26,12 @@ export default function DialogAddProduct({ sectionId }) {
     rating: 4.9,
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: name === 'rating' ? parseFloat(value) : value });
   };
 
-  const handleImageUpload = async (e) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -58,7 +64,7 @@ export default function DialogAddProduct({ sectionId }) {
       };
 
       xhr.send(formDataImage);
-    } catch (error) {
+    } catch (error: unknown) {
       toast.error('حدث خطأ غير متوقع');
       setUploading(false);
     }
@@ -70,15 +76,19 @@ export default function DialogAddProduct({ sectionId }) {
       return;
     }
 
-    const ref = doc(db, 'menuParts', sectionId);
-    await updateDoc(ref, {
-      products: arrayUnion(formData),
-    });
+    try {
+      const ref = doc(db, 'menuParts', sectionId);
+      await updateDoc(ref, {
+        products: arrayUnion(formData),
+      });
 
-    toast.success('تمت إضافة المنتج بنجاح');
-    setFormData({ name: '', price: '', image: '', description: '', rating: 4.8 });
-    setOpen(false);
-    setProgress(0);
+      toast.success('تمت إضافة المنتج بنجاح');
+      setFormData({ name: '', price: '', image: '', description: '', rating: 4.8 });
+      setOpen(false);
+      setProgress(0);
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'حدث خطأ أثناء إضافة المنتج');
+    }
   };
 
   return (
@@ -143,10 +153,12 @@ export default function DialogAddProduct({ sectionId }) {
 
                 {formData.image && (
                   <div className="mt-2">
-                    <img
+                    <Image
                       src={formData.image}
                       alt="معاينة الصورة"
-                      className="w-full h-48 object-cover rounded-lg border border-gray-600"
+                      width={384} // العرض بالبكسل (افتراضي بناءً على w-full)
+                      height={192} // الارتفاع بالبكسل (48 * 4 = 192px)
+                      className="object-cover rounded-lg border border-gray-600"
                     />
                   </div>
                 )}
