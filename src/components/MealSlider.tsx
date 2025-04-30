@@ -125,7 +125,7 @@ export default function MealSlider({ auto = false, title, products = [] }: MealS
                     <p className="text-gray-400 text-sm mb-4 flex-grow">{description}</p>
 
                     <div className="flex justify-between items-center mt-auto">
-                      <p className="text-yellow-500 font-bold text-lg">{price}</p>
+                      <p className="text-yellow-500 font-bold text-lg">{price} جنيه</p>
                       <button
                         onClick={() =>
                           addToCart({
