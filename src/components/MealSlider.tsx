@@ -28,6 +28,8 @@ interface MealSliderProps {
 export default function MealSlider({ auto = false, title, products = [] }: MealSliderProps) {
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
+  const mobilePrevRef = useRef<HTMLButtonElement>(null);
+  const mobileNextRef = useRef<HTMLButtonElement>(null);
   const swiperRef = useRef<any>(null);
   const { addToCart } = useCart();
 
@@ -38,8 +40,8 @@ export default function MealSlider({ auto = false, title, products = [] }: MealS
       swiperRef.current.params.navigation &&
       typeof swiperRef.current.params.navigation !== 'boolean'
     ) {
-      swiperRef.current.params.navigation.prevEl = prevRef.current;
-      swiperRef.current.params.navigation.nextEl = nextRef.current;
+      swiperRef.current.params.navigation.prevEl = [prevRef.current, mobilePrevRef.current];
+      swiperRef.current.params.navigation.nextEl = [nextRef.current, mobileNextRef.current];
       swiperRef.current.navigation.init();
       swiperRef.current.navigation.update();
     }
@@ -55,7 +57,8 @@ export default function MealSlider({ auto = false, title, products = [] }: MealS
           <h2 className="text-3xl font-bold text-white text-center w-full">
             <span className="text-yellow-500">{title}</span>
           </h2>
-          <div className="flex gap-2">
+          {/* أزرار التنقل للشاشات الكبيرة (مخفية على الهواتف) */}
+          <div className="hidden sm:flex gap-2">
             <button
               ref={prevRef}
               className="bg-yellow-600 p-2 rounded-lg shadow-md hover:bg-yellow-500 transition text-white"
@@ -147,6 +150,20 @@ export default function MealSlider({ auto = false, title, products = [] }: MealS
             );
           })}
         </Swiper>
+
+        {/* أزرار التنقل للهواتف (تظهر على الجانبين في الشاشات الصغيرة) */}
+        <button
+          ref={mobilePrevRef}
+          className="absolute top-1/2 -translate-y-1/2 left-2 bg-yellow-600 p-3 rounded-full shadow-md hover:bg-yellow-500 transition text-white z-20 sm:hidden"
+        >
+        <ChevronLeft className="w-6 h-6" />
+        </button>
+        <button
+          ref={mobileNextRef}
+          className="absolute top-1/2 -translate-y-1/2 right-2 bg-yellow-600 p-3 rounded-full shadow-md hover:bg-yellow-500 transition text-white z-20 sm:hidden"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
       </div>
     </div>
   );

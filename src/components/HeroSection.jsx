@@ -1,6 +1,7 @@
 // components/HeroSection.jsx
 import Image from 'next/image';
 import { ArrowRight, Clock, Star, MapPin } from 'lucide-react';
+import Link from 'next/link';
 
 const HeroSection = ({ 
   restaurantName = "مطعم شاورما السوري", 
@@ -51,10 +52,12 @@ const HeroSection = ({
             </div>
             
             <div className="flex gap-4 justify-center lg:justify-end">
+              <Link href="/menu" >
               <button className="bg-amber-500 hover:bg-amber-600 text-white py-3 px-8 rounded-lg font-bold transition-all shadow-lg hover:shadow-xl flex items-center">
                 {buttonText}
                 <ArrowRight className="mr-2" size={20} />
               </button>
+              </Link>
             </div>
           </div>
           

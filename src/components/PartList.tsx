@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { db } from '@/app/api/firebase';
-import { collection, getDocs, deleteDoc, doc, setDoc, getDoc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, setDoc, getDoc, onSnapshot } from 'firebase/firestore';
 import { Loader2, Trash2, Edit2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
@@ -17,44 +17,50 @@ const PartsList = () => {
   const [currentUserRole, setCurrentUserRole] = useState('');
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUserData = async () => {
       try {
-        // جلب بيانات المستخدم الحالي
         const userResponse = await fetch('/api/get-user-data');
         const userData = await userResponse.json();
         if (userData.error) {
           throw new Error(userData.error);
         }
         setCurrentUserRole(userData.userRole || '');
+      } catch (error) {
+        console.error('فشل في جلب بيانات المستخدم:', error);
+      }
+    };
 
-        // جلب الأقسام
-        const snapshot = await getDocs(collection(db, 'menuParts'));
+    fetchUserData();
+
+    // مراقبة التغييرات في مجموعة menuParts في الوقت الحقيقي
+    const unsubscribe = onSnapshot(
+      collection(db, 'menuParts'),
+      (snapshot) => {
         let partNames = snapshot.docs.map((doc) => doc.id);
 
         // فرز الأقسام بحيث يكون "الأكثر مبيعًا" في البداية
         partNames = partNames.sort((a, b) => {
           if (a === 'الأكثر مبيعًا') return -1;
           if (b === 'الأكثر مبيعًا') return 1;
-          return a.localeCompare(b); // فرز باقي الأقسام أبجديًا
+          return a.localeCompare(b);
         });
 
         setParts(partNames);
-      } catch (error) {
-        console.error('فشل في جلب البيانات:', error);
-      } finally {
+        setLoading(false);
+      },
+      (error) => {
+        console.error('فشل في جلب الأقسام:', error);
         setLoading(false);
       }
-    };
+    );
 
-    fetchData();
+    // تنظيف المراقبة عند تفريغ المكون
+    return () => unsubscribe();
   }, []);
 
   const handleDelete = async (part: string) => {
     try {
-      // استخدام part مباشرة كمعرف لأنه هو المعرف نفسه
       await deleteDoc(doc(db, 'menuParts', part));
-      // تصفية الأقسام باستخدام part مباشرة
-      setParts(parts.filter((p) => p !== part));
       setShowConfirm(null);
     } catch (error) {
       console.error('فشل في حذف القسم:', error);
@@ -93,14 +99,6 @@ const PartsList = () => {
       // حذف المستند القديم
       await deleteDoc(oldDocRef);
 
-      // تحديث القائمة مع الحفاظ على ترتيب "الأكثر مبيعًا"
-      let updatedParts = parts.map((p) => (p === showEditDialog ? newPartName : p));
-      updatedParts = updatedParts.sort((a, b) => {
-        if (a === 'الأكثر مبيعًا') return -1;
-        if (b === 'الأكثر مبيعًا') return 1;
-        return a.localeCompare(b);
-      });
-      setParts(updatedParts);
       setShowEditDialog(null);
       setNewPartName('');
     } catch (error) {

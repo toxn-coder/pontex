@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import { Toaster } from 'sonner';
 import { CartProvider } from './CartContext';
 import InstallButton from '@/components/InstallButton';
+import Cart from '@/components/Cart';
 
 export const metadata: Metadata = {
   title: 'شاورما السوري - أفضل شاورما سورية أصلية في المدينة',
@@ -134,6 +135,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <InstallButton />
           <main>{children}</main>
           <Footer aria-label="تذييل الموقع" />
+          <Cart />
           <Toaster richColors position="top-center" duration={3000} closeButton />
         </CartProvider>
       </body>
