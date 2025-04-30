@@ -27,8 +27,17 @@ export default function Cart() {
   const [open, setOpen] = useState(false);
   const { cartItems, totalPrice, totalItems, cartBadgeAnimation, updateQuantity, removeItem } = useCart();
 
-  // رقم الهاتف للمكالمة
-  const phoneNumber = 'tel:+201008711638';
+  // دالة لإنشاء رسالة WhatsApp
+  const createWhatsAppMessage = () => {
+    const itemsList = cartItems
+      .map((item) => `${item.name} (الكمية: ${item.quantity}) - ${item.price * item.quantity} جنيه`)
+      .join('\n');
+    const message = `طلب جديد:\n\n${itemsList}\n\nالمجموع: ${totalPrice} جنيه\n\nيرجى تأكيد الطلب أو تحديد طريقة التوصيل.`;
+    return encodeURIComponent(message);
+  };
+
+  // رابط WhatsApp مع رقم الهاتف
+  const whatsappLink = `https://wa.me/+201008711638?text=${createWhatsAppMessage()}`;
 
   return (
     <>
@@ -128,10 +137,12 @@ export default function Cart() {
               </div>
               {cartItems.length > 0 && (
                 <a
-                  href={phoneNumber}
+                  href={whatsappLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-full block text-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors mb-2"
                 >
-                  اطلب الآن
+                  اطلب الآن عبر WhatsApp
                 </a>
               )}
               <Dialog.Close asChild>
