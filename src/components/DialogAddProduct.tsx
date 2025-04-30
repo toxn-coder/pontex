@@ -71,10 +71,6 @@ export default function DialogAddProduct({ sectionId }: DialogAddProductProps) {
   };
 
   const handleAddProduct = async () => {
-    if (!formData.image) {
-      toast.error('❗ يرجى رفع صورة أولًا');
-      return;
-    }
 
     try {
       const ref = doc(db, 'menuParts', sectionId);

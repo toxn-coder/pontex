@@ -37,7 +37,7 @@ const Menu = () => {
           const formattedMeals: Meal[] = meals.map((meal: Meal) => ({
             name: meal.name || "بدون اسم",
             description: meal.description || "لا يوجد وصف",
-            image: meal.image || "https://via.placeholder.com/150", // صورة افتراضية
+            image: meal.image || "/placeholder.svg", // صورة افتراضية
             price: meal.price || "غير محدد",
             rating: meal.rating || "بدون تقييم",
           }));

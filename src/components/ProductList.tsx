@@ -5,9 +5,8 @@ import { doc, updateDoc, arrayRemove, arrayUnion, onSnapshot } from 'firebase/fi
 import { db } from '@/app/api/firebase';
 import { Pencil, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image'; // استيراد Image من next/image
+import Image from 'next/image';
 
-// تعريف واجهة للمنتج
 interface Product {
   name: string;
   price: string;
@@ -16,7 +15,6 @@ interface Product {
   rating: number;
 }
 
-// تعريف واجهة للخاصيات (props)
 interface ProductListProps {
   sectionId: string;
 }
@@ -153,6 +151,11 @@ export default function ProductList({ sectionId }: ProductListProps) {
     }
   };
 
+  // دالة لاختيار الصورة مع صورة افتراضية
+  const getImageSrc = (image: string) => {
+    return image && image.trim() !== '' ? image : '/placeholder.svg';
+  };
+
   return (
     <div className="bg-gray-800 rounded-2xl shadow-xl p-6 mt-8">
       <h2 className="text-2xl font-bold text-white mb-4">قائمة المنتجات</h2>
@@ -179,10 +182,10 @@ export default function ProductList({ sectionId }: ProductListProps) {
                   className="bg-gray-700 rounded-lg shadow p-4 flex flex-col justify-between"
                 >
                   <Image
-                    src={product.image}
+                    src={getImageSrc(product.image)}
                     alt={product.name}
-                    width={384} // العرض بالبكسل (افتراضي بناءً على w-full)
-                    height={192} // الارتفاع بالبكسل (48 * 4 = 192px)
+                    width={384}
+                    height={192}
                     className="h-48 w-full object-cover rounded-md mb-4"
                   />
                   <h3 className="text-xl font-bold text-white">{product.name}</h3>
@@ -263,10 +266,10 @@ export default function ProductList({ sectionId }: ProductListProps) {
                   {selectedProduct.image && (
                     <div className="mt-2">
                       <Image
-                        src={selectedProduct.image}
+                        src={getImageSrc(selectedProduct.image)}
                         alt="معاينة الصورة"
-                        width={384} // العرض بالبكسل (افتراضي بناءً على w-full)
-                        height={192} // الارتفاع بالبكسل (48 * 4 = 192px)
+                        width={384}
+                        height={192}
                         className="w-full h-48 object-cover rounded-lg border border-gray-600"
                       />
                     </div>

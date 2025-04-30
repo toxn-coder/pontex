@@ -5,12 +5,14 @@ const withPWA = require('next-pwa')({
   register: true, // تسجيل Service Worker تلقائيًا
   skipWaiting: true, // تخطي مرحلة الانتظار لتفعيل Service Worker
 });
+
 const nextConfig = {
   eslint: {
     // تعطيل قواعد ESLint أثناء البناء
     ignoreDuringBuilds: true,
   },
   images: {
+    domains: ['via.placeholder.com'], // إضافة النطاق
     remotePatterns: [
       {
         protocol: 'https',
@@ -18,6 +20,12 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'via.placeholder.com',
+        port: '',
+        pathname: '/**',
+      }, // إضافة via.placeholder.com كـ remotePattern لضمان التوافق
     ],
   },
 };

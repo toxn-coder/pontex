@@ -9,6 +9,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/effect-coverflow';
 import { ChevronLeft, ChevronRight, ShoppingCart, Star } from 'lucide-react';
 import { useCart } from '@/app/CartContext';
+import Image from 'next/image';
 
 interface Meal {
   name: string;
@@ -27,7 +28,7 @@ interface MealSliderProps {
 export default function MealSlider({ auto = false, title, products = [] }: MealSliderProps) {
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
-  const swiperRef = useRef<any>(null); // نوع any لتسهيل التعامل مع Swiper instance
+  const swiperRef = useRef<any>(null);
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -43,6 +44,9 @@ export default function MealSlider({ auto = false, title, products = [] }: MealS
       swiperRef.current.navigation.update();
     }
   }, []);
+
+  // فحص قيم الصور
+  console.log('Product images:', products.map((p) => p.image));
 
   return (
     <div className="max-w-6xl mx-auto py-12 px-4 bg-[var(--clr-primary)] rounded-xl shadow-2xl my-10 relative overflow-hidden">
@@ -94,18 +98,21 @@ export default function MealSlider({ auto = false, title, products = [] }: MealS
           {products.map((meal, index) => {
             const name = meal.name || 'بدون اسم';
             const description = meal.description || 'لا يوجد وصف';
-            const image = meal.image || 'https://res.cloudinary.com/do88eynar/image/upload/v1745645765/iyucm5jdwndkigern2ng.webp';
+            const image = meal.image && meal.image.trim() !== '' ? meal.image : '/placeholder.svg';
             const price = meal.price || 'غير محدد';
-            const rating = meal.rating || 'بدون تقييم';
+            const rating = meal.rating || 4.0;
 
             return (
               <SwiperSlide key={index}>
                 <div className="bg-[var(--background)] rounded-2xl overflow-hidden transition-all duration-300 group h-full flex flex-col border border-[var(--secondry)]">
                   <div className="relative overflow-hidden">
-                    <img
+                    <Image
                       src={image}
                       alt={name}
+                      width={400}
+                      height={224}
                       className="w-full h-56 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                      priority={index === 0}
                     />
                     <div className="absolute top-3 right-3 bg-yellow-600 text-white rounded-full px-2 py-1 text-xs font-bold flex items-center gap-1">
                       <Star className="w-3 h-3 fill-white" />
@@ -120,13 +127,19 @@ export default function MealSlider({ auto = false, title, products = [] }: MealS
                     <div className="flex justify-between items-center mt-auto">
                       <p className="text-yellow-500 font-bold text-lg">{price}</p>
                       <button
-  onClick={() => addToCart({ ...meal, id: index.toString(), quantity: 1, price: Number(meal.price) })}
-  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center gap-2 transform hover:scale-105"
->
-  <ShoppingCart className="w-4 h-4" />
-  <span>أضف للسلة</span>
-</button>
-
+                        onClick={() =>
+                          addToCart({
+                            ...meal,
+                            id: index.toString(),
+                            quantity: 1,
+                            price: Number(meal.price) || 0,
+                          })
+                        }
+                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center gap-2 transform hover:scale-105"
+                      >
+                        <ShoppingCart className="w-4 h-4" />
+                        <span>أضف للسلة</span>
+                      </button>
                     </div>
                   </div>
                 </div>
