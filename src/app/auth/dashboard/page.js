@@ -12,12 +12,14 @@ import PartsList from '@/components/PartList';
 import AdminBranchesManager from '@/components/AdminBranchesManager';
 import UserManager from '@/components/UserManager';
 import ChangePassword from '@/components/ChangePassword';
+import QRCodeGenerator from '@/components/QRCodeGenerator';
 
 
 export default function Dashboard() {
   const [userId, setUserId] = useState('');
   const [userRole, setUserRole] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [qrCodeValue, setQrCodeValue] = useState('https://shawarma-syrian.vercel.app/menu');
   const router = useRouter();
 
   useEffect(() => {
@@ -153,6 +155,19 @@ export default function Dashboard() {
           className="bg-gray-800 rounded-2xl shadow-xl p-6 md:col-span-2"
         >
           <ChangePassword />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 1.2 }}
+          className="bg-gray-800 rounded-2xl shadow-xl p-6 md:col-span-2"
+        >
+          <h2 className="text-2xl font-bold text-white mb-4">QR Code</h2>
+          <QRCodeGenerator
+  value={qrCodeValue} 
+  size={250}
+/>
         </motion.div>
 
       </div>
