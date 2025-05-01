@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { db } from "@/app/api/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import MealSlider from "@/components/MealSlider";
+import ProgressAnim from "./ProgressAnim";
+
 
 // تعريف واجهة لشكل المنتج (meal)
 interface Meal {
@@ -22,10 +24,12 @@ interface Category {
 
 const Menu = () => {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true); // إضافة حالة التحميل
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true); // بدء التحميل
         const menuPartsRef = collection(db, "menuParts");
         const snapshot = await getDocs(menuPartsRef);
 
@@ -58,6 +62,8 @@ const Menu = () => {
         setCategories(sortedData);
       } catch (error) {
         console.error("Error fetching menu data:", error);
+      } finally {
+        setLoading(false); // إنهاء التحميل
       }
     };
 
@@ -66,14 +72,22 @@ const Menu = () => {
 
   return (
     <div>
-      {categories.map((cat, i) => (
-        <MealSlider
-          key={cat.title}
-          title={cat.title}
-          products={cat.meals}
-          auto={i === 0} // التمرير التلقائي للقسم الأول (الأكثر مبيعًا)
-        />
-      ))}
+      {loading ? (
+       <>
+       <ProgressAnim/>
+       </>
+      ) : categories.length === 0 ? (
+        <p className="text-center text-gray-500">لا توجد بيانات متاحة حاليًا.</p>
+      ) : (
+        categories.map((cat, i) => (
+          <MealSlider
+            key={cat.title}
+            title={cat.title}
+            products={cat.meals}
+            auto={i === 0} // التمرير التلقائي للقسم الأول (الأكثر مبيعًا)
+          />
+        ))
+      )}
     </div>
   );
 };

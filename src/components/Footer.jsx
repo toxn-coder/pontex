@@ -155,7 +155,9 @@ const Footer = () => {
                   <div>
                     {contactInfo.phones.map((phone, index) => (
                       <span key={index} className="block" dir="ltr">
-                        {phone}
+                        <a href={`tel:${phone}`} className="text-gray-200 hover:text-white transition">
+                          {phone}
+                        </a>
                       </span>
                     ))}
                   </div>
@@ -181,14 +183,6 @@ const Footer = () => {
       <div className="bg-[var(--clr-dark-red)] py-4">
         <div className="container mx-auto px-4 text-center">
           <p>جميع الحقوق محفوظة © {new Date().getFullYear()} مطعم شاورما السوري</p>
-          <div className="flex justify-center mt-2 gap-4 text-sm">
-            <Link href="/privacy-policy" className="text-gray-300 hover:text-white transition">
-              سياسة الخصوصية
-            </Link>
-            <Link href="/terms" className="text-gray-300 hover:text-white transition">
-              الشروط والأحكام
-            </Link>
-          </div>
         </div>
       </div>
     </footer>

@@ -1,7 +1,6 @@
-'use client';
-
+"use client";
 import { useState, useEffect } from 'react';
-import { Phone, MapPin } from 'lucide-react';
+import { Phone, MapPin, Facebook, Instagram, Twitter, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { db } from '@/app/api/firebase';
 import { doc, getDoc } from 'firebase/firestore';
@@ -10,6 +9,10 @@ import Head from 'next/head';
 export default function ContactUs() {
   const [contactInfo, setContactInfo] = useState({
     phones: [],
+    facebook: '',
+    instagram: '',
+    twitter: '',
+    whatsapp: '',
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -91,23 +94,7 @@ export default function ContactUs() {
               className="bg-white rounded-2xl shadow-xl p-8"
             >
               <h2 className="text-2xl font-bold text-gray-800 mb-6">معلومات التواصل</h2>
-              <div className="space-y-4">
-                {contactInfo.phones && contactInfo.phones.length > 0 && (
-                  <div className="flex items-center gap-3">
-                    <Phone className="w-6 h-6 text-yellow-600" />
-                    <div>
-                      <p className="text-sm text-gray-600">رقم الهاتف</p>
-                      <a
-                        href={`tel:${contactInfo.phones[0]}`}
-                        className="text-gray-800 font-medium hover:text-yellow-600 transition-colors"
-                        dir="ltr"
-                      >
-                        {contactInfo.phones[0]}
-                      </a>
-                    </div>
-                  </div>
-                )}
-
+              <div className="space-y-4"> 
                 <div className="flex items-center gap-3">
                   <MapPin className="w-6 h-6 text-yellow-600" />
                   <div>
@@ -115,6 +102,99 @@ export default function ContactUs() {
                     <p className="text-gray-800 font-medium">{address}</p>
                   </div>
                 </div>
+                {contactInfo.phones && contactInfo.phones.length > 0 && (
+                  <div className="flex items-center gap-3">
+                    <Phone className="w-6 h-6 text-yellow-600" />
+                    <div className="flex flex-col gap-2">
+                      <p className="text-sm text-gray-600">رقم الهاتف</p>
+                      {contactInfo.phones.map((phone, index) => (
+                        <a
+                          href={`tel:${phone}`}
+                          key={index}
+                          className="text-gray-800 font-medium hover:text-yellow-600 transition-colors"
+                          dir="ltr"
+                        >
+                          {phone}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+               
+
+                {/* قسم وسائل التواصل الاجتماعي */}
+                {(contactInfo.facebook || contactInfo.instagram || contactInfo.twitter || contactInfo.whatsapp) && (
+                  <div className="mt-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4">وسائل التواصل الاجتماعي</h3>
+                    <div className="space-y-4">
+                      {contactInfo.facebook && (
+                        <div className="flex items-center gap-3">
+                          <Facebook className="w-6 h-6 text-yellow-600" />
+                          <div>
+                            <p className="text-sm text-gray-600">فيسبوك</p>
+                            <a
+                              href={contactInfo.facebook}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-gray-800 font-medium hover:text-yellow-600 transition-colors"
+                            >
+                              حسابنا على فيسبوك
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                      {contactInfo.instagram && (
+                        <div className="flex items-center gap-3">
+                          <Instagram className="w-6 h-6 text-yellow-600" />
+                          <div>
+                            <p className="text-sm text-gray-600">إنستغرام</p>
+                            <a
+                              href={contactInfo.instagram}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-gray-800 font-medium hover:text-yellow-600 transition-colors"
+                            >
+                              حسابنا على إنستغرام
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                      {contactInfo.twitter && (
+                        <div className="flex items-center gap-3">
+                          <Twitter className="w-6 h-6 text-yellow-600" />
+                          <div>
+                            <p className="text-sm text-gray-600">تويتر</p>
+                            <a
+                              href={contactInfo.twitter}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-gray-800 font-medium hover:text-yellow-600 transition-colors"
+                            >
+                              حسابنا على تويتر
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                      {contactInfo.whatsapp && (
+                        <div className="flex items-center gap-3">
+                          <MessageCircle className="w-6 h-6 text-yellow-600" />
+                          <div>
+                            <p className="text-sm text-gray-600">واتساب</p>
+                            <a
+                              href={contactInfo.whatsapp}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-gray-800 font-medium hover:text-yellow-600 transition-colors"
+                            >
+                              تواصلوا معنا على واتساب
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </motion.div>
 

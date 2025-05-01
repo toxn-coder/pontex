@@ -123,7 +123,11 @@
     @apply bg-background text-foreground;
   }
 }
-
+@layer utilities {
+  .pulse-button {
+    @apply animate-pulse;
+  }
+}
 body {
   font-family: 'Cairo', sans-serif;
 }
