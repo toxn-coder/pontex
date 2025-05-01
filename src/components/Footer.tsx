@@ -7,8 +7,18 @@ import { Facebook, Instagram, Twitter, MessageCircle, MapPin, Phone, Mail, Clock
 import { db } from '@/app/api/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
+// واجهة لنوع البيانات المتوقع من Firestore
+interface ContactInfo {
+  facebook: string;
+  instagram: string;
+  twitter: string;
+  whatsapp: string;
+  phones: string[];
+  emails: string[];
+}
+
 const Footer = () => {
-  const [contactInfo, setContactInfo] = useState({
+  const [contactInfo, setContactInfo] = useState<ContactInfo>({
     facebook: '',
     instagram: '',
     twitter: '',
@@ -16,6 +26,7 @@ const Footer = () => {
     phones: [],
     emails: [],
   });
+  const [isPWA, setIsPWA] = useState(false); // حالة لتتبع وضع PWA
 
   // جلب البيانات من Firestore
   useEffect(() => {
@@ -24,7 +35,15 @@ const Footer = () => {
         const docRef = doc(db, 'settings', 'contactInfo');
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          setContactInfo(docSnap.data());
+          const data = docSnap.data();
+          setContactInfo({
+            facebook: typeof data.facebook === 'string' ? data.facebook : '',
+            instagram: typeof data.instagram === 'string' ? data.instagram : '',
+            twitter: typeof data.twitter === 'string' ? data.twitter : '',
+            whatsapp: typeof data.whatsapp === 'string' ? data.whatsapp : '',
+            phones: Array.isArray(data.phones) ? data.phones : [],
+            emails: Array.isArray(data.emails) ? data.emails : [],
+          });
         }
       } catch (error) {
         console.error('Error fetching contact info:', error);
@@ -32,6 +51,30 @@ const Footer = () => {
     };
     fetchContactInfo();
   }, []);
+
+  // التحقق من وضع PWA
+  useEffect(() => {
+    // التحقق مما إذا كان التطبيق يعمل في وضع standalone (PWA مثبت)
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    setIsPWA(isStandalone);
+
+    // مراقبة التغييرات في وضع العرض (اختياري، في حالة تغيير الوضع أثناء التشغيل)
+    const mediaQuery = window.matchMedia('(display-mode: standalone)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      setIsPWA(e.matches);
+    };
+    mediaQuery.addEventListener('change', handleChange);
+
+    // تنظيف المستمع عند تفريغ المكون
+    return () => {
+      mediaQuery.removeEventListener('change', handleChange);
+    };
+  }, []);
+
+  // إذا كان التطبيق في وضع PWA، لا يتم عرض الـ footer
+  if (isPWA) {
+    return null;
+  }
 
   return (
     <footer className="bg-gradient-to-r from-[var(--clr-dark-red)] to-[var(--clr-primary)] text-white">
@@ -41,9 +84,9 @@ const Footer = () => {
             <h3 className="text-xl font-bold">احصل على أشهى الشاورما! اطلب الآن</h3>
           </div>
           <div className="flex gap-4">
-          <Link href="/contact" className="bg-amber-600 text-white px-6 py-2 rounded-full inline-block hover:bg-amber-500 transition">
-                تواصل معنا
-              </Link>
+            <Link href="/contact" className="bg-amber-600 text-white px-6 py-2 rounded-full inline-block hover:bg-amber-500 transition">
+              تواصل معنا
+            </Link>
           </div>
         </div>
       </div>
@@ -53,14 +96,12 @@ const Footer = () => {
           {/* شعار ووصف */}
           <div className="text-center md:text-right">
             <div className="flex justify-center md:justify-start mb-4">
-              <div className="relative w-48 h-16 ">
+              <div className="relative w-48 h-16">
                 <Image
                   src="/logo.ico"
                   alt="شعار مطعم الشاورما الأصيل"
-                  size="fill"
-
-                  width={64}
-                  height={64}
+                  fill
+                  sizes="100vw"
                   className="object-contain rounded"
                 />
               </div>
@@ -132,7 +173,6 @@ const Footer = () => {
                 <Clock className="text-amber-400" size={18} />
                 <span>صباحاً 8:00 - 4:00 الفجر</span>
               </li>
-
             </ul>
             <div className="mt-6">
               <h4 className="font-bold mb-2">خدمة التوصيل</h4>

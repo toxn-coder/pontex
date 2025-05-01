@@ -6,7 +6,6 @@ import { motion } from 'framer-motion';
 import { db } from '@/app/api/firebase';
 import { doc, getDoc, DocumentData } from 'firebase/firestore';
 import Head from 'next/head';
-import Progress from '@/components/ProgressAnim';
 import ProgressAnim from '@/components/ProgressAnim';
 
 // واجهة لنوع البيانات المتوقع من Firestore
@@ -90,10 +89,16 @@ export default function ContactUs() {
         </motion.div>
 
         {loading ? (
-          <ProgressAnim /> // استخدام مكون Progress بدلاً من SVG
+          <ProgressAnim />
         ) : error ? (
           <p className="text-center text-red-400 text-lg">{error}</p>
-        ) : !contactInfo || (!contactInfo.phones.length && !contactInfo.googleMapsLink) ? (
+        ) : !contactInfo || (
+          !contactInfo.phones.length &&
+          !contactInfo.facebook &&
+          !contactInfo.instagram &&
+          !contactInfo.twitter &&
+          !contactInfo.whatsapp
+        ) ? (
           <p className="text-center text-gray-300 text-lg">لا توجد معلومات اتصال متاحة حاليًا.</p>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -218,7 +223,7 @@ export default function ContactUs() {
                 width="100%"
                 height="400"
                 style={{ border: 0 }}
-                allowFullScreen=""
+                allowFullScreen={true} // تعديل القيمة إلى true
                 loading="lazy"
                 title="خريطة الموقع"
               />
