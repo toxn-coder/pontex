@@ -1,13 +1,25 @@
 "use client";
+
 import { useState, useEffect } from 'react';
 import { Phone, MapPin, Facebook, Instagram, Twitter, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { db } from '@/app/api/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, DocumentData } from 'firebase/firestore';
 import Head from 'next/head';
+import Progress from '@/components/ProgressAnim';
+import ProgressAnim from '@/components/ProgressAnim';
+
+// واجهة لنوع البيانات المتوقع من Firestore
+interface ContactInfo {
+  phones: string[];
+  facebook: string;
+  instagram: string;
+  twitter: string;
+  whatsapp: string;
+}
 
 export default function ContactUs() {
-  const [contactInfo, setContactInfo] = useState({
+  const [contactInfo, setContactInfo] = useState<ContactInfo>({
     phones: [],
     facebook: '',
     instagram: '',
@@ -15,7 +27,7 @@ export default function ContactUs() {
     whatsapp: '',
   });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const address = 'كفر الشيخ - شارع ابراهيم مغازي تقسيم 2 , بجوار فوري';
   const googleMapsLink = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13663.633556506917!2d30.952876897115022!3d31.112278161688636!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14f7ab154467f3bf%3A0x23f2fc217b3adbf9!2z2LnYsdmI2LMg2KfZhNi02KfZhQ!5e0!3m2!1sar!2seg!4v1745721237455!5m2!1sar!2seg';
 
@@ -26,7 +38,15 @@ export default function ContactUs() {
         const docRef = doc(db, 'settings', 'contactInfo');
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          setContactInfo(docSnap.data());
+          const data: DocumentData = docSnap.data();
+          // التحقق من البيانات وتوفير قيم افتراضية
+          setContactInfo({
+            phones: Array.isArray(data.phones) ? data.phones : [],
+            facebook: typeof data.facebook === 'string' ? data.facebook : '',
+            instagram: typeof data.instagram === 'string' ? data.instagram : '',
+            twitter: typeof data.twitter === 'string' ? data.twitter : '',
+            whatsapp: typeof data.whatsapp === 'string' ? data.whatsapp : '',
+          });
         } else {
           setError('لا توجد معلومات اتصال متاحة.');
         }
@@ -70,19 +90,10 @@ export default function ContactUs() {
         </motion.div>
 
         {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <svg className="animate-spin h-8 w-8 text-yellow-500" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              />
-            </svg>
-          </div>
+          <ProgressAnim /> // استخدام مكون Progress بدلاً من SVG
         ) : error ? (
           <p className="text-center text-red-400 text-lg">{error}</p>
-        ) : !contactInfo || (!contactInfo.phones.length && !contactInfo.address && !contactInfo.googleMapsLink) ? (
+        ) : !contactInfo || (!contactInfo.phones.length && !contactInfo.googleMapsLink) ? (
           <p className="text-center text-gray-300 text-lg">لا توجد معلومات اتصال متاحة حاليًا.</p>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -94,7 +105,7 @@ export default function ContactUs() {
               className="bg-white rounded-2xl shadow-xl p-8"
             >
               <h2 className="text-2xl font-bold text-gray-800 mb-6">معلومات التواصل</h2>
-              <div className="space-y-4"> 
+              <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <MapPin className="w-6 h-6 text-yellow-600" />
                   <div>
@@ -120,8 +131,6 @@ export default function ContactUs() {
                     </div>
                   </div>
                 )}
-
-               
 
                 {/* قسم وسائل التواصل الاجتماعي */}
                 {(contactInfo.facebook || contactInfo.instagram || contactInfo.twitter || contactInfo.whatsapp) && (
