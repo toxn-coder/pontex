@@ -128,6 +128,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="mobile-web-app-capable" content="yes"/>
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="google-site-verification" content="6V4hEDqMmgZ2uRlKRTKbR9Ogns6ombQN47K8ZrFzZRo" />
+        <meta name="msvalidate.01" content="1CB91B8C37A0E19509B66CE4387DCB4D" />
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body className="bg-[var(--foreground)] text-white font-cairo">
