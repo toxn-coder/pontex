@@ -6,11 +6,22 @@ import { db } from '@/app/api/firebase';
 import { Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import Image from 'next/image'; // استيراد Image من next/image
+import Image from 'next/image';
+import { v4 as uuidv4 } from 'uuid'; // استيراد uuid لإنشاء معرفات فريدة
 
 // تعريف واجهة للخاصيات (props)
 interface DialogAddProductProps {
   sectionId: string;
+}
+
+// تعريف واجهة للمنتج
+interface Product {
+  id: string; // إضافة حقل id
+  name: string;
+  price: string;
+  image: string;
+  description: string;
+  rating: number;
 }
 
 export default function DialogAddProduct({ sectionId }: DialogAddProductProps) {
@@ -18,7 +29,8 @@ export default function DialogAddProduct({ sectionId }: DialogAddProductProps) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Product>({
+    id: '', // تهيئة id كسلسلة فارغة
     name: '',
     price: '',
     image: '',
@@ -71,15 +83,21 @@ export default function DialogAddProduct({ sectionId }: DialogAddProductProps) {
   };
 
   const handleAddProduct = async () => {
-
     try {
+      // إنشاء معرف فريد للمنتج
+      const productWithId = {
+        ...formData,
+        id: uuidv4(), // إضافة id باستخدام uuid
+        // بديل بدون uuid: id: `${formData.name}-${Date.now()}`
+      };
+
       const ref = doc(db, 'menuParts', sectionId);
       await updateDoc(ref, {
-        products: arrayUnion(formData),
+        products: arrayUnion(productWithId),
       });
 
       toast.success('تمت إضافة المنتج بنجاح');
-      setFormData({ name: '', price: '', image: '', description: '', rating: 4.8 });
+      setFormData({ id: '', name: '', price: '', image: '', description: '', rating: 4.8 });
       setOpen(false);
       setProgress(0);
     } catch (error: unknown) {
@@ -152,8 +170,8 @@ export default function DialogAddProduct({ sectionId }: DialogAddProductProps) {
                     <Image
                       src={formData.image}
                       alt="معاينة الصورة"
-                      width={384} // العرض بالبكسل (افتراضي بناءً على w-full)
-                      height={192} // الارتفاع بالبكسل (48 * 4 = 192px)
+                      width={384}
+                      height={192}
                       className="object-cover rounded-lg border border-gray-600"
                     />
                   </div>

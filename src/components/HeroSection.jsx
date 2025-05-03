@@ -4,7 +4,7 @@ import { ArrowRight, Clock, Star, MapPin } from 'lucide-react';
 import Link from 'next/link';
 
 const HeroSection = ({ 
-  restaurantName = "مطعم والي دمشق", 
+  restaurantName = "والي دمشق", 
   slogan = "المذاق الأصيل للمأكولات السورية",
   rating = "4.8",
   address = " كفر الشيخ - شارع إبراهيم المغازي تقسيم 2 أمام - بيتزا بان",

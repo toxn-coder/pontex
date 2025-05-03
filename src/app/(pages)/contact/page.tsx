@@ -7,6 +7,7 @@ import { db } from '@/app/api/firebase';
 import { doc, getDoc, DocumentData } from 'firebase/firestore';
 import Head from 'next/head';
 import ProgressAnim from '@/components/ProgressAnim';
+import useSWR from 'swr';
 
 // واجهة لنوع البيانات المتوقع من Firestore
 interface ContactInfo {
@@ -17,59 +18,88 @@ interface ContactInfo {
   whatsapp: string;
 }
 
-export default function ContactUs() {
-  const [contactInfo, setContactInfo] = useState<ContactInfo>({
-    phones: [],
-    facebook: '',
-    instagram: '',
-    twitter: '',
-    whatsapp: '',
-  });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const address = 'كفر الشيخ - شارع إبراهيم المغازي تقسيم 2 أمام - بيتزا بان';
-  const googleMapsLink = 'https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3415.825274839317!2d30.949543684859268!3d31.114587981505714!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMzHCsDA2JzUyLjUiTiAzMMKwNTYnNTAuNSJF!5e0!3m2!1sar!2seg!4v1746256990189!5m2!1sar!2seg';
+// مدة صلاحية التخزين المؤقت (1 ساعة بالمللي ثانية)
+const CACHE_DURATION = 60 * 60 * 1000;
 
-  // جلب معلومات الاتصال من Firestore
-  useEffect(() => {
-    const fetchContactInfo = async () => {
-      try {
-        const docRef = doc(db, 'settings', 'contactInfo');
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data: DocumentData = docSnap.data();
-          // التحقق من البيانات وتوفير قيم افتراضية
-          setContactInfo({
-            phones: Array.isArray(data.phones) ? data.phones : [],
-            facebook: typeof data.facebook === 'string' ? data.facebook : '',
-            instagram: typeof data.instagram === 'string' ? data.instagram : '',
-            twitter: typeof data.twitter === 'string' ? data.twitter : '',
-            whatsapp: typeof data.whatsapp === 'string' ? data.whatsapp : '',
-          });
-        } else {
-          setError('لا توجد معلومات اتصال متاحة.');
-        }
-      } catch (err) {
-        console.error('Error fetching contact info:', err);
-        setError('فشل جلب معلومات الاتصال. حاول مرة أخرى لاحقًا.');
-      } finally {
-        setLoading(false);
-      }
+const fetcher = async () => {
+  console.log('جلب معلومات الاتصال من Firebase...');
+  const docRef = doc(db, 'settings', 'contactInfo');
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    const data: DocumentData = docSnap.data();
+    const contactInfo: ContactInfo = {
+      phones: Array.isArray(data.phones) ? data.phones : [],
+      facebook: typeof data.facebook === 'string' ? data.facebook : '',
+      instagram: typeof data.instagram === 'string' ? data.instagram : '',
+      twitter: typeof data.twitter === 'string' ? data.twitter : '',
+      whatsapp: typeof data.whatsapp === 'string' ? data.whatsapp : '',
     };
-    fetchContactInfo();
+    // تخزين البيانات في localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('contactInfoData', JSON.stringify(contactInfo));
+      localStorage.setItem('contactInfoDataTimestamp', new Date().getTime().toString());
+    }
+    return contactInfo;
+  } else {
+    throw new Error('لا توجد معلومات اتصال متاحة.');
+  }
+};
+
+export default function ContactUs() {
+  const [initialData, setInitialData] = useState<ContactInfo | undefined>(undefined);
+  const [isCacheValid, setIsCacheValid] = useState(false);
+
+  // تحميل البيانات من localStorage على جانب العميل فقط
+  useEffect(() => {
+    const cachedData = localStorage.getItem('contactInfoData');
+    const cachedTimestamp = localStorage.getItem('contactInfoDataTimestamp');
+    const currentTime = new Date().getTime();
+
+    if (cachedData && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < CACHE_DURATION) {
+      console.log('استخدام البيانات المخزنة من localStorage');
+      setInitialData(JSON.parse(cachedData));
+      setIsCacheValid(true);
+    }
   }, []);
+
+  const { data: contactInfo, error, isLoading } = useSWR('contactInfoData', fetcher, {
+    refreshInterval: 60 * 60 * 1000, // تحديث كل ساعة
+    revalidateOnFocus: false, // تعطيل إعادة التحقق عند التركيز
+    revalidateOnMount: !isCacheValid, // عدم الجلب إذا كانت البيانات المخزنة صالحة
+    dedupingInterval: 60 * 1000, // تجنب الجلب المتكرر لمدة 60 ثانية
+    keepPreviousData: true, // الاحتفاظ بالبيانات السابقة أثناء الجلب
+    fallbackData: initialData, // استخدام البيانات المخزنة كبيانات أولية
+  });
+
+  console.log('حالة SWR:', { isLoading, error, contactInfo });
+
+  const address = 'كفر الشيخ - شارع إبراهيم المغازي تقسيم 2 أمام - بيتزا بان';
+  const googleMapsLink =
+    'https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3415.825274839317!2d30.949543684859268!3d31.114587981505714!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMzHCsDA2JzUyLjUiTiAzMMKwNTYnNTAuNSJF!5e0!3m2!1sar!2seg!4v1746256990189!5m2!1sar!2seg';
 
   return (
     <div className="min-h-screen bg-[var(--clr-primary)] py-12 px-4">
       <Head>
         <title>اتصل بنا - مطعم والي دمشق</title>
-        <meta name="description" content="تواصلوا معنا عبر الهاتف أو زورونا في موقعنا. نحن هنا لخدمتكم!" />
-        <meta name="keywords" content="مطعم شاورما, كفر الشيخ, اتصل بنا, خدمة العملاء" />
+        <meta
+          name="description"
+          content="تواصلوا معنا عبر الهاتف أو زورونا في موقعنا. نحن هنا لخدمتكم!"
+        />
+        <meta
+          name="keywords"
+          content="مطعم شاورما, كفر الشيخ, اتصل بنا, خدمة العملاء"
+        />
         <meta name="robots" content="index, follow" />
         <meta property="og:title" content="اتصل بنا - مطعم والي دمشق" />
-        <meta property="og:description" content="تواصلوا معنا عبر الهاتف أو زورونا في موقعنا. نحن هنا لخدمتكم!" />
+        <meta
+          property="og:description"
+          content="تواصلوا معنا عبر الهاتف أو زورونا في موقعنا. نحن هنا لخدمتكم!"
+        />
         <meta property="og:image" content="/logo.png" />
-        <meta property="og:url" content="https://waly-damascus.vercel.app" />
+        <meta property="og:url" content="https://waly-damascus.vercel.app/contact" />
+        <meta property="og:type" content="website" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charSet="UTF-8" />
       </Head>
 
       <div className="max-w-6xl mx-auto">
@@ -88,17 +118,16 @@ export default function ContactUs() {
           </p>
         </motion.div>
 
-        {loading ? (
+        {isLoading && !contactInfo ? (
           <ProgressAnim />
         ) : error ? (
-          <p className="text-center text-red-400 text-lg">{error}</p>
-        ) : !contactInfo || (
-          !contactInfo.phones.length &&
-          !contactInfo.facebook &&
-          !contactInfo.instagram &&
-          !contactInfo.twitter &&
-          !contactInfo.whatsapp
-        ) ? (
+          <p className="text-center text-red-400 text-lg">{error.message}</p>
+        ) : !contactInfo ||
+          (!contactInfo.phones.length &&
+            !contactInfo.facebook &&
+            !contactInfo.instagram &&
+            !contactInfo.twitter &&
+            !contactInfo.whatsapp) ? (
           <p className="text-center text-gray-300 text-lg">لا توجد معلومات اتصال متاحة حاليًا.</p>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -126,7 +155,7 @@ export default function ContactUs() {
                       {contactInfo.phones.map((phone, index) => (
                         <a
                           href={`tel:${phone}`}
-                          key={index}
+                          key={phone} // استخدام رقم الهاتف كمفتاح فريد
                           className="text-gray-800 font-medium hover:text-yellow-600 transition-colors"
                           dir="ltr"
                         >
@@ -223,7 +252,7 @@ export default function ContactUs() {
                 width="100%"
                 height="400"
                 style={{ border: 0 }}
-                allowFullScreen={true} // تعديل القيمة إلى true
+                allowFullScreen={true}
                 loading="lazy"
                 title="خريطة الموقع"
               />
@@ -234,4 +263,3 @@ export default function ContactUs() {
     </div>
   );
 }
-
