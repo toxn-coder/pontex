@@ -8,13 +8,13 @@ export default function AboutUs() {
   return (
     <>
       <Head>
-        <title>عن مطعم شاورما السوري | أفضل شاورما في كفر الشيخ</title>
-        <meta name="description" content="تجربة نكهات الشاورما السورية الأصيلة في مطعم شاورما السوري في كفر الشيخ، مصر. تعرف على قصتنا ورؤيتنا." />
+        <title>عن مطعم والي دمشق | أفضل شاورما في كفر الشيخ</title>
+        <meta name="description" content="تجربة نكهات الوالي دمشقة الأصيلة في مطعم والي دمشق في كفر الشيخ، مصر. تعرف على قصتنا ورؤيتنا." />
         <meta name="keywords" content="شاورما, مطعم شاورما, شاورما سوري, كفر الشيخ, أطعمة سورية" />
-        <meta property="og:title" content="عن مطعم شاورما السوري" />
-        <meta property="og:description" content="تعرف على مطعم شاورما السوري في كفر الشيخ وتاريخنا العريق في تقديم أفضل الشاورما السورية." />
+        <meta property="og:title" content="عن مطعم والي دمشق" />
+        <meta property="og:description" content="تعرف على مطعم والي دمشق في كفر الشيخ وتاريخنا العريق في تقديم أفضل الوالي دمشقة." />
         <meta property="og:image" content="https://res.cloudinary.com/do88eynar/image/upload/v1745714479/ns9yrv6q59zkil1ccu7z.webp" />
-        <meta property="og:url" content="https://yourwebsite.com/about-us" />
+        <meta property="og:url" content="https://waly-damascus.com/about" />
       </Head>
       
       <div className="min-h-screen bg-[var(--clr-primary)] py-12 px-4">
@@ -30,7 +30,7 @@ export default function AboutUs() {
               <span className="text-yellow-500">عن المطعم</span>
             </h1>
             <p className="text-gray-300 mt-4 text-lg max-w-2xl mx-auto">
-              شاورما السوري: حيث تلتقي الأصالة بالنكهات الرائعة في قلب كفر الشيخ!
+              والي دمشق: حيث تلتقي الأصالة بالنكهات الرائعة في قلب كفر الشيخ!
             </p>
           </motion.div>
 
@@ -46,7 +46,7 @@ export default function AboutUs() {
               <div className="bg-white rounded-2xl shadow-xl p-8">
                 <h2 className="text-2xl font-bold text-gray-800 mb-4">قصتنا</h2>
                 <p className="text-gray-600 leading-relaxed">
-                  تأسس مطعم شاورما السوري في عام 2022 بهدف تقديم النكهات السورية الأصيلة إلى عشاق الطعام في
+                  تأسس مطعم والي دمشق في عام 2025 بهدف تقديم النكهات السورية الأصيلة إلى عشاق الطعام في
                   جمهورية مصر العربية. بدأنا كمطعم صغير في كفر الشيخ، ومع شغفنا بالجودة والضيافة، أصبحنا
                   وجهة مفضلة لمحبي الشاورما والمأكولات السورية. كل طبق نقدمه يحكي قصة من التقاليد والحب
                   للطهي.
@@ -72,8 +72,8 @@ export default function AboutUs() {
               className="bg-white rounded-2xl shadow-xl overflow-hidden"
             >
               <Image
-                src="https://res.cloudinary.com/do88eynar/image/upload/v1745714479/ns9yrv6q59zkil1ccu7z.webp"
-                alt="مطعم شاورما السوري - تجربة الطعام السوري الأصيل"
+                src="https://res.cloudinary.com/do88eynar/image/upload/v1746271832/loeyvzl1c0g2isffduke.webp"
+                alt="مطعم والي دمشق - تجربة الطعام السوري الأصيل"
                 className="w-full h-[400px] lg:h-full object-cover shadow-lg"
                 width={800} // تعيين عرض الصورة
                 height={600} // تعيين ارتفاع الصورة

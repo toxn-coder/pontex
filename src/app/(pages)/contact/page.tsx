@@ -27,8 +27,8 @@ export default function ContactUs() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const address = 'كفر الشيخ - شارع ابراهيم مغازي تقسيم 2 , بجوار فوري';
-  const googleMapsLink = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13663.633556506917!2d30.952876897115022!3d31.112278161688636!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14f7ab154467f3bf%3A0x23f2fc217b3adbf9!2z2LnYsdmI2LMg2KfZhNi02KfZhQ!5e0!3m2!1sar!2seg!4v1745721237455!5m2!1sar!2seg';
+  const address = 'كفر الشيخ - شارع إبراهيم المغازي تقسيم 2 أمام - بيتزا بان';
+  const googleMapsLink = 'https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3415.825274839317!2d30.949543684859268!3d31.114587981505714!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMzHCsDA2JzUyLjUiTiAzMMKwNTYnNTAuNSJF!5e0!3m2!1sar!2seg!4v1746256990189!5m2!1sar!2seg';
 
   // جلب معلومات الاتصال من Firestore
   useEffect(() => {
@@ -62,11 +62,11 @@ export default function ContactUs() {
   return (
     <div className="min-h-screen bg-[var(--clr-primary)] py-12 px-4">
       <Head>
-        <title>اتصل بنا - مطعم شاورما السوري</title>
+        <title>اتصل بنا - مطعم والي دمشق</title>
         <meta name="description" content="تواصلوا معنا عبر الهاتف أو زورونا في موقعنا. نحن هنا لخدمتكم!" />
         <meta name="keywords" content="مطعم شاورما, كفر الشيخ, اتصل بنا, خدمة العملاء" />
         <meta name="robots" content="index, follow" />
-        <meta property="og:title" content="اتصل بنا - مطعم شاورما السوري" />
+        <meta property="og:title" content="اتصل بنا - مطعم والي دمشق" />
         <meta property="og:description" content="تواصلوا معنا عبر الهاتف أو زورونا في موقعنا. نحن هنا لخدمتكم!" />
         <meta property="og:image" content="رابط صورة مميزة للمطعم" />
         <meta property="og:url" content="رابط الصفحة الخاصة بك" />
@@ -234,3 +234,4 @@ export default function ContactUs() {
     </div>
   );
 }
+

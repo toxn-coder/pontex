@@ -15,12 +15,20 @@ import ChangePassword from '@/components/ChangePassword';
 import QRCodeGenerator from '@/components/QRCodeGenerator';
 
 
+
 export default function Dashboard() {
+  
+
   const [userId, setUserId] = useState('');
   const [userRole, setUserRole] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [qrCodeValue, setQrCodeValue] = useState('https://shawarma-syrian.vercel.app/menu');
+  const [qrCodeValue, setQrCodeValue] = useState();
   const router = useRouter();
+
+  useEffect(()=>{
+    let win = window.location.protocol+window.location.host+"/menu"
+    setQrCodeValue(win)
+  },[])
 
   useEffect(() => {
     const fetchUserData = async () => {

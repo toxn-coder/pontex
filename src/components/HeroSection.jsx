@@ -4,10 +4,10 @@ import { ArrowRight, Clock, Star, MapPin } from 'lucide-react';
 import Link from 'next/link';
 
 const HeroSection = ({ 
-  restaurantName = "مطعم شاورما السوري", 
+  restaurantName = "مطعم والي دمشق", 
   slogan = "المذاق الأصيل للمأكولات السورية",
   rating = "4.8",
-  address = "شارع ابراهيم مغازي / كفر الشيخ",
+  address = " كفر الشيخ - شارع إبراهيم المغازي تقسيم 2 أمام - بيتزا بان",
   openingHours = "صباحاً 8:00 - 4:00 الفجر",
   buttonText = "عرض القائمة"
 }) => {
@@ -68,7 +68,7 @@ const HeroSection = ({
               <div className="absolute inset-0 bg-amber-600 rounded-full overflow-hidden border-8 border-amber-800/30 shadow-2xl">
                 {/* Main Image */}
                 <Image 
-                  src="https://res.cloudinary.com/do88eynar/image/upload/v1745714086/c5x9swyg3xwtbfvhd9wl.webp" 
+                  src="https://res.cloudinary.com/do88eynar/image/upload/v1746271921/e14qia4giv8mc2lhndtv.webp" 
                   alt="طبق شهي من مطعمنا" 
                   fill
                   style={{ objectFit: 'cover' }}

@@ -8,28 +8,28 @@ import InstallButton from '@/components/InstallButton';
 import Cart from '@/components/Cart';
 
 export const metadata: Metadata = {
-  title: 'شاورما السوري - أفضل شاورما سورية أصلية في المدينة',
+  title: ' والي دمشق - أفضل شاورما سورية أصلية في المدينة',
   description:
-    'استمتع بأفضل شاورما سورية أصلية في شاورما السوري. تصفح قائمتنا، اطلب الآن، واستمتع بمذاق الشاورما الحقيقي!',
+    'استمتع بأفضل شاورما سورية أصلية في والي دمشق. تصفح قائمتنا، اطلب الآن، واستمتع بمذاق الشاورما الحقيقي!',
   keywords: 'شاورما, شاورما سورية, مطعم شاورما, أفضل شاورما, طعام سوري, مطاعم المدينة',
-  authors: [{ name: 'شاورما السوري' }],
+  authors: [{ name: 'والي دمشق' }],
   icons: {
-    icon: '/icons/android-icon-192x192.png',
-    shortcut: '/icons/android-icon-192x192.png',
-    apple: '/icons/android-icon-192x192.png',
+    icon: '/ios/192.png',
+    shortcut: '/ios/192.png',
+    apple: '/ios/192.png',
   },
   openGraph: {
-    title: 'شاورما السوري - أفضل شاورما سورية أصلية',
+    title: 'والي دمشق - أفضل شاورما سورية أصلية',
     description:
-      'استمتع بأفضل شاورما سورية أصلية في شاورما السوري. تصفح قائمتنا، اطلب الآن، واستمتع بمذاق الشاورما الحقيقي!',
-    url: 'https://shawarma-syrian.vercel.app',
-    siteName: 'شاورما السوري',
+      'استمتع بأفضل شاورما سورية أصلية في والي دمشق. تصفح قائمتنا، اطلب الآن، واستمتع بمذاق الشاورما الحقيقي!',
+    url: 'https://waly-damascus.vercel.app',
+    siteName: 'والي دمشق',
     images: [
       {
-        url: 'https://shawarma-syrian.vercel.app/og-image.jpg',
+        url: 'https://waly-damascus.vercel.app/logo.png',
         width: 1200,
         height: 630,
-        alt: 'شاورما سورية أصلية من شاورما السوري',
+        alt: 'شاورما سورية أصلية من والي دمشق',
       },
     ],
     locale: 'ar',
@@ -37,20 +37,20 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'شاورما السوري - أفضل شاورما سورية أصلية',
+    title: 'والي دمشق - أفضل شاورما سورية أصلية',
     description:
-      'استمتع بأفضل شاورما سورية أصلية في شاورما السوري. تصفح قائمتنا، اطلب الآن، واستمتع بمذاق الشاورما الحقيقي!',
-    images: ['https://shawarma-syrian.vercel.app/og-image.jpg'],
-    site: '@shawarma_syrian',
-    creator: '@shawarma_syrian',
+      'استمتع بأفضل شاورما سورية أصلية في والي دمشق. تصفح قائمتنا، اطلب الآن، واستمتع بمذاق الشاورما الحقيقي!',
+    images: ['https://waly-damascus.vercel.app/logo.png',],
+    site: '@waly-semashk',
+    creator: '@waly-semashk',
   },
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'شاورما السوري',
+    title: 'والي دمشق',
     startupImage: [
-      '/icons/android-icon-192x192.png',
+      '/android/android-launchericon-192-192.png',
     ],
   },
   robots: {
@@ -69,22 +69,22 @@ export const viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: 'cover',
-  themeColor: '#f59e0b',
+  themeColor: '#000',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Restaurant',
-    name: 'شاورما السوري',
+    name: 'والي دمشق',
     description: 'أفضل شاورما سورية أصلية في المدينة، تقدم مجموعة متنوعة من الشاورما والوجبات السورية.',
-    url: 'https://shawarma-syrian.vercel.app',
-    logo: 'https://shawarma-syrian.vercel.app/logo.png',
-    image: 'https://shawarma-syrian.vercel.app/og-image.jpg',
+    url: 'https://waly-damascus.vercel.app',
+    logo: 'https://waly-damascus.vercel.app/logo.png',
+    image: 'https://waly-damascus.vercel.app/logo.png',
     telephone: '+2010 60462862',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'شارع ابراهيم مغازي - بجوار فوري',
+      streetAddress: 'شارع إبراهيم المغازي تقسيم 2 أمام بيتزا بان',
       addressLocality: 'كفر الشيخ',
       addressRegion: 'كفر الشيخ',
       postalCode: '33511',
@@ -95,7 +95,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     servesCuisine: 'سورية',
     priceRange: '$$',
     acceptsReservations: 'false',
-    hasMenu: 'https://shawarma-syrian.vercel.app/menu',
+    hasMenu: 'https://waly-damascus.vercel.app/menu',
   };
 
   return (
@@ -116,7 +116,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         {/* Preconnect لتحسين الأداء */}
         <link rel="preconnect" href="https://firestore.googleapis.com" />
-        <link rel="preconnect" href="https://shawarma-syrian.vercel.app" />
+        <link rel="preconnect" href="https://waly-damascus.vercel.app" />
 
         {/* Structured Data */}
         <script

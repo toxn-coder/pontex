@@ -97,13 +97,14 @@ const Footer = () => {
           <div className="text-center md:text-right">
             <div className="flex justify-center md:justify-start mb-4">
               <div className="relative w-48 h-16">
-                <Image
-                  src="/logo.ico"
-                  alt="شعار مطعم الشاورما الأصيل"
-                  fill
-                  sizes="100vw"
-                  className="object-contain rounded"
-                />
+              <Image
+  src="/logo.png"
+  alt="شعار مطعم الشاورما الأصيل"
+  width={50}
+  height={50}
+  style={{ width: '50px', height: 'auto' }}
+  className="object-contain rounded"
+/>
               </div>
             </div>
             <p className="text-gray-200 mb-4">
@@ -187,7 +188,7 @@ const Footer = () => {
             <ul className="space-y-4">
               <li className="flex items-center justify-center md:justify-start gap-2">
                 <MapPin className="text-amber-400" size={18} />
-                <span>شارع ابراهيم مغازي / كفر الشيخ</span>
+                <span> كفر الشيخ -شارع إبراهيم المغازي تقسيم 2 أمام بيتزا بان</span>
               </li>
               {contactInfo.phones && contactInfo.phones.length > 0 && (
                 <li className="flex items-center justify-center md:justify-start gap-2">
@@ -222,7 +223,7 @@ const Footer = () => {
 
       <div className="bg-[var(--clr-dark-red)] py-4">
         <div className="container mx-auto px-4 text-center">
-          <p>جميع الحقوق محفوظة © {new Date().getFullYear()} مطعم شاورما السوري</p>
+          <p>جميع الحقوق محفوظة © {new Date().getFullYear()} مطعم والي دمشق</p>
         </div>
       </div>
     </footer>

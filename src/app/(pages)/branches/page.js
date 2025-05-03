@@ -36,11 +36,11 @@ export default function Branches() {
   return (
     <>
       <Head>
-        <title>فروع مطعم شاورما السوري | أفضل فروع الشاورما في كفر الشيخ</title>
-        <meta name="description" content="اكتشف فروع مطعم شاورما السوري في كفر الشيخ وتعرف على العناوين وأوقات العمل." />
-        <meta name="keywords" content="فروع شاورما, شاورما سوري, كفر الشيخ, مطاعم كفر الشيخ, شاورما" />
-        <meta property="og:title" content="فروع مطعم شاورما السوري" />
-        <meta property="og:description" content="اعرف المزيد عن فروع مطعم شاورما السوري في كفر الشيخ، مع العناوين وأرقام الهاتف وأوقات العمل." />
+        <title>فروع مطعم والي دمشق | أفضل فروع الشاورما في كفر الشيخ</title>
+        <meta name="description" content="اكتشف فروع مطعم والي دمشق في كفر الشيخ وتعرف على العناوين وأوقات العمل." />
+        <meta name="keywords" content="فروع شاورما, شاورما سوري, كفر الشيخ, مطاعم كفر الشيخ, شاورما,والي دمشق ,مطعم والي دمشق , مطعم , كفر الشيخ , مطاعم" />
+        <meta property="og:title" content="فروع مطعم والي دمشق" />
+        <meta property="og:description" content="اعرف المزيد عن فروع مطعم والي دمشق في كفر الشيخ، مع العناوين وأرقام الهاتف وأوقات العمل." />
         <meta property="og:image" content="https://yourimageurl.com/branch-image.jpg" />
         <meta property="og:url" content="https://yourwebsite.com/branches" />
       </Head>
@@ -53,7 +53,7 @@ export default function Branches() {
           className="text-center mb-12"
         >
           <h1 className="text-3xl sm:text-4xl font-bold text-[var(--secondry)]">
-            فروع مطعم شاورما السوري
+            فروع مطعم والي دمشق
           </h1>
           <p className="text-gray-200 mt-2 text-base sm:text-lg">
             تفضل بزيارة أحد فروعنا لتجربة أشهى أطباق الشاورما
@@ -82,7 +82,7 @@ export default function Branches() {
               >
                 <div className="relative w-full h-48">
                   <Image
-                    src={branch.image || '/logo-placeholder.png'}
+                    src={branch.image || '/logo.png'}
                     alt={`${branch.name} - فرع ${branch.name}`}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"

@@ -122,7 +122,7 @@ export default function Navbar() {
               scrolling ? 'scale-95' : 'scale-100'
             )}
           >
-            <span className="text-yellow-500">شاورما السوري</span>
+            <span className="text-yellow-500">والي دمشق</span>
             <span className="text-white mx-2">|</span>
             <span className="text-sm text-gray-300 hidden md:inline-block">أشهى المأكولات السورية</span>
           </div>
