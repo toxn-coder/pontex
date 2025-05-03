@@ -68,8 +68,8 @@ export default function ContactUs() {
         <meta name="robots" content="index, follow" />
         <meta property="og:title" content="اتصل بنا - مطعم والي دمشق" />
         <meta property="og:description" content="تواصلوا معنا عبر الهاتف أو زورونا في موقعنا. نحن هنا لخدمتكم!" />
-        <meta property="og:image" content="رابط صورة مميزة للمطعم" />
-        <meta property="og:url" content="رابط الصفحة الخاصة بك" />
+        <meta property="og:image" content="/logo.png" />
+        <meta property="og:url" content="https://waly-damascus.vercel.app" />
       </Head>
 
       <div className="max-w-6xl mx-auto">
