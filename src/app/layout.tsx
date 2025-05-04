@@ -6,6 +6,8 @@ import { Toaster } from 'sonner';
 import { CartProvider } from './CartContext';
 import InstallButton from '@/components/InstallButton';
 import Cart from '@/components/Cart';
+import NotificationListener from '@/components/NotificationListener';
+
 
 export const metadata: Metadata = {
   title: ' والي دمشق - أفضل شاورما سورية أصلية في المدينة',
@@ -138,6 +140,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main>{children}</main>
           <Footer aria-label="تذييل الموقع" />
           <Cart />
+          <NotificationListener />
           <Toaster richColors position="top-center" duration={3000} closeButton />
         </CartProvider>
       </body>

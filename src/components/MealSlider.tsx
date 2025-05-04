@@ -59,7 +59,6 @@ export default function MealSlider({ auto = false, title, products = [], section
     }
   };
 
-  console.log("MealSlider props:", { title, sectionId, products });
 
   return (
     <div className="max-w-6xl mx-auto py-12 px-4 bg-[var(--clr-primary)] rounded-xl shadow-2xl my-10 relative overflow-hidden">
@@ -130,7 +129,7 @@ export default function MealSlider({ auto = false, title, products = [], section
             const rating = meal.rating || 4.0;
 
             const link = sectionId ? `/menu/${encodeURIComponent(sectionId)}/${meal.id}` : '#';
-            console.log("Meal link:", { sectionId, mealId: meal.id, href: link });
+            
 
             return (
               <SwiperSlide key={meal.id}>

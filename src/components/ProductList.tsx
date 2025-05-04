@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { doc, updateDoc, arrayRemove, arrayUnion, onSnapshot } from 'firebase/firestore';
 import { db } from '@/app/api/firebase';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 
@@ -121,6 +121,12 @@ export default function ProductList({ sectionId }: ProductListProps) {
     }
   };
 
+  const handleDeleteImage = () => {
+    if (selectedProduct) {
+      setSelectedProduct({ ...selectedProduct, image: '' });
+    }
+  };
+
   const handleUpdate = async () => {
     if (!selectedProduct) return;
     setLoading(true);
@@ -157,7 +163,7 @@ export default function ProductList({ sectionId }: ProductListProps) {
   };
 
   return (
-    <div className="bg-gray-800 rounded-2xl shadow-xl p-6 mt-8">
+    <div className="bg-gray-800 rounded-2xl shadow-xl p-6 mt-8" dir="rtl">
       <h2 className="text-2xl font-bold text-white mb-4">قائمة المنتجات</h2>
 
       <motion.div
@@ -166,9 +172,13 @@ export default function ProductList({ sectionId }: ProductListProps) {
         transition={{ duration: 0.5 }}
       >
         {loading ? (
-          <div className="text-white text-center py-12">جاري تحميل المنتجات...</div>
+          <div className="text-white text-center py-12" role="alert">
+            جاري تحميل المنتجات...
+          </div>
         ) : products.length === 0 ? (
-          <p className="text-center text-gray-300 text-lg py-12">لا توجد منتجات مضافة بعد.</p>
+          <p className="text-center text-gray-300 text-lg py-12" role="alert">
+            لا توجد منتجات مضافة بعد.
+          </p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <AnimatePresence>
@@ -199,6 +209,7 @@ export default function ProductList({ sectionId }: ProductListProps) {
                           whileTap={{ scale: 0.95 }}
                           onClick={() => handleEdit(product)}
                           className="bg-green-600 text-white px-3 py-2 rounded-full text-sm font-medium shadow hover:bg-green-700 transition-colors"
+                          aria-label={`تعديل منتج ${product.name}`}
                         >
                           <Pencil className="w-4 h-4" />
                         </motion.button>
@@ -207,6 +218,7 @@ export default function ProductList({ sectionId }: ProductListProps) {
                           whileTap={{ scale: 0.95 }}
                           onClick={() => handleDelete(product)}
                           className="bg-red-600 text-white px-3 py-2 rounded-full text-sm font-medium shadow hover:bg-red-700 transition-colors"
+                          aria-label={`حذف منتج ${product.name}`}
                         >
                           <Trash2 className="w-4 h-4" />
                         </motion.button>
@@ -263,8 +275,8 @@ export default function ProductList({ sectionId }: ProductListProps) {
                       />
                     </div>
                   )}
-                  {selectedProduct.image && (
-                    <div className="mt-2">
+                  {selectedProduct.image && selectedProduct.image.trim() !== '' && (
+                    <div className="mt-2 relative">
                       <Image
                         src={getImageSrc(selectedProduct.image)}
                         alt="معاينة الصورة"
@@ -272,6 +284,15 @@ export default function ProductList({ sectionId }: ProductListProps) {
                         height={192}
                         className="w-full h-48 object-cover rounded-lg border border-gray-600"
                       />
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={handleDeleteImage}
+                        className="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full shadow hover:bg-red-700 transition-colors"
+                        aria-label="حذف الصورة"
+                      >
+                        <X className="w-4 h-4" />
+                      </motion.button>
                     </div>
                   )}
                   <textarea
@@ -306,6 +327,7 @@ export default function ProductList({ sectionId }: ProductListProps) {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700"
+                      aria-label="إلغاء تعديل المنتج"
                     >
                       إلغاء
                     </motion.button>
@@ -317,6 +339,7 @@ export default function ProductList({ sectionId }: ProductListProps) {
                       className={`bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors ${
                         loading ? 'opacity-50 cursor-not-allowed' : ''
                       }`}
+                      aria-label="حفظ تعديلات المنتج"
                     >
                       {loading ? 'جاري الحفظ...' : 'حفظ التعديلات'}
                     </motion.button>

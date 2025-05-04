@@ -92,9 +92,16 @@ const PartsList = () => {
         throw new Error('القسم غير موجود');
       }
 
+      // تحديث البيانات مع اسم القسم الجديد
+      const oldData = oldDocSnap.data();
+      const updatedData = {
+        ...oldData,
+        name: newPartName, // تحديث حقل name ليعكس الاسم الجديد
+      };
+
       // نسخ البيانات إلى مستند جديد بالاسم الجديد
       const newDocRef = doc(db, 'menuParts', newPartName);
-      await setDoc(newDocRef, oldDocSnap.data());
+      await setDoc(newDocRef, updatedData);
 
       // حذف المستند القديم
       await deleteDoc(oldDocRef);
@@ -108,15 +115,17 @@ const PartsList = () => {
   };
 
   return (
-    <div className="bg-gray-800 rounded-2xl shadow-xl p-6">
+    <div className="bg-gray-800 rounded-2xl shadow-xl p-6" dir="rtl">
       <h2 className="text-2xl font-bold text-white mb-4">قائمة الأقسام</h2>
 
       {loading ? (
         <div className="flex justify-center items-center py-12">
-          <Loader2 className="animate-spin w-10 h-10 text-amber-500" />
+          <Loader2 className="animate-spin w-10 h-10 text-amber-500" aria-label="جارٍ التحميل" />
         </div>
       ) : parts.length === 0 ? (
-        <p className="text-center text-gray-300 text-lg py-12">لا توجد أقسام مضافة بعد.</p>
+        <p className="text-center text-gray-300 text-lg py-12" role="alert">
+          لا توجد أقسام مضافة بعد.
+        </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <AnimatePresence>
@@ -137,6 +146,7 @@ const PartsList = () => {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           className="bg-amber-600 text-white px-5 py-2 rounded-full text-sm font-medium shadow hover:bg-amber-700 transition-colors duration-200"
+                          aria-label={`عرض قسم ${part}`}
                         >
                           عرض القسم
                         </motion.button>
@@ -148,6 +158,7 @@ const PartsList = () => {
                             whileTap={{ scale: 0.95 }}
                             onClick={() => openEditDialog(part)}
                             className="bg-green-600 text-white px-3 py-2 rounded-full text-sm font-medium shadow hover:bg-green-700 transition-colors duration-200"
+                            aria-label={`تعديل قسم ${part}`}
                           >
                             <Edit2 className="w-5 h-5" />
                           </motion.button>
@@ -156,6 +167,7 @@ const PartsList = () => {
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setShowConfirm(part)}
                             className="bg-red-600 text-white px-3 py-2 rounded-full text-sm font-medium shadow hover:bg-red-700 transition-colors duration-200"
+                            aria-label={`حذف قسم ${part}`}
                           >
                             <Trash2 className="w-5 h-5" />
                           </motion.button>
@@ -179,6 +191,7 @@ const PartsList = () => {
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handleDelete(part)}
                             className="bg-red-600 text-white px-4 py-2 rounded-full text-sm shadow hover:bg-red-700 transition-colors"
+                            aria-label={`تأكيد حذف قسم ${part}`}
                           >
                             نعم، احذف
                           </motion.button>
@@ -187,6 +200,7 @@ const PartsList = () => {
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setShowConfirm(null)}
                             className="bg-gray-600 text-white px-4 py-2 rounded-full text-sm shadow hover:bg-gray-700 transition-colors"
+                            aria-label="إلغاء الحذف"
                           >
                             إلغاء
                           </motion.button>
@@ -222,15 +236,21 @@ const PartsList = () => {
                 onChange={(e) => setNewPartName(e.target.value)}
                 className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                 placeholder="أدخل الاسم الجديد"
+                aria-describedby={error ? 'edit-error' : undefined}
               />
             </div>
-            {error && <p className="text-red-500 mb-4">{error}</p>}
+            {error && (
+              <p id="edit-error" className="text-red-500 mb-4" role="alert">
+                {error}
+              </p>
+            )}
             <div className="flex justify-end gap-4">
               <motion.button
                 onClick={() => setShowEditDialog(null)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700"
+                aria-label="إلغاء تعديل اسم القسم"
               >
                 إلغاء
               </motion.button>
@@ -239,6 +259,7 @@ const PartsList = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700"
+                aria-label="حفظ الاسم الجديد للقسم"
               >
                 حفظ
               </motion.button>

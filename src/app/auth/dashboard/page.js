@@ -13,6 +13,8 @@ import AdminBranchesManager from '@/components/AdminBranchesManager';
 import UserManager from '@/components/UserManager';
 import ChangePassword from '@/components/ChangePassword';
 import QRCodeGenerator from '@/components/QRCodeGenerator';
+import SendNotificationPanel from '@/components/SendNotificationPanel';
+
 
 
 
@@ -124,7 +126,15 @@ export default function Dashboard() {
           <SocialLinksManager />
         </motion.div>
 
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 1.2 }}
+          className="bg-gray-800 rounded-2xl shadow-xl p-6 md:col-span-2"
+        >
 
+        <SendNotificationPanel />
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, x: 50 }}
@@ -164,6 +174,7 @@ export default function Dashboard() {
         >
           <ChangePassword />
         </motion.div>
+
 
         <motion.div
           initial={{ opacity: 0, x: 50 }}

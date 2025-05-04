@@ -1,18 +1,17 @@
 /** @type {import('next').NextConfig} */
 const withPWA = require('next-pwa')({
-  dest: 'public', // مكان تخزين ملفات Service Worker
-  disable: process.env.NODE_ENV === 'development', // تعطيل PWA في وضع التطوير
-  register: true, // تسجيل Service Worker تلقائيًا
-  skipWaiting: true, // تخطي مرحلة الانتظار لتفعيل Service Worker
+  dest: 'public',
+  disable: process.env.NODE_ENV === 'development',
+  register: true,
+  skipWaiting: true,
 });
 
 const nextConfig = {
   eslint: {
-    // تعطيل قواعد ESLint أثناء البناء
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: ['via.placeholder.com'], // إضافة النطاق
+    domains: ['via.placeholder.com'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -25,7 +24,7 @@ const nextConfig = {
         hostname: 'via.placeholder.com',
         port: '',
         pathname: '/**',
-      }, // إضافة via.placeholder.com كـ remotePattern لضمان التوافق
+      },
     ],
   },
 };

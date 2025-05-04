@@ -29,7 +29,6 @@ interface Category {
 const CACHE_DURATION = 60 * 60 * 1000;
 
 const fetcher = async () => {
-  console.log("جلب البيانات من Firestore...");
   try {
     const menuPartsRef = collection(db, "menuParts");
     const snapshot = await getDocs(menuPartsRef);
@@ -65,7 +64,7 @@ const fetcher = async () => {
 
     // تخزين البيانات في localStorage
     if (typeof window !== "undefined") {
-      console.log("تخزين البيانات في localStorage:", sortedData);
+
       localStorage.setItem("menuData", JSON.stringify(sortedData));
       localStorage.setItem("menuDataTimestamp", new Date().getTime().toString());
     }
@@ -89,7 +88,7 @@ const Menu = () => {
       const currentTime = new Date().getTime();
 
       if (cachedData && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < CACHE_DURATION) {
-        console.log("استخدام البيانات المخزنة من localStorage:", JSON.parse(cachedData));
+
         setInitialData(JSON.parse(cachedData));
         setIsCacheValid(true);
       } else {
@@ -106,9 +105,6 @@ const Menu = () => {
     keepPreviousData: true,
     fallbackData: initialData,
   });
-
-  console.log("حالة SWR:", { isLoading, error, categories });
-  console.log("Categories sectionIds:", categories?.map((cat) => cat.id));
 
   return (
     <>
