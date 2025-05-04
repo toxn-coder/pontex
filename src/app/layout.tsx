@@ -104,6 +104,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ar" dir="rtl">
       <head>
         <title>والي دمشق - أفضل شاورما سورية أصلية</title>
+        <link rel='icon' href='/favicon.ico' sizes='any' />
         {/* روابط تحسين الأداء للخطوط */}
         <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -116,7 +117,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700&display=swap"
           rel="stylesheet"
         />
-        <link rel='icon' href='/favicon.ico' sizes='any' />
         {/* Preconnect لتحسين الأداء */}
         <link rel="preconnect" href="https://firestore.googleapis.com" />
         <link rel="preconnect" href="https://waly-damascus.vercel.app" />
