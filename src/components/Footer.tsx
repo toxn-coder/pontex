@@ -188,7 +188,7 @@ const Footer = () => {
             <ul className="space-y-4">
               <li className="flex items-center justify-center md:justify-start gap-2">
                 <MapPin className="text-amber-400" size={18} />
-                <span> كفر الشيخ -شارع إبراهيم المغازي تقسيم 2 أمام بيتزا بان</span>
+                <span> القاهرة، مصر - شارع 123</span>
               </li>
               {contactInfo.phones && contactInfo.phones.length > 0 && (
                 <li className="flex items-center justify-center md:justify-start gap-2">
@@ -223,7 +223,7 @@ const Footer = () => {
 
       <div className="bg-[var(--clr-dark-red)] py-4">
         <div className="container mx-auto px-4 text-center">
-          <p>جميع الحقوق محفوظة © {new Date().getFullYear()} مطعم والي دمشق</p>
+          <p>جميع الحقوق محفوظة © {new Date().getFullYear()} مطعم  سام مطعمك</p>
         </div>
       </div>
     </footer>

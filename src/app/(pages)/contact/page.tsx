@@ -73,24 +73,24 @@ export default function ContactUs() {
 
   console.log('حالة SWR:', { isLoading, error, contactInfo });
 
-  const address = 'كفر الشيخ - شارع إبراهيم المغازي تقسيم 2 أمام - بيتزا بان';
+  const address = 'القاهرة  - شارع إبراهيم المغازي تقسيم 2 أمام - بيتزا بان';
   const googleMapsLink =
     'https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3415.825274839317!2d30.949543684859268!3d31.114587981505714!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMzHCsDA2JzUyLjUiTiAzMMKwNTYnNTAuNSJF!5e0!3m2!1sar!2seg!4v1746256990189!5m2!1sar!2seg';
 
   return (
     <div className="min-h-screen bg-[var(--clr-primary)] py-12 px-4">
       <Head>
-        <title>اتصل بنا - مطعم والي دمشق</title>
+        <title>اتصل بنا - مطعم اسم مطعمك</title>
         <meta
           name="description"
           content="تواصلوا معنا عبر الهاتف أو زورونا في موقعنا. نحن هنا لخدمتكم!"
         />
         <meta
           name="keywords"
-          content="مطعم شاورما, كفر الشيخ, اتصل بنا, خدمة العملاء"
+          content="مطعم شاورما, القاهرة , اتصل بنا, خدمة العملاء"
         />
         <meta name="robots" content="index, follow" />
-        <meta property="og:title" content="اتصل بنا - مطعم والي دمشق" />
+        <meta property="og:title" content="اتصل بنا - مطعم اسم مطعمك" />
         <meta
           property="og:description"
           content="تواصلوا معنا عبر الهاتف أو زورونا في موقعنا. نحن هنا لخدمتكم!"

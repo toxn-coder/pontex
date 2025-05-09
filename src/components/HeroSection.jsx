@@ -4,10 +4,10 @@ import { ArrowRight, Clock, Star, MapPin } from 'lucide-react';
 import Link from 'next/link';
 
 const HeroSection = ({ 
-  restaurantName = "والي دمشق", 
-  slogan = "المذاق الأصيل للمأكولات السورية",
+  restaurantName = "اسم مطعمك", 
+  slogan = "المذاق الأصيل  ",
   rating = "4.8",
-  address = " كفر الشيخ - شارع إبراهيم المغازي تقسيم 2 أمام - بيتزا بان",
+  address = "القاهرة، مصر - شارع 123",
   openingHours = "صباحاً 8:00 - 4:00 الفجر",
   buttonText = "عرض القائمة"
 }) => {

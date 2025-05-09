@@ -10,28 +10,28 @@ import NotificationListener from '@/components/NotificationListener';
 
 
 export const metadata: Metadata = {
-  title: ' والي دمشق - أفضل شاورما سورية أصلية في المدينة',
+  title: ' اسم مطعمك - أفضل شاورما القاهرة أصلية في المدينة',
   description:
-    'استمتع بأفضل شاورما سورية أصلية في والي دمشق. تصفح قائمتنا، اطلب الآن، واستمتع بمذاق الشاورما الحقيقي!',
-  keywords: 'شاورما, شاورما سورية, مطعم شاورما, أفضل شاورما, طعام سوري, مطاعم المدينة',
-  authors: [{ name: 'والي دمشق' }],
+    'استمتع بأفضل شاورما القاهرة أصلية في اسم مطعمك. تصفح قائمتنا، اطلب الآن، واستمتع بمذاق الشاورما الحقيقي!',
+  keywords: 'شاورما, شاورما القاهرة, مطعم شاورما, أفضل شاورما, طعام سوري, مطاعم المدينة',
+  authors: [{ name: 'اسم مطعمك' }],
   icons: {
     icon: '/ios/192.png',
     shortcut: '/ios/192.png',
     apple: '/ios/192.png',
   },
   openGraph: {
-    title: 'والي دمشق - أفضل شاورما سورية أصلية',
+    title: 'اسم مطعمك - أفضل شاورما القاهرة أصلية',
     description:
-      'استمتع بأفضل شاورما سورية أصلية في والي دمشق. تصفح قائمتنا، اطلب الآن، واستمتع بمذاق الشاورما الحقيقي!',
+      'استمتع بأفضل شاورما القاهرة أصلية في اسم مطعمك. تصفح قائمتنا، اطلب الآن، واستمتع بمذاق الشاورما الحقيقي!',
     url: 'https://waly-damascus.vercel.app',
-    siteName: 'والي دمشق',
+    siteName: 'اسم مطعمك',
     images: [
       {
         url: 'https://waly-damascus.vercel.app/logo.png',
         width: 1200,
         height: 630,
-        alt: 'شاورما سورية أصلية من والي دمشق',
+        alt: 'شاورما القاهرة أصلية من اسم مطعمك',
       },
     ],
     locale: 'ar',
@@ -39,9 +39,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'والي دمشق - أفضل شاورما سورية أصلية',
+    title: 'اسم مطعمك - أفضل شاورما القاهرة أصلية',
     description:
-      'استمتع بأفضل شاورما سورية أصلية في والي دمشق. تصفح قائمتنا، اطلب الآن، واستمتع بمذاق الشاورما الحقيقي!',
+      'استمتع بأفضل شاورما القاهرة أصلية في اسم مطعمك. تصفح قائمتنا، اطلب الآن، واستمتع بمذاق الشاورما الحقيقي!',
     images: ['https://waly-damascus.vercel.app/logo.png',],
     site: '@waly-semashk',
     creator: '@waly-semashk',
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'والي دمشق',
+    title: 'اسم مطعمك',
     startupImage: [
       '/android/android-launchericon-192-192.png',
     ],
@@ -78,8 +78,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Restaurant',
-    name: 'والي دمشق',
-    description: 'أفضل شاورما سورية أصلية في المدينة، تقدم مجموعة متنوعة من الشاورما والوجبات السورية.',
+    name: 'اسم مطعمك',
+    description: 'أفضل شاورما القاهرة أصلية في المدينة، تقدم مجموعة متنوعة من الشاورما والوجبات السورية.',
     url: 'https://waly-damascus.vercel.app',
     logo: 'https://waly-damascus.vercel.app/logo.png',
     image: 'https://waly-damascus.vercel.app/logo.png',
@@ -87,14 +87,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     address: {
       '@type': 'PostalAddress',
       streetAddress: 'شارع إبراهيم المغازي تقسيم 2 أمام بيتزا بان',
-      addressLocality: 'كفر الشيخ',
-      addressRegion: 'كفر الشيخ',
+      addressLocality: 'القاهرة',
+      addressRegion: 'القاهرة',
       postalCode: '33511',
       addressCountry: 'EG',
 
     },
     openingHours: 'Mo-Su 11:00-23:00',
-    servesCuisine: 'سورية',
+    servesCuisine: 'القاهرة',
     priceRange: '$$',
     acceptsReservations: 'false',
     hasMenu: 'https://waly-damascus.vercel.app/menu',
@@ -103,7 +103,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ar" dir="rtl">
       <head>
-        <title>والي دمشق - أفضل شاورما سورية أصلية</title>
+        <title>اسم مطعمك - أفضل شاورما القاهرة أصلية</title>
         <link rel='icon' href='/favicon.ico' sizes='any' />
         {/* روابط تحسين الأداء للخطوط */}
         <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />

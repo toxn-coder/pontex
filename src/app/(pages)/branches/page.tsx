@@ -35,13 +35,13 @@ export default async function BranchesPage() {
   return (
     <div className="min-h-screen bg-[var(--clr-primary)] py-8 px-4 sm:px-6" dir="rtl">
       <Head>
-        <title>فروع مطعم والي دمشق</title>
+        <title>فروع مطعم اسم مطعمك</title>
         <meta
           name="description"
-          content="تعرف على فروع مطعم والي دمشق، مواقعها، أرقام التواصل، وساعات العمل."
+          content="تعرف على فروع مطعم اسم مطعمك، مواقعها، أرقام التواصل، وساعات العمل."
         />
-        <meta name="keywords" content="فروع, مطعم والي دمشق, شاورما, أكل سوري" />
-        <meta property="og:title" content="فروع مطعم والي دمشق" />
+        <meta name="keywords" content="فروع, مطعم اسم مطعمك, شاورما,  " />
+        <meta property="og:title" content="فروع مطعم اسم مطعمك" />
         <meta
           property="og:description"
           content="تعرف على فروع مطعم والي دمشق، مواقعها، أرقام التواصل، وساعات العمل."
@@ -63,7 +63,7 @@ export default async function BranchesPage() {
         </Link>
 
         <h1 className="text-3xl sm:text-4xl font-bold text-white mb-8 text-center">
-          فروع <span className="text-yellow-500">مطعم والي دمشق</span>
+          فروع <span className="text-yellow-500">مطعم اسم مطعمك</span>
         </h1>
 
         {branchesList.length === 0 ? (
