@@ -27,7 +27,7 @@ export default function BestSellersManager() {
         setCurrentUserRole(userData.userRole || '');
 
         // جلب جميع الأقسام من menuParts
-        const menuPartsCollection = collection(db, 'menuParts');
+        const menuPartsCollection = collection(db, 'Parts');
         const menuPartsSnapshot = await getDocs(menuPartsCollection);
         const productsList = [];
 
@@ -48,7 +48,7 @@ export default function BestSellersManager() {
         setAllProducts(productsList);
 
         // جلب المنتجات الأكثر مبيعًا من وثيقة "الأكثر مبيعًا" في menuParts
-        const bestSellersDocRef = doc(db, 'menuParts', 'الأكثر مبيعًا');
+        const bestSellersDocRef = doc(db, 'Parts', 'الأكثر مبيعًا');
         const bestSellersDoc = await getDoc(bestSellersDocRef);
         if (bestSellersDoc.exists()) {
           const data = bestSellersDoc.data();
@@ -84,7 +84,7 @@ export default function BestSellersManager() {
 
       // إضافة المنتج إلى الأكثر مبيعًا
       const updatedBestSellers = [...bestSellers, product];
-      const bestSellersDocRef = doc(db, 'menuParts', 'الأكثر مبيعًا');
+      const bestSellersDocRef = doc(db, 'Parts', 'الأكثر مبيعًا');
       await setDoc(bestSellersDocRef, { products: updatedBestSellers }, { merge: true });
 
       setBestSellers(updatedBestSellers);
@@ -104,7 +104,7 @@ export default function BestSellersManager() {
       const updatedBestSellers = bestSellers.filter(
         (item) => !(item.name === productToRemove.name && item.sectionId === productToRemove.sectionId)
       );
-      const bestSellersDocRef = doc(db, 'menuParts', 'الأكثر مبيعًا');
+      const bestSellersDocRef = doc(db, 'Parts', 'الأكثر مبيعًا');
       await setDoc(bestSellersDocRef, { products: updatedBestSellers }, { merge: true });
 
       setBestSellers(updatedBestSellers);

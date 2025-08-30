@@ -2,15 +2,18 @@
 import Image from 'next/image';
 import { ArrowRight, Clock, Star, MapPin } from 'lucide-react';
 import Link from 'next/link';
+import {loadInfoApp} from './infoApp';
 
+const infoApp = await loadInfoApp();
 const HeroSection = ({ 
-  restaurantName = "اسم مطعمك", 
-  slogan = "المذاق الأصيل  ",
+  restaurantName = infoApp.name, 
+  slogan = " تسوق افضل المنتجات",
   rating = "4.8",
   address = "القاهرة، مصر - شارع 123",
   openingHours = "صباحاً 8:00 - 4:00 الفجر",
-  buttonText = "عرض القائمة"
+  buttonText = "تسوق الآن",
 }) => {
+
   return (
     <div className="relative overflow-hidden bg-[var(--clr-primary)] text-white">
       {/* Overlay Pattern */}
@@ -52,7 +55,7 @@ const HeroSection = ({
             </div>
             
             <div className="flex gap-4 justify-center lg:justify-end">
-              <Link href="/menu" >
+              <Link href="/products" >
               <button className="bg-amber-500 hover:bg-amber-600 text-white py-3 px-8 rounded-lg font-bold transition-all shadow-lg hover:shadow-xl flex items-center">
                 {buttonText}
                 <ArrowRight className="mr-2" size={20} />
@@ -65,10 +68,10 @@ const HeroSection = ({
           <div className="w-full lg:w-1/2 relative">
             <div className="relative w-full h-64 md:h-96 lg:h-auto aspect-square mx-auto lg:max-w-lg">
               {/* Main circular image */}
-              <div className="absolute inset-0 bg-amber-600 rounded-full overflow-hidden border-8 border-amber-800/30 shadow-2xl">
+              <div className="absolute inset-0 bg-whait rounded-full overflow-hidden border-8 border-dashed  border-amber-600 shadow-2xl ">
                 {/* Main Image */}
                 <Image 
-                  src="https://res.cloudinary.com/do88eynar/image/upload/v1746271921/e14qia4giv8mc2lhndtv.webp" 
+                  src={infoApp.imageHero} 
                   alt="طبق شهي من مطعمنا" 
                   fill
                   style={{ objectFit: 'cover' }}

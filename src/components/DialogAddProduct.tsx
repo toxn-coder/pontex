@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '@/app/api/firebase';
-import { Plus } from 'lucide-react';
+import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import { motion } from 'framer-motion';
-import { toast } from 'sonner';
+import { Plus } from 'lucide-react';
 import Image from 'next/image';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid'; // استيراد uuid لإنشاء معرفات فريدة
 
 // تعريف واجهة للخاصيات (props)
@@ -91,7 +91,7 @@ export default function DialogAddProduct({ sectionId }: DialogAddProductProps) {
         // بديل بدون uuid: id: `${formData.name}-${Date.now()}`
       };
 
-      const ref = doc(db, 'menuParts', sectionId);
+      const ref = doc(db, 'Parts', sectionId);
       await updateDoc(ref, {
         products: arrayUnion(productWithId),
       });

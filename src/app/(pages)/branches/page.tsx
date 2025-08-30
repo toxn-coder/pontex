@@ -1,9 +1,10 @@
-import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/app/api/firebase';
+import BranchFilter from '@/components/BranchFilter';
+import { loadInfoApp } from '@/components/infoApp';
+import ProgressAnim from '@/components/ProgressAnim';
+import { collection, getDocs } from 'firebase/firestore';
 import Head from 'next/head';
 import Link from 'next/link';
-import ProgressAnim from '@/components/ProgressAnim';
-import BranchFilter from '@/components/BranchFilter';
 
 // واجهة الفروع
 interface Branch {
@@ -16,6 +17,7 @@ interface Branch {
 }
 
 export default async function BranchesPage() {
+  const infoApp = await loadInfoApp();
   // جلب بيانات الفروع من Firestore
   const branchesCollection = collection(db, 'branches');
   const branchesSnapshot = await getDocs(branchesCollection);
@@ -35,7 +37,7 @@ export default async function BranchesPage() {
   return (
     <div className="min-h-screen bg-[var(--clr-primary)] py-8 px-4 sm:px-6" dir="rtl">
       <Head>
-        <title>فروع مطعم اسم مطعمك</title>
+        <title>فروع {infoApp.name}</title>
         <meta
           name="description"
           content="تعرف على فروع مطعم اسم مطعمك، مواقعها، أرقام التواصل، وساعات العمل."
@@ -63,7 +65,7 @@ export default async function BranchesPage() {
         </Link>
 
         <h1 className="text-3xl sm:text-4xl font-bold text-white mb-8 text-center">
-          فروع <span className="text-yellow-500">مطعم اسم مطعمك</span>
+          فروع <span className="text-yellow-500">{infoApp.name}</span>
         </h1>
 
         {branchesList.length === 0 ? (

@@ -17,7 +17,7 @@ interface Meal {
   name: string;
   description: string;
   image: string;
-  price: string;
+  price: string | number;
   rating: string | number;
 }
 
@@ -59,7 +59,6 @@ export default function MealSlider({ auto = false, title, products = [], section
     }
   };
 
-
   return (
     <div className="max-w-6xl mx-auto py-12 px-4 bg-[var(--clr-primary)] rounded-xl shadow-2xl my-10 relative overflow-hidden">
       <div className="relative z-10">
@@ -71,9 +70,7 @@ export default function MealSlider({ auto = false, title, products = [], section
             <button
               ref={prevRef}
               className={`p-2 rounded-lg shadow-md transition text-white ${
-                isPrevDisabled
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-yellow-600 hover:bg-yellow-500'
+                isPrevDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-yellow-600 hover:bg-yellow-500'
               }`}
               disabled={isPrevDisabled}
               aria-disabled={isPrevDisabled}
@@ -83,9 +80,7 @@ export default function MealSlider({ auto = false, title, products = [], section
             <button
               ref={nextRef}
               className={`p-2 rounded-lg shadow-md transition text-white ${
-                isNextDisabled
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-yellow-600 hover:bg-yellow-500'
+                isNextDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-yellow-600 hover:bg-yellow-500'
               }`}
               disabled={isNextDisabled}
               aria-disabled={isNextDisabled}
@@ -121,32 +116,32 @@ export default function MealSlider({ auto = false, title, products = [], section
           }}
           className="py-10"
         >
-          {products.map((meal) => {
+          {products.map((meal, index) => {
             const name = meal.name || 'بدون اسم';
             const description = meal.description || 'لا يوجد وصف';
             const image = meal.image && meal.image.trim() !== '' ? meal.image : '/placeholder.svg';
-            const price = meal.price || 'غير محدد';
-            const rating = meal.rating || 4.0;
+            const price = Number(meal.price) || 0;
+            const rating = Number(meal.rating) || 4.0;
 
             const link = sectionId ? `/menu/${encodeURIComponent(sectionId)}/${meal.id}` : '#';
-            
 
             return (
               <SwiperSlide key={meal.id}>
                 <Link href={link} className="block" aria-label={`عرض تفاصيل ${name}`}>
                   <div className="bg-[var(--background)] rounded-2xl overflow-hidden transition-all duration-300 group h-full flex flex-col border border-[var(--secondry)]">
-                    <div className="relative overflow-hidden">
+                    <div className="relative w-full h-56 overflow-hidden">
                       <Image
                         src={image}
                         alt={name}
-                        width={400}
-                        height={224}
-                        className="w-full h-56 object-cover transform group-hover:scale-110 transition-transform duration-500"
-                        priority={products.indexOf(meal) === 0}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 400px"
+                        className="object-cover transform group-hover:scale-110 transition-transform duration-500"
+                        priority={index === 0}
+                        loading={index === 0 ? 'eager' : 'lazy'}
                       />
                       <div className="absolute top-3 right-3 bg-yellow-600 text-white rounded-full px-2 py-1 text-xs font-bold flex items-center gap-1">
                         <Star className="w-3 h-3 fill-white" />
-                        {rating}
+                        {rating.toFixed(1)}
                       </div>
                     </div>
 
@@ -163,7 +158,7 @@ export default function MealSlider({ auto = false, title, products = [], section
                               ...meal,
                               id: meal.id,
                               quantity: 1,
-                              price: Number(meal.price) || 0,
+                              price,
                             });
                           }}
                           className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center gap-2 transform hover:scale-105"
@@ -183,9 +178,7 @@ export default function MealSlider({ auto = false, title, products = [], section
         <button
           ref={mobilePrevRef}
           className={`absolute top-1/2 -translate-y-1/2 left-2 p-3 rounded-full shadow-md transition text-white z-20 sm:hidden ${
-            isPrevDisabled
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-yellow-600 hover:bg-yellow-500'
+            isPrevDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-yellow-600 hover:bg-yellow-500'
           }`}
           disabled={isPrevDisabled}
           aria-disabled={isPrevDisabled}
@@ -195,9 +188,7 @@ export default function MealSlider({ auto = false, title, products = [], section
         <button
           ref={mobileNextRef}
           className={`absolute top-1/2 -translate-y-1/2 right-2 p-3 rounded-full shadow-md transition text-white z-20 sm:hidden ${
-            isNextDisabled
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-yellow-600 hover:bg-yellow-500'
+            isNextDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-yellow-600 hover:bg-yellow-500'
           }`}
           disabled={isNextDisabled}
           aria-disabled={isNextDisabled}

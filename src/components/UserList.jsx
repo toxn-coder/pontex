@@ -91,47 +91,48 @@ export default function UserList({ users, currentUserId, loading, refreshUsers }
           <p className="text-gray-300">لا يوجد مستخدمون</p>
         ) : (
           <div className="space-y-4">
-            {users.map(user => (
-              <motion.div
-                key={user.uid}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="flex justify-between items-center bg-gray-700 p-4 rounded-lg"
-              >
-                <div className="flex items-center gap-2">
-                  <div>
-                    <p className="text-white">
-                      البريد: {user.email}
-                      {user.uid === currentUserId && (
-                        <span className="text-green-500 font-semibold mr-2"> (أنت)</span>
-                      )}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <label className="text-gray-300">الدور:</label>
-                      <select
-                        value={user.role}
-                        onChange={(e) => handleChangeRole(user.uid, e.target.value)}
-                        className="bg-gray-600 text-white rounded px-2 py-1 focus:outline-none"
-                        disabled={user.uid === currentUserId}
-                      >
-                        <option value="admin">مدير</option>
-                        <option value="supervisor">مشرف</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <motion.button
-                  onClick={() => openDeleteDialog(user)}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="text-red-500 hover:text-red-700"
-                  disabled={user.uid === currentUserId}
-                >
-                  <Trash2 className="w-5 h-5" />
-                </motion.button>
-              </motion.div>
-            ))}
+            {users.map((user, index) => (
+  <motion.div
+    key={user.uid || `user-${index}`}
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.3 }}
+    className="flex justify-between items-center bg-gray-700 p-4 rounded-lg"
+  >
+    <div className="flex items-center gap-2">
+      <div>
+        <p className="text-white">
+          البريد: {user.email}
+          {user.uid === currentUserId && (
+            <span className="text-green-500 font-semibold mr-2"> (أنت)</span>
+          )}
+        </p>
+        <div className="flex items-center gap-2">
+          <label className="text-gray-300">الدور:</label>
+          <select
+            value={user.role}
+            onChange={(e) => handleChangeRole(user.uid, e.target.value)}
+            className="bg-gray-600 text-white rounded px-2 py-1 focus:outline-none"
+            disabled={user.uid === currentUserId}
+          >
+            <option value="admin">مدير</option>
+            <option value="supervisor">مشرف</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <motion.button
+      onClick={() => openDeleteDialog(user)}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.9 }}
+      className="text-red-500 hover:text-red-700"
+      disabled={user.uid === currentUserId}
+    >
+      <Trash2 className="w-5 h-5" />
+    </motion.button>
+  </motion.div>
+))}
+
           </div>
         )}
         {localError && <p className="text-red-500 mt-2">{localError}</p>}

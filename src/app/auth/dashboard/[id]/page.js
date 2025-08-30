@@ -14,7 +14,6 @@ export default async function Page({ params }) {
     return <div className="p-4 text-red-500 text-center">لم يتم العثور على القسم المطلوب</div>;
   }
 
-  const data = docSnap.data();
 
   // إذا كان القسم هو "الأكثر مبيعًا"، نعرض BestSellersManager فقط
   if (decodedId === 'الأكثر مبيعًا') {

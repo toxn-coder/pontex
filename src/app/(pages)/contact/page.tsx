@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { Phone, MapPin, Facebook, Instagram, Twitter, MessageCircle } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { db } from '@/app/api/firebase';
-import { doc, getDoc, DocumentData } from 'firebase/firestore';
-import Head from 'next/head';
 import ProgressAnim from '@/components/ProgressAnim';
+import { doc, DocumentData, getDoc } from 'firebase/firestore';
+import { motion } from 'framer-motion';
+import { Facebook, Instagram, MapPin, MessageCircle, Phone, Twitter } from 'lucide-react';
+import Head from 'next/head';
+import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 
 // واجهة لنوع البيانات المتوقع من Firestore
@@ -22,7 +22,6 @@ interface ContactInfo {
 const CACHE_DURATION = 60 * 60 * 1000;
 
 const fetcher = async () => {
-  console.log('جلب معلومات الاتصال من Firebase...');
   const docRef = doc(db, 'settings', 'contactInfo');
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
@@ -56,7 +55,6 @@ export default function ContactUs() {
     const currentTime = new Date().getTime();
 
     if (cachedData && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < CACHE_DURATION) {
-      console.log('استخدام البيانات المخزنة من localStorage');
       setInitialData(JSON.parse(cachedData));
       setIsCacheValid(true);
     }
@@ -71,7 +69,6 @@ export default function ContactUs() {
     fallbackData: initialData, // استخدام البيانات المخزنة كبيانات أولية
   });
 
-  console.log('حالة SWR:', { isLoading, error, contactInfo });
 
   const address = 'القاهرة  - شارع إبراهيم المغازي تقسيم 2 أمام - بيتزا بان';
   const googleMapsLink =
@@ -121,7 +118,7 @@ export default function ContactUs() {
         {isLoading && !contactInfo ? (
           <ProgressAnim />
         ) : error ? (
-          <p className="text-center text-red-400 text-lg">{error.message}</p>
+          <p className="text-center text-red-400 text-lg">لايوجد بيانات متاحة لعرضها</p>
         ) : !contactInfo ||
           (!contactInfo.phones.length &&
             !contactInfo.facebook &&
@@ -152,7 +149,7 @@ export default function ContactUs() {
                     <Phone className="w-6 h-6 text-yellow-600" />
                     <div className="flex flex-col gap-2">
                       <p className="text-sm text-gray-600">رقم الهاتف</p>
-                      {contactInfo.phones.map((phone, index) => (
+                      {contactInfo.phones.map((phone) => (
                         <a
                           href={`tel:${phone}`}
                           key={phone} // استخدام رقم الهاتف كمفتاح فريد

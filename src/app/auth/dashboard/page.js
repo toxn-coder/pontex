@@ -1,19 +1,21 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { LogOut } from 'lucide-react';
-import { signOut } from 'firebase/auth';
 import { auth } from '@/app/api/firebase';
+import AboutEditor from '@/components/AboutEditor';
 import AddPartForm from '@/components/AddPartForm';
-import SocialLinksManager from '@/components/SocialLinksManager';
-import PartsList from '@/components/PartList';
 import AdminBranchesManager from '@/components/AdminBranchesManager';
-import UserManager from '@/components/UserManager';
 import ChangePassword from '@/components/ChangePassword';
+import InfoAppEditor from '@/components/InfoAppEditor';
+import PartsList from '@/components/PartList';
 import QRCodeGenerator from '@/components/QRCodeGenerator';
 import SendNotificationPanel from '@/components/SendNotificationPanel';
+import SocialLinksManager from '@/components/SocialLinksManager';
+import UserManager from '@/components/UserManager';
+import { signOut } from 'firebase/auth';
+import { motion } from 'framer-motion';
+import { LogOut } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 
 
@@ -187,6 +189,22 @@ export default function Dashboard() {
   value={qrCodeValue} 
   size={250}
 />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 1.2 }}
+          className="bg-gray-800 rounded-2xl shadow-xl p-6 md:col-span-2"
+        >
+          <InfoAppEditor/>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 1.2 }}
+          className="bg-gray-800 rounded-2xl shadow-xl p-6 md:col-span-2"
+        >
+          <AboutEditor/>
         </motion.div>
 
       </div>

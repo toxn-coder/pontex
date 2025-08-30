@@ -1,4 +1,3 @@
-export const runtime = 'nodejs';
 import { NextResponse } from 'next/server';
 import { auth } from '@/app/api/firebase-admin';
 import { getFirestore } from 'firebase-admin/firestore';
@@ -14,20 +13,25 @@ export async function POST(request) {
 
     const decodedToken = await auth.verifyIdToken(idToken);
     const uid = decodedToken.uid;
-    const userDoc = await db.collection('users').doc(uid).get();
 
+    const userDoc = await db.collection('users').doc(uid).get();
     if (!userDoc.exists) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     const role = userDoc.data().role;
-    console.log('User UID:', uid, 'Role:', role); // أضف هذا السطر للتسجيل
 
-    if (!['admin', 'supervisor'].includes(role)) {
-      return NextResponse.json({ error: 'Unauthorized role' }, { status: 403 });
-    }
+    // إنشاء الرد مع الكوكي
+    const response = NextResponse.json({ uid, role });
+    response.cookies.set('token', idToken, {
+      httpOnly: true,   // ما ينقراش من JavaScript
+      secure: true,     // ضروري في HTTPS
+      sameSite: 'strict',
+      path: '/',
+      maxAge: 60 * 60 * 24, // يوم كامل
+    });
 
-    return NextResponse.json({ uid, role });
+    return response;
   } catch (error) {
     console.error('Token verification error:', error);
     return NextResponse.json({ error: 'Invalid token' }, { status: 401 });

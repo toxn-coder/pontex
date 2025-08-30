@@ -1,4 +1,4 @@
-'use client';
+ز'use client';
 
 import { useEffect, useState } from 'react';
 import { doc, updateDoc, arrayRemove, arrayUnion, onSnapshot } from 'firebase/firestore';
@@ -45,7 +45,7 @@ export default function ProductList({ sectionId }: ProductListProps) {
     fetchUserData();
 
     const unsubscribe = onSnapshot(
-      doc(db, 'menuParts', sectionId),
+      doc(db, 'Parts', sectionId),
       (snap) => {
         if (snap.exists()) {
           const data = snap.data();
@@ -65,7 +65,7 @@ export default function ProductList({ sectionId }: ProductListProps) {
   const handleDelete = async (product: Product) => {
     setLoading(true);
     try {
-      const ref = doc(db, 'menuParts', sectionId);
+      const ref = doc(db, 'Parts', sectionId);
       await updateDoc(ref, {
         products: arrayRemove(product),
       });

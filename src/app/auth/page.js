@@ -6,6 +6,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/app/api/firebase';
 import { Mail, Lock, LogIn } from 'lucide-react';
 import { motion } from 'framer-motion';
+
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,15 +22,15 @@ export default function Login() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const idToken = await userCredential.user.getIdToken();
-    
+
       const res = await fetch('/api/set-token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ idToken }),
       });
-    
+
       if (res.ok) {
-        router.push('/auth/dashboard'); // ✅ فقط إذا تم حفظ التوكن بنجاح
+        router.push('/auth/dashboard');
       } else {
         const data = await res.json();
         setError(data.error || 'فشل حفظ التوكن.');
@@ -50,13 +51,12 @@ export default function Login() {
     } finally {
       setIsLoading(false);
     }
-    
   };
 
   return (
     <div className="min-h-screen bg-[var(--clr-primary)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <motion.div
-        initial={{ opacity: 0, y: -50 }}
+        initial={false} // ✅ منع الاختلاف وقت SSR
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="max-w-md w-full bg-gray-800 rounded-2xl shadow-xl p-8"
@@ -80,6 +80,7 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="off" // ✅ يمنع إضافات المتصفح من حقن attributes
               className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-yellow-400 focus:border-yellow-400"
               placeholder="example@domain.com"
             />
@@ -95,10 +96,12 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              autoComplete="off" // ✅ نفس الشيء
               className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-yellow-400 focus:border-yellow-400"
               placeholder="••••••••"
             />
           </div>
+
           {error && (
             <motion.p
               initial={{ opacity: 0 }}
@@ -108,6 +111,7 @@ export default function Login() {
               {error}
             </motion.p>
           )}
+
           <motion.button
             type="submit"
             disabled={isLoading}
@@ -137,7 +141,6 @@ export default function Login() {
             )}
           </motion.button>
         </form>
-
       </motion.div>
     </div>
   );

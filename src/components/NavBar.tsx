@@ -1,12 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { db } from '@/app/api/firebase';
 import clsx from 'clsx';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { db } from '@/app/api/firebase';
-import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
-import { Bell } from 'lucide-react'; // أيقونة الجرس
+import { useEffect, useState } from 'react';
 
 interface Notification {
   title: string;
@@ -15,18 +14,21 @@ interface Notification {
   createdAt: any;
 }
 
-export default function Navbar() {
+interface NavbarProps {
+  name: string;
+  logoUrl: string;
+}
+
+export default function Navbar({ name, logoUrl }: NavbarProps) {
   const [scrolling, setScrolling] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [, setNotifications] = useState<Notification[]>([]);
   const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolling(window.scrollY > 50);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -53,7 +55,7 @@ export default function Navbar() {
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="lg:hidden flex flex-col gap-1.5 p-2"
-            aria-label="فتح القائمة"
+            aria-label="منتجاتنا"
           >
             <span className="block w-6 h-0.5 bg-white rounded-full"></span>
             <span className="block w-6 h-0.5 bg-white rounded-full"></span>
@@ -69,10 +71,10 @@ export default function Navbar() {
                 : 'hidden lg:flex'
             )}
           >
-            {[ 
+            {[
               { href: '/', label: 'الرئيسية' },
-              { href: '/menu', label: 'قائمة الطعام' },
-              { href: '/about', label: 'عن المطعم' },
+              { href: '/products', label: 'تسوق' },
+              { href: '/about', label: 'حول' },
               { href: '/contact', label: 'اتصل بنا' },
               { href: '/branches', label: 'الفروع' }
             ].map((link) => (
@@ -92,13 +94,12 @@ export default function Navbar() {
           {/* شعار المطعم */}
           <div
             className={clsx(
-              'text-2xl font-bold flex items-center transition-all duration-300 ease-in-out',
+              'text-2xl font-bold flex items-center transition-all duration-300 ease-in-out gap-2',
               scrolling ? 'scale-95' : 'scale-100'
             )}
           >
-            <span className="text-yellow-500">اسم مطعمك</span>
-            <span className="text-white mx-2">|</span>
-            <span className="text-sm text-gray-300 hidden md:inline-block">أشهى المأكولات </span>
+            <img src={logoUrl} alt={name} className="w-10 h-10 mr-2 rounded object-contain" />
+            <span className="text-yellow-500">{name}</span>
           </div>
         </div>
       </nav>

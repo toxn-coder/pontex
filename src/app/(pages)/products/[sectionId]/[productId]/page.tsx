@@ -1,17 +1,17 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import useSWR from 'swr';
 import { db } from '@/app/api/firebase';
+import { useCart } from '@/app/CartContext';
+import MealSlider from '@/components/MealSlider';
+import ProgressAnim from '@/components/ProgressAnim';
 import { doc, getDoc } from 'firebase/firestore';
+import { ShoppingCart, Star } from 'lucide-react';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Star, ShoppingCart } from 'lucide-react';
-import { useCart } from '@/app/CartContext';
-import ProgressAnim from '@/components/ProgressAnim';
-import MealSlider from '@/components/MealSlider';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 
 // واجهات البيانات
 interface Meal {
@@ -31,13 +31,11 @@ interface Category {
 
 // دالة جلب البيانات
 const fetcher = async ({ sectionId }: { sectionId: string }) => {
-  console.log("جلب البيانات من Firestore لـ sectionId:", sectionId);
   try {
     const docRef = doc(db, 'menuParts', sectionId);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       const data = docSnap.data();
-      console.log("بيانات المستند:", data);
       const meals: Meal[] = (data.products || []).map((meal: Meal) => ({
         id: meal.id || `temp-id-${Math.random().toString(36).substring(2)}`,
         name: meal.name || 'بدون اسم',
@@ -66,7 +64,6 @@ export default function ProductPage() {
   const [initialData, setInitialData] = useState<Category | undefined>(undefined);
   const [isCacheValid, setIsCacheValid] = useState(false);
 
-  console.log("معلمات الرابط:", { rawSectionId, sectionId, productId });
 
   // تحميل البيانات من localStorage
   useEffect(() => {
@@ -76,11 +73,9 @@ export default function ProductPage() {
       const currentTime = new Date().getTime();
 
       if (cachedData && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 60 * 60 * 1000) {
-        console.log("استخدام بيانات localStorage:", JSON.parse(cachedData));
         setInitialData(JSON.parse(cachedData));
         setIsCacheValid(true);
       } else {
-        console.log("لا توجد بيانات مخزنة صالحة لـ:", sectionId);
       }
     }
   }, [sectionId]);
@@ -97,7 +92,6 @@ export default function ProductPage() {
       fallbackData: initialData,
       onSuccess: (data) => {
         if (typeof window !== 'undefined') {
-          console.log("تخزين البيانات في localStorage:", data);
           localStorage.setItem(`category-${sectionId}`, JSON.stringify(data));
           localStorage.setItem(`category-${sectionId}-timestamp`, new Date().getTime().toString());
         }

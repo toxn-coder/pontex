@@ -7,18 +7,21 @@ import { Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 
+
 const AddPartForm = () => {
   const [partName, setPartName] = useState('');
   const [open, setOpen] = useState(false);
 
   const handleAddPart = async () => {
     if (!partName.trim()) {
+    
       toast.error('يرجى إدخال اسم القسم');
       return;
     }
 
+      
     try {
-      await setDoc(doc(collection(db, 'menuParts'), partName), {
+      await setDoc(doc(collection(db, 'Parts'), partName), {
         name: partName,
         createdAt: new Date(),
       });

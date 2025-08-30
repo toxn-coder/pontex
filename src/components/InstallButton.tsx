@@ -1,10 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 const InstallButton = () => {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showButton, setShowButton] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (event: Event) => {
@@ -23,19 +25,20 @@ const InstallButton = () => {
   const handleInstall = () => {
     if (deferredPrompt) {
       deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult: any) => {
-        console.log(choiceResult.outcome);
+      deferredPrompt.userChoice.then(() => {
         setDeferredPrompt(null);
         setShowButton(false);
       });
     }
   };
 
+
+
   return (
     showButton && (
-      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50">
+      <div className={"fixed bottom-5 left-1/2 -translate-x-1/2 z-50 " + (pathname.startsWith('/auth') || pathname.startsWith('/dashboard') ? ' hidden' : '')}>
         <div className="relative w-fit h-fit">
-          {/* حلقات صغيرة بشكل الزر */}
+          {/* حلقات أنيميشن */}
           <span className="absolute top-1/2 left-1/2 w-[70%] h-[70%] bg-green-400 opacity-50 rounded-full -translate-x-1/2 -translate-y-1/2 animate-ping z-0"></span>
           <span className="absolute top-1/2 left-1/2 w-[60%] h-[60%] bg-green-400 opacity-60 rounded-full -translate-x-1/2 -translate-y-1/2 animate-ping delay-200 z-0"></span>
           <span className="absolute top-1/2 left-1/2 w-[50%] h-[50%] bg-green-400 opacity-70 rounded-full -translate-x-1/2 -translate-y-1/2 animate-ping delay-400 z-0"></span>

@@ -33,7 +33,6 @@ const fetcher = async () => {
     const menuPartsRef = collection(db, "menuParts");
     const snapshot = await getDocs(menuPartsRef);
     if (snapshot.empty) {
-      console.log("لا توجد مستندات في menuParts.");
       return [];
     }
 
@@ -92,7 +91,6 @@ const Menu = () => {
         setInitialData(JSON.parse(cachedData));
         setIsCacheValid(true);
       } else {
-        console.log("البيانات المخزنة غير صالحة أو غير موجودة.");
       }
     }
   }, []);
