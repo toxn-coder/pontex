@@ -1,16 +1,17 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { revalidatePath } from 'next/cache'
+import { NextResponse } from 'next/server'
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method Not Allowed' });
-  }
-
+export async function POST(request: Request) {
   try {
     // إلغاء التخزين المؤقت للصفحة الرئيسية (أو أي صفحة تستخدم infoApp)
-    await res.revalidate('/');
-    return res.status(200).json({ message: 'Cache invalidated successfully' });
+    revalidatePath('/')
+    return NextResponse.json({ message: 'Cache invalidated successfully' }, { status: 200 })
   } catch (error) {
-    console.error('خطأ في إلغاء التخزين المؤقت:', error);
-    return res.status(500).json({ message: 'Failed to invalidate cache' });
+    console.error('خطأ في إلغاء التخزين المؤقت:', error)
+    return NextResponse.json({ message: 'Failed to invalidate cache' }, { status: 500 })
   }
+}
+
+export function GET() {
+  return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 })
 }
