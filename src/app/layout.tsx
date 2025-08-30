@@ -36,8 +36,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const appInfo = await loadInfoApp();
 
-  // ✅ هنا بنستخدم headers() جوة الـ async function
-  const headersList = headers();
+  // ✅ لازم await هنا
+  const headersList = await headers();
   const host = headersList.get('host');
   const protocol = headersList.get('x-forwarded-proto') || 'http';
   const fullUrl = `${protocol}://${host}`;

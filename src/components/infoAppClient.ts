@@ -2,7 +2,7 @@ import { db } from "@/app/api/firebase";
 import { InfoAppType } from "@/types/infoAppType";
 import { doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
 
-// استيراد ديناميكي لـ firebase-admin
+// استيراد ديناميكي لـ firebase-admin (للاستخدام على الخادم)
 const getAdminDb = async () => {
   if (typeof window === "undefined") {
     try {
@@ -21,6 +21,7 @@ const DOC_NAME = "main";
 
 let infoApp: InfoAppType | null = null;
 
+// قراءة من localStorage
 const getLocalStorageData = (): InfoAppType | null => {
   if (typeof window === "undefined") return null;
   try {
@@ -32,6 +33,7 @@ const getLocalStorageData = (): InfoAppType | null => {
   }
 };
 
+// حفظ في localStorage
 const saveToLocalStorage = (data: InfoAppType) => {
   if (typeof window !== "undefined") {
     try {
@@ -42,7 +44,7 @@ const saveToLocalStorage = (data: InfoAppType) => {
   }
 };
 
-// جلب البيانات على الخادم
+// ✅ جلب البيانات على الخادم
 export const fetchDataServer = async (): Promise<InfoAppType | null> => {
   try {
     const adminDb = await getAdminDb();
@@ -50,12 +52,12 @@ export const fetchDataServer = async (): Promise<InfoAppType | null> => {
       console.warn("Firebase Admin غير متوفر");
       return null;
     }
+
     const docRef = adminDb.collection(COLLECTION_NAME).doc(DOC_NAME);
     const docSnap = await docRef.get();
 
-    if (docSnap.exists()) {
-      const data = docSnap.data() as InfoAppType;
-      return data;
+    if (docSnap.exists) { // في firebase-admin `exists` عبارة عن property
+      return docSnap.data() as InfoAppType;
     } else {
       console.warn("الوثيقة غير موجودة في Firestore (الخادم)");
       return null;
@@ -66,13 +68,13 @@ export const fetchDataServer = async (): Promise<InfoAppType | null> => {
   }
 };
 
-// جلب البيانات على العميل
+// ✅ جلب البيانات على العميل
 const fetchDataClient = async (): Promise<InfoAppType | null> => {
   try {
     const docRef = doc(db, COLLECTION_NAME, DOC_NAME);
     const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
+    if (docSnap.exists()) { // في firebase/firestore `exists()` عبارة عن دالة
       const data = docSnap.data() as InfoAppType;
       infoApp = data;
       saveToLocalStorage(data);
@@ -87,7 +89,7 @@ const fetchDataClient = async (): Promise<InfoAppType | null> => {
   }
 };
 
-// الاستماع إلى التغييرات
+// ✅ الاستماع للتغييرات
 const listenForChanges = (): void => {
   try {
     const docRef = doc(db, COLLECTION_NAME, DOC_NAME);
@@ -111,7 +113,7 @@ const listenForChanges = (): void => {
   }
 };
 
-// تهيئة البيانات على العميل
+// ✅ تهيئة البيانات على العميل
 export const initInfoApp = async (
   initialData?: InfoAppType
 ): Promise<InfoAppType | null> => {
@@ -131,10 +133,10 @@ export const initInfoApp = async (
     }
 
     const data = await fetchDataClient();
-
     if (data) {
       listenForChanges();
     }
+
     return data;
   } catch (error) {
     console.error("خطأ في تهيئة infoApp:", error);
@@ -142,18 +144,20 @@ export const initInfoApp = async (
   }
 };
 
-// تحديث البيانات في Firestore
+// ✅ تحديث البيانات في Firestore
 export const updateInfoApp = async (newData: InfoAppType): Promise<boolean> => {
   try {
     const docRef = doc(db, COLLECTION_NAME, DOC_NAME);
     await setDoc(docRef, newData, { merge: true });
     infoApp = newData;
     saveToLocalStorage(newData);
-    // إلغاء التخزين المؤقت على الخادم
+
+    // إعادة بناء الكاش في Next.js
     await fetch("/api/revalidate-infoapp", { method: "POST" });
 
     return true;
   } catch (error) {
+    console.error("خطأ في تحديث بيانات Firestore:", error);
     return false;
   }
 };

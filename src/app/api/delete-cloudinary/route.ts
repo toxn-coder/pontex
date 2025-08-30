@@ -7,9 +7,13 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function POST(req) {
+export async function POST(req: Request) { // ✅ عرّفت النوع
   try {
     const { publicId } = await req.json();
+
+    if (!publicId) {
+      return NextResponse.json({ error: "Public ID is required" }, { status: 400 });
+    }
 
     await cloudinary.v2.uploader.destroy(publicId);
 

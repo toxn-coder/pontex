@@ -1,13 +1,25 @@
 'use client';
+import { useEffect, useState } from 'react';
 import { loadInfoApp } from '@/components/infoApp';
 import { motion } from 'framer-motion';
 import Head from 'next/head';
 import Image from 'next/image';
 
-const infoApp = await loadInfoApp();
-
-
 export default function AboutUs() {
+  const [infoApp, setInfoApp] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await loadInfoApp();
+      setInfoApp(data);
+    };
+    fetchData();
+  }, []);
+
+  if (!infoApp) {
+    return <div className="text-white p-12">...جاري التحميل</div>;
+  }
+  
   return (
     <>
       <Head>

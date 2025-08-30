@@ -6,6 +6,11 @@ import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
 import { toast } from 'sonner'
 import { infoApp } from '@/components/infoApp'
 
+// نمدد NotificationOptions عشان ندعم image
+interface ExtendedNotificationOptions extends NotificationOptions {
+  image?: string
+}
+
 const SendNotificationPanel = () => {
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
@@ -35,17 +40,22 @@ const SendNotificationPanel = () => {
     }
     if (Notification.permission === 'granted') {
       try {
-        const n = new Notification(title || 'معاينة إشعار', {
+        const options: ExtendedNotificationOptions = {
           body: body || 'هذا مثال على نص الإشعار',
           icon: iconUrl || (infoApp.logoUrl || '/logo.png'),
           image: imageUrl || undefined,
           tag: tag || undefined,
           requireInteraction,
           silent,
-        })
+        }
+
+        const n = new Notification(title || 'معاينة إشعار', options)
+
         n.onclick = () => {
           const target = url && isValidUrl(url) ? url : '/'
-          const fullUrl = target.startsWith('http') ? target : `${window.location.origin}${target}`
+          const fullUrl = target.startsWith('http')
+            ? target
+            : `${window.location.origin}${target}`
           window.open(fullUrl, '_blank')
         }
       } catch (e) {
@@ -106,7 +116,7 @@ const SendNotificationPanel = () => {
   }
 
   return (
-    <div className=" bg-gray-800 rounded-xl p-6 mt-6" dir="rtl">
+    <div className="bg-gray-800 rounded-xl p-6 mt-6" dir="rtl">
       <h2 className="text-2xl text-white mb-4 font-bold">إرسال إشعار</h2>
       <input
         value={title}
@@ -150,11 +160,19 @@ const SendNotificationPanel = () => {
         />
         <div className="flex items-center gap-4 text-white">
           <label className="flex items-center gap-2">
-            <input type="checkbox" checked={requireInteraction} onChange={(e) => setRequireInteraction(e.target.checked)} />
+            <input
+              type="checkbox"
+              checked={requireInteraction}
+              onChange={(e) => setRequireInteraction(e.target.checked)}
+            />
             يتطلب تفاعل (يبقى مفتوحًا)
           </label>
           <label className="flex items-center gap-2">
-            <input type="checkbox" checked={silent} onChange={(e) => setSilent(e.target.checked)} />
+            <input
+              type="checkbox"
+              checked={silent}
+              onChange={(e) => setSilent(e.target.checked)}
+            />
             صامت
           </label>
         </div>
