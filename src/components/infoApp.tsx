@@ -2,6 +2,7 @@
 import { InfoAppType } from '@/types/infoAppType';
 import { initInfoApp } from './infoAppClient';
 
+
 const defaultInfoApp: InfoAppType = {
   name: 'Ecommerce',
   logoUrl: '/logo.png',

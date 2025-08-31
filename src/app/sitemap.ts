@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://waly-damascus.vercel.app'; // النطاق الفعلي لموقعك
+  const baseUrl = 'https://waly-damascus.vercel.app'; 
 
   return [
     {

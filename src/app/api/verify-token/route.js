@@ -1,3 +1,5 @@
+// src/app/api/verify-token/route.js
+
 import { NextResponse } from 'next/server';
 import { auth } from '@/app/api/firebase-admin';
 import { getFirestore } from 'firebase-admin/firestore';
@@ -21,19 +23,27 @@ export async function POST(request) {
 
     const role = userDoc.data().role;
 
+    const isProduction = process.env.NODE_ENV === 'production';
+    
     // إنشاء الرد مع الكوكي
     const response = NextResponse.json({ uid, role });
+    
     response.cookies.set('token', idToken, {
-      httpOnly: true,   // ما ينقراش من JavaScript
-      secure: true,     // ضروري في HTTPS
-      sameSite: 'strict',
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       path: '/',
-      maxAge: 60 * 60 * 24, // يوم كامل
+      maxAge: 60 * 60 * 24,
     });
 
+    // إضافة headers مهمة
+    response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    
     return response;
   } catch (error) {
     console.error('Token verification error:', error);
     return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
   }
 }
+
+// ===================================================
