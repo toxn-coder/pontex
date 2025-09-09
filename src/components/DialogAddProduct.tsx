@@ -1,22 +1,20 @@
 'use client';
 
 import { db } from '@/app/api/firebase';
-import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
+import { arrayUnion, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { v4 as uuidv4 } from 'uuid'; // استيراد uuid لإنشاء معرفات فريدة
+import { v4 as uuidv4 } from 'uuid';
 
-// تعريف واجهة للخاصيات (props)
 interface DialogAddProductProps {
   sectionId: string;
 }
 
-// تعريف واجهة للمنتج
 interface Product {
-  id: string; // إضافة حقل id
+  id: string;
   name: string;
   price: string;
   image: string;
@@ -30,7 +28,7 @@ export default function DialogAddProduct({ sectionId }: DialogAddProductProps) {
   const [progress, setProgress] = useState(0);
 
   const [formData, setFormData] = useState<Product>({
-    id: '', // تهيئة id كسلسلة فارغة
+    id: '',
     name: '',
     price: '',
     image: '',
@@ -76,7 +74,7 @@ export default function DialogAddProduct({ sectionId }: DialogAddProductProps) {
       };
 
       xhr.send(formDataImage);
-    } catch (error: unknown) {
+    } catch {
       toast.error('حدث خطأ غير متوقع');
       setUploading(false);
     }
@@ -84,17 +82,23 @@ export default function DialogAddProduct({ sectionId }: DialogAddProductProps) {
 
   const handleAddProduct = async () => {
     try {
-      // إنشاء معرف فريد للمنتج
       const productWithId = {
         ...formData,
-        id: uuidv4(), // إضافة id باستخدام uuid
-        // بديل بدون uuid: id: `${formData.name}-${Date.now()}`
+        id: uuidv4(),
       };
 
       const ref = doc(db, 'Parts', sectionId);
-      await updateDoc(ref, {
-        products: arrayUnion(productWithId),
-      });
+      const snap = await getDoc(ref);
+
+      if (snap.exists()) {
+        await updateDoc(ref, {
+          products: arrayUnion(productWithId),
+        });
+      } else {
+        await setDoc(ref, {
+          products: [productWithId],
+        });
+      }
 
       toast.success('تمت إضافة المنتج بنجاح');
       setFormData({ id: '', name: '', price: '', image: '', description: '', rating: 4.8 });
@@ -109,11 +113,7 @@ export default function DialogAddProduct({ sectionId }: DialogAddProductProps) {
     <div className="bg-gray-800 rounded-2xl shadow-xl p-6">
       <h2 className="text-2xl font-bold text-white mb-4">إضافة منتج جديد</h2>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         <motion.button
           onClick={() => setOpen(true)}
           whileHover={{ scale: 1.05 }}
@@ -130,75 +130,79 @@ export default function DialogAddProduct({ sectionId }: DialogAddProductProps) {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
-              className="bg-gray-800 rounded-lg p-6 w-full max-w-md"
+              className="bg-gray-800 rounded-lg w-full max-w-md max-h-[90vh] flex flex-col"
             >
-              <h3 className="text-lg font-semibold text-white mb-2">إضافة منتج جديد</h3>
-              <p className="text-gray-300 mb-4">املأ بيانات المنتج ليتم إضافته إلى القسم.</p>
-
-              <div className="grid gap-4">
-                <input
-                  name="name"
-                  placeholder="اسم المنتج"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-500 placeholder-gray-400"
-                />
-                <input
-                  name="price"
-                  placeholder="السعر"
-                  value={formData.price}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-500 placeholder-gray-400"
-                />
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white file:text-white file:bg-gray-600 file:border-none file:rounded-lg file:px-4 file:py-1"
-                />
-                {uploading && (
-                  <div className="w-full bg-gray-600 rounded-full h-2">
-                    <div
-                      className="bg-amber-500 h-2 rounded-full"
-                      style={{ width: `${progress}%` }}
-                    />
-                  </div>
-                )}
-
-                {formData.image && (
-                  <div className="mt-2">
-                    <Image
-                      src={formData.image}
-                      alt="معاينة الصورة"
-                      width={384}
-                      height={192}
-                      className="object-cover rounded-lg border border-gray-600"
-                    />
-                  </div>
-                )}
-
-                <textarea
-                  name="description"
-                  placeholder="الوصف"
-                  value={formData.description}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-500 placeholder-gray-400"
-                />
-                <select
-                  name="rating"
-                  value={formData.rating}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                >
-                  {Array.from({ length: 9 }, (_, i) => (4.1 + i * 0.1).toFixed(1)).map((rate) => (
-                    <option key={rate} value={rate}>
-                      {rate} ⭐
-                    </option>
-                  ))}
-                </select>
+              {/* رأس الديالوج */}
+              <div className="p-6 border-b border-gray-700">
+                <h3 className="text-lg font-semibold text-white">إضافة منتج جديد</h3>
+                <p className="text-gray-300 text-sm">املأ بيانات المنتج ليتم إضافته إلى القسم.</p>
               </div>
 
-              <div className="flex justify-end gap-4 mt-6">
+              {/* محتوى الديالوج (قابل للتمرير) */}
+              <div className="p-6 overflow-y-auto flex-1">
+                <div className="grid gap-4">
+                  <input
+                    name="name"
+                    placeholder="اسم المنتج"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-500 placeholder-gray-400"
+                  />
+                  <input
+                    name="price"
+                    placeholder="السعر"
+                    value={formData.price}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-500 placeholder-gray-400"
+                  />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white file:text-white file:bg-gray-600 file:border-none file:rounded-lg file:px-4 file:py-1"
+                  />
+                  {uploading && (
+                    <div className="w-full bg-gray-600 rounded-full h-2">
+                      <div className="bg-amber-500 h-2 rounded-full" style={{ width: `${progress}%` }} />
+                    </div>
+                  )}
+
+                  {formData.image && (
+                    <div className="mt-2">
+                      <Image
+                        src={formData.image}
+                        alt="معاينة الصورة"
+                        width={384}
+                        height={192}
+                        className="object-cover rounded-lg border border-gray-600"
+                      />
+                    </div>
+                  )}
+
+                  <textarea
+                    name="description"
+                    placeholder="الوصف"
+                    value={formData.description}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-500 placeholder-gray-400"
+                  />
+                  <select
+                    name="rating"
+                    value={formData.rating}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  >
+                    {Array.from({ length: 9 }, (_, i) => (4.1 + i * 0.1).toFixed(1)).map((rate) => (
+                      <option key={rate} value={rate}>
+                        {rate} ⭐
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* أزرار أسفل الديالوج */}
+              <div className="p-6 border-t border-gray-700 flex justify-end gap-4">
                 <motion.button
                   onClick={() => setOpen(false)}
                   whileHover={{ scale: 1.05 }}

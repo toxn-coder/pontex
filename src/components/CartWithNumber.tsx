@@ -28,7 +28,7 @@ export default function Cart() {
   const { cartItems, totalPrice, totalItems, cartBadgeAnimation, updateQuantity, removeItem } = useCart();
 
   // رقم الهاتف للمكالمة
-  const phoneNumber = 'tel:+201021466987';
+  const phoneNumber = 'tel:+201008711638';
 
   return (
     <>

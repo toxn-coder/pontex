@@ -24,11 +24,11 @@ export default function AboutUs() {
     <>
       <Head>
         <title> حولنا {infoApp.name}</title>
-        <meta name="description" content="تجربة نكهات الوالي دمشقة الأصيلة في مطعم اسم مطعمك في كفر الشيخ، مصر. تعرف على قصتنا ورؤيتنا." />
-        <meta name="keywords" content="شاورما, مطعم شاورما, شاورما سوري, القاهرة, أطعمة سورية" />
-        <meta property="og:title" content="عن مطعم اسم مطعمك" />
-        <meta property="og:description" content="تعرف على مطعم اسم مطعمك في القاهرة وتاريخنا العريق في تقديم أفضل الوالي دمشقة." />
-        <meta property="og:image" content="https://res.cloudinary.com/do88eynar/image/upload/v1745714479/ns9yrv6q59zkil1ccu7z.webp" />
+        <meta name="description" content="متجر الكتروني لبيع المنتجات المميزة" />
+        <meta name="keywords" content="متجر متجر الكنروني لبيع افضل المنتجات" />
+        <meta property="og:title" content="متجر مميز بافضل المنتجات" />
+        <meta property="og:description" content="متجر بيع المنتجات المميزة والافضل" />
+        <meta property="og:image" content="logo.png" />
         <meta property="og:url" content="https://waly-damascus.com/about" />
       </Head>
       

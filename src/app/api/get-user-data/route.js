@@ -2,10 +2,11 @@
 
 export const runtime = 'nodejs';
 import { NextResponse } from 'next/server';
-import { auth } from '@/app/api/firebase-admin';
+import { auth } from '../../../lib/firebase/firebase-admin';
 import { getFirestore } from 'firebase-admin/firestore';
 
 const db = getFirestore();
+
 
 export async function GET(request) {
   try {

@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import { db } from '@/app/api/firebase';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { Instagram, Twitter, Facebook, Send, Mail, Phone, Plus, Save, Trash2 } from 'lucide-react';
+import { Instagram, Twitter, Facebook, Send, Mail, Phone, Plus, Save, Trash2, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 export default function SocialLinksManager() {
   const [socialLinks, setSocialLinks] = useState({
@@ -12,11 +13,13 @@ export default function SocialLinksManager() {
     instagram: '',
     twitter: '',
     facebook: '',
+    googleMapsLink: '',
+    address: '',
   });
   const [phones, setPhones] = useState(['']);
   const [emails, setEmails] = useState(['']);
   const [isSaving, setIsSaving] = useState(false);
-  const [status, setStatus] = useState(null);
+  const [status, setStatus] = useState<string | null>(null);
 
   // جلب البيانات من Firestore عند تحميل المكون
   useEffect(() => {
@@ -31,24 +34,48 @@ export default function SocialLinksManager() {
             instagram: data.instagram || '',
             twitter: data.twitter || '',
             facebook: data.facebook || '',
+            googleMapsLink: data.googleMapsLink || '',
+            address: data.address || '',
           });
           setPhones(data.phones || ['']);
           setEmails(data.emails || ['']);
         }
       } catch (error) {
         console.error('Error fetching contact info:', error);
+        toast.error('فشل جلب معلومات التواصل');
       }
     };
     fetchData();
   }, []);
 
+  // التحقق من صحة رابط خريطة جوجل
+  const isValidGoogleMapsLink = (link: string) => {
+    return link.includes('maps.google.com') || link.includes('google.com/maps/embed');
+  };
+
+  // التحقق من صحة الإيميل
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // التحقق من صحة رقم الهاتف
+  const isValidPhone = (phone: string) => {
+    const phoneRegex = /^\+?\d{9,15}$/;
+    return phoneRegex.test(phone);
+  };
+
   // التعامل مع تغيير روابط التواصل
-  const handleSocialChange = (e) => {
-    setSocialLinks({ ...socialLinks, [e.target.name]: e.target.value });
+  const handleSocialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setSocialLinks({ ...socialLinks, [name]: value });
+    if (name === 'googleMapsLink' && value && !isValidGoogleMapsLink(value)) {
+      toast.warning('رابط خريطة جوجل غير صالح. تأكد من استخدام رابط تضمين (embed) صالح.');
+    }
   };
 
   // التعامل مع تغيير أرقام الهواتف
-  const handlePhoneChange = (index, value) => {
+  const handlePhoneChange = (index: number, value: string) => {
     const newPhones = [...phones];
     newPhones[index] = value;
     setPhones(newPhones);
@@ -60,14 +87,16 @@ export default function SocialLinksManager() {
   };
 
   // حذف رقم هاتف
-  const removePhone = (index) => {
+  const removePhone = (index: number) => {
     if (phones.length > 1) {
       setPhones(phones.filter((_, i) => i !== index));
+    } else {
+      toast.warning('يجب أن يبقى رقم هاتف واحد على الأقل.');
     }
   };
 
   // التعامل مع تغيير الإيميلات
-  const handleEmailChange = (index, value) => {
+  const handleEmailChange = (index: number, value: string) => {
     const newEmails = [...emails];
     newEmails[index] = value;
     setEmails(newEmails);
@@ -79,9 +108,11 @@ export default function SocialLinksManager() {
   };
 
   // حذف إيميل
-  const removeEmail = (index) => {
+  const removeEmail = (index: number) => {
     if (emails.length > 1) {
       setEmails(emails.filter((_, i) => i !== index));
+    } else {
+      toast.warning('يجب أن يبقى بريد إلكتروني واحد على الأقل.');
     }
   };
 
@@ -89,19 +120,46 @@ export default function SocialLinksManager() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
+      // التحقق من صحة المدخلات
+      if (socialLinks.googleMapsLink && !isValidGoogleMapsLink(socialLinks.googleMapsLink)) {
+        throw new Error('رابط خريطة جوجل غير صالح.');
+      }
+      const validPhones = phones.filter((phone) => phone.trim() !== '');
+      if (validPhones.length === 0) {
+        throw new Error('يجب إدخال رقم هاتف واحد على الأقل.');
+      }
+      for (const phone of validPhones) {
+        if (!isValidPhone(phone)) {
+          throw new Error(`رقم الهاتف "${phone}" غير صالح.`);
+        }
+      }
+      const validEmails = emails.filter((email) => email.trim() !== '');
+      if (validEmails.length === 0) {
+        throw new Error('يجب إدخال بريد إلكتروني واحد على الأقل.');
+      }
+      for (const email of validEmails) {
+        if (!isValidEmail(email)) {
+          throw new Error(`البريد الإلكتروني "${email}" غير صالح.`);
+        }
+      }
+
       const docRef = doc(db, 'settings', 'contactInfo');
       await setDoc(docRef, {
         whatsapp: socialLinks.whatsapp,
         instagram: socialLinks.instagram,
         twitter: socialLinks.twitter,
         facebook: socialLinks.facebook,
-        phones: phones.filter((phone) => phone.trim() !== ''),
-        emails: emails.filter((email) => email.trim() !== ''),
+        googleMapsLink: socialLinks.googleMapsLink,
+        address: socialLinks.address,
+        phones: validPhones,
+        emails: validEmails,
       });
       setStatus('success');
-    } catch (error) {
+      toast.success('تم حفظ التغييرات بنجاح!');
+    } catch (error: any) {
       console.error('Error saving contact info:', error);
       setStatus('error');
+      toast.error(error.message || 'حدث خطأ أثناء الحفظ. حاول مرة أخرى.');
     } finally {
       setIsSaving(false);
       setTimeout(() => setStatus(null), 3000);
@@ -166,6 +224,57 @@ export default function SocialLinksManager() {
               />
             </div>
           </div>
+        </div>
+
+        {/* العنوان */}
+        <div className="mb-8">
+          <h3 className="text-xl font-semibold text-white mb-4">العنوان</h3>
+          <div className="flex items-center gap-3">
+            <MapPin className="w-6 h-6 text-amber-500 flex-shrink-0" />
+            <input
+              type="text"
+              name="address"
+              value={socialLinks.address}
+              onChange={handleSocialChange}
+              placeholder="أدخل العنوان (مثال: القاهرة - شارع إبراهيم المغازي)"
+              className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+            />
+          </div>
+        </div>
+
+        {/* رابط خريطة جوجل */}
+        <div className="mb-8">
+          <h3 className="text-xl font-semibold text-white mb-4">رابط خريطة جوجل</h3>
+          <div className="flex items-center gap-3">
+            <MapPin className="w-6 h-6 text-amber-500 flex-shrink-0" />
+            <input
+              type="text"
+              name="googleMapsLink"
+              value={socialLinks.googleMapsLink}
+              onChange={handleSocialChange}
+              placeholder="رابط خريطة جوجل (مثال: https://www.google.com/maps/embed?...)"
+              className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+            />
+          </div>
+          {/* معاينة الخريطة */}
+          {socialLinks.googleMapsLink && isValidGoogleMapsLink(socialLinks.googleMapsLink) && (
+            <div className="mt-4">
+              <h4 className="text-sm text-gray-300 mb-2">معاينة الخريطة:</h4>
+              <iframe
+                src={socialLinks.googleMapsLink}
+                width="100%"
+                height="200"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                title="معاينة خريطة جوجل"
+                className="rounded-lg"
+              />
+            </div>
+          )}
+          <p className="text-sm text-gray-400 mt-2">
+            أدخل رابط تضمين (embed) من خرائط جوجل لعرض الموقع بشكل صحيح.
+          </p>
         </div>
 
         {/* أرقام الهواتف */}

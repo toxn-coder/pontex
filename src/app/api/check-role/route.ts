@@ -1,4 +1,4 @@
-import { auth } from "@/app/api/firebase-admin"; 
+import { auth } from "../../../lib/firebase/firebase-admin"; 
 import { getFirestore } from "firebase-admin/firestore";
 import cloudinary from "cloudinary";
 import { cookies } from "next/headers"; // ✅

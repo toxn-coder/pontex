@@ -8,6 +8,7 @@ import { Facebook, Instagram, MapPin, MessageCircle, Phone, Twitter } from 'luci
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
+import { infoApp } from '@/components/infoApp';
 
 // واجهة لنوع البيانات المتوقع من Firestore
 interface ContactInfo {
@@ -47,6 +48,7 @@ const fetcher = async () => {
 export default function ContactUs() {
   const [initialData, setInitialData] = useState<ContactInfo | undefined>(undefined);
   const [isCacheValid, setIsCacheValid] = useState(false);
+  const [url,setUrl] = useState('')
 
   // تحميل البيانات من localStorage على جانب العميل فقط
   useEffect(() => {
@@ -69,10 +71,22 @@ export default function ContactUs() {
     fallbackData: initialData, // استخدام البيانات المخزنة كبيانات أولية
   });
 
+  useEffect(() => {
+    let url = location.origin
 
-  const address = 'القاهرة  - شارع إبراهيم المغازي تقسيم 2 أمام - بيتزا بان';
+    setUrl(url)
+  },[])
+
+  
+  console.log(infoApp.name);
+  
+
+
+
+
+  const address = 'القاهرة';
   const googleMapsLink =
-    'https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3415.825274839317!2d30.949543684859268!3d31.114587981505714!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMzHCsDA2JzUyLjUiTiAzMMKwNTYnNTAuNSJF!5e0!3m2!1sar!2seg!4v1746256990189!5m2!1sar!2seg';
+    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d110502.61184989334!2d31.340866926736993!3d30.059611343835442!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14583fa60b21beeb%3A0x79dfb296e8423bba!2z2KfZhNmC2KfZh9ix2KnYjCDZhdit2KfZgdi42Kkg2KfZhNmC2KfZh9ix2KnigKw!5e0!3m2!1sar!2seg!4v1756914015727!5m2!1sar!2seg';
 
   return (
     <div className="min-h-screen bg-[var(--clr-primary)] py-12 px-4">
@@ -87,13 +101,13 @@ export default function ContactUs() {
           content="مطعم شاورما, القاهرة , اتصل بنا, خدمة العملاء"
         />
         <meta name="robots" content="index, follow" />
-        <meta property="og:title" content="اتصل بنا - مطعم اسم مطعمك" />
+        <meta property="og:title" content="اتصل بنا - " />
         <meta
           property="og:description"
           content="تواصلوا معنا عبر الهاتف أو زورونا في موقعنا. نحن هنا لخدمتكم!"
         />
         <meta property="og:image" content="/logo.png" />
-        <meta property="og:url" content="https://waly-damascus.vercel.app/contact" />
+        <meta property="og:url" content={url+'/contact'} />
         <meta property="og:type" content="website" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta charSet="UTF-8" />

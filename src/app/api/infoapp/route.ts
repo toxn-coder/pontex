@@ -1,6 +1,7 @@
 // app/api/infoapp/route.js
 import { NextResponse } from "next/server";
-import { adminDb } from "@/app/api/firebase-admin";
+import { adminDb } from "../../../lib/firebase/firebase-admin";
+
 
 export async function GET() {
   try {

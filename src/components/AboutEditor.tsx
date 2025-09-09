@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Save, Trash2, ImagePlus, Loader2, CheckCircle, UploadCloud } from "lucide-react";
+import { Save, Trash2, UploadCloud } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
 

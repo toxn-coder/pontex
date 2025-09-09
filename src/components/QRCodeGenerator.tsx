@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
-import Image from 'next/image';
 
 interface QRCodeGeneratorProps {
   value?: string; // النص أو الرابط لرمز QR (اختياري للتعامل مع undefined)

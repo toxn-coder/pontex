@@ -1,15 +1,17 @@
 import HeroSection from "@/components/HeroSection";
 import Menu from "@/components/Menu";
-import { loadInfoApp } from "@/components/infoApp";
 
-export default async function Home() { 
-  const infoApp = await loadInfoApp();
+
+
+export default async function Home() {
+
 
   return (
-    <div>
+      <>
+      <HeroSection/>
+      <Menu />
+      </>
       
-      <HeroSection restaurantName={infoApp.name} />
-      <Menu/>
-    </div>
+    
   );
 }

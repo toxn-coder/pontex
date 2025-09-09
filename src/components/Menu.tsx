@@ -1,12 +1,11 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import useSWR from "swr";
-import Head from "next/head";
-import { db } from "@/app/api/firebase";
-import { collection, getDocs } from "firebase/firestore";
-import MealSlider from "@/components/MealSlider";
-import ProgressAnim from "./ProgressAnim";
+import { useEffect, useState } from 'react';
+import useSWR from 'swr';
+import { db } from '@/app/api/firebase';
+import { collection, getDocs } from 'firebase/firestore';
+import ProgressAnim from './ProgressAnim';
+import MealGrid from './MealGrid';
 
 // تعريف واجهة لشكل المنتج (meal)
 interface Meal {
@@ -22,6 +21,7 @@ interface Meal {
 interface Category {
   id: string;
   title: string;
+  isVisible: boolean;
   meals: Meal[];
 }
 
@@ -30,7 +30,7 @@ const CACHE_DURATION = 60 * 60 * 1000;
 
 const fetcher = async () => {
   try {
-    const menuPartsRef = collection(db, "menuParts");
+    const menuPartsRef = collection(db, 'Parts');
     const snapshot = await getDocs(menuPartsRef);
     if (snapshot.empty) {
       return [];
@@ -41,36 +41,36 @@ const fetcher = async () => {
       const meals: Meal[] = categoryData.products || [];
       const formattedMeals: Meal[] = meals.map((meal: Meal) => ({
         id: meal.id || `temp-id-${Math.random().toString(36).substring(2)}`,
-        name: meal.name || "بدون اسم",
-        description: meal.description || "لا يوجد وصف",
-        image: meal.image || "/placeholder.svg",
-        price: meal.price || "غير محدد",
-        rating: meal.rating || "بدون تقييم",
+        name: meal.name || 'بدون اسم',
+        description: meal.description || 'لا يوجد وصف',
+        image: meal.image || '/placeholder.svg',
+        price: meal.price || 'غير محدد',
+        rating: meal.rating || 'بدون تقييم',
       }));
       return {
-        id: doc.id, // استخدام معرف المستند مباشرة
+        id: doc.id,
         title: categoryData.name || doc.id,
+        isVisible: categoryData.isVisible !== false, // قيمة افتراضية true
         meals: formattedMeals,
       };
     });
 
-    // فرز الأقسام بحيث يكون "الأكثر مبيعًا" في البداية
+    // فرز الأقسام بحيث يكون "الأكثر مبيعًا" في البداية (إذا كان مرئيًا)
     const sortedData = data.sort((a, b) => {
-      if (a.title === "الأكثر مبيعًا") return -1;
-      if (b.title === "الأكثر مبيعًا") return 1;
-      return a.title.localeCompare(b.title, "ar");
+      if (a.title === 'الأكثر مبيعًا') return -1;
+      if (b.title === 'الأكثر مبيعًا') return 1;
+      return a.title.localeCompare(b.title, 'ar');
     });
 
     // تخزين البيانات في localStorage
-    if (typeof window !== "undefined") {
-
-      localStorage.setItem("menuData", JSON.stringify(sortedData));
-      localStorage.setItem("menuDataTimestamp", new Date().getTime().toString());
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('menuData', JSON.stringify(sortedData));
+      localStorage.setItem('menuDataTimestamp', new Date().getTime().toString());
     }
 
     return sortedData;
   } catch (err) {
-    console.error("خطأ في جلب البيانات:", err);
+    console.error('خطأ في جلب البيانات:', err);
     throw err;
   }
 };
@@ -81,21 +81,19 @@ const Menu = () => {
 
   // تحميل البيانات من localStorage على جانب العميل فقط
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const cachedData = localStorage.getItem("menuData");
-      const cachedTimestamp = localStorage.getItem("menuDataTimestamp");
+    if (typeof window !== 'undefined') {
+      const cachedData = localStorage.getItem('menuData');
+      const cachedTimestamp = localStorage.getItem('menuDataTimestamp');
       const currentTime = new Date().getTime();
 
       if (cachedData && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < CACHE_DURATION) {
-
         setInitialData(JSON.parse(cachedData));
         setIsCacheValid(true);
-      } else {
       }
     }
   }, []);
 
-  const { data: categories, error, isLoading } = useSWR("menuData", fetcher, {
+  const { data: categories, error, isLoading } = useSWR('menuData', fetcher, {
     refreshInterval: 60 * 60 * 1000,
     revalidateOnFocus: false,
     revalidateOnMount: !isCacheValid,
@@ -105,72 +103,45 @@ const Menu = () => {
   });
 
   return (
-    <>
-      <Head>
-        <title>منيو مطعم والي دمشق - قائمة الطعام</title>
-        <meta
-          name="description"
-          content="استمتع بقائمة طعام مطعم والي دمشق المليئة بالنكهات الشامية الأصيلة. اكتشف أطباق الشاورما، المقبلات، والوجبات الشهية."
-        />
-        <meta
-          name="keywords"
-          content="منيو والي دمشق, قائمة طعام, شاورما, مطعم شامي, أكل سوري, وجبات, مقبلات"
-        />
-        <meta
-          property="og:title"
-          content="منيو مطعم والي دمشق - النكهات الشامية الأصيلة"
-        />
-        <meta
-          property="og:description"
-          content="تصفح قائمة طعام والي دمشق واستمتع بأشهى الأطباق السورية من الشاورما إلى المقبلات والوجبات العائلية."
-        />
-        <meta property="og:image" content="/logo.png" />
-        <meta
-          property="og:url"
-          content="https://waly-damascus.vercel.app/menu"
-        />
-        <meta property="og:type" content="website" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta charSet="UTF-8" />
-      </Head>
-      <div className="min-h-screen">
-        {isLoading && !categories ? (
-          <ProgressAnim />
-        ) : error ? (
-          <main className="text-center w-full min-h-screen text-red-500 flex justify-center items-center flex-col font-bold text-2xl">
-            حدث خطأ أثناء جلب البيانات. حاول مرة أخرى لاحقًا.
-            <button
-              onClick={() => window.location.reload()}
-              className="mt-4 bg-yellow-600 text-white px-4 py-2 rounded-lg"
-            >
-              إعادة المحاولة
-            </button>
-          </main>
-        ) : !categories || categories.length === 0 ? (
-          <main className="text-center w-full min-h-screen text-gray-500 flex justify-center items-center flex-col font-bold text-2xl">
-            لا توجد بيانات متاحة حاليًا.
-            <button
-              onClick={() => window.location.reload()}
-              className="mt-4 bg-yellow-600 text-white px-4 py-2 rounded-lg"
-            >
-              إعادة المحاولة
-            </button>
-          </main>
-        ) : (
-          <section aria-label="قائمة الطعام">
-            {categories.map((cat) => (
-              <MealSlider
+    <div className="min-h-screen">
+      {isLoading && !categories ? (
+        <ProgressAnim />
+      ) : error ? (
+        <main className="text-center w-full min-h-screen text-red-500 flex justify-center items-center flex-col font-bold text-2xl">
+          حدث خطأ أثناء جلب البيانات. حاول مرة أخرى لاحقًا.
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 bg-yellow-600 text-white px-4 py-2 rounded-lg"
+          >
+            إعادة المحاولة
+          </button>
+        </main>
+      ) : !categories || categories.length === 0 ? (
+        <main className="text-center w-full min-h-screen text-gray-500 flex justify-center items-center flex-col font-bold text-2xl">
+          لا توجد بيانات متاحة حاليًا.
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 bg-yellow-600 text-white px-4 py-2 rounded-lg"
+          >
+            إعادة المحاولة
+          </button>
+        </main>
+      ) : (
+        <section aria-label="قائمة المنتجات">
+          {categories
+            .filter((cat) => cat.isVisible !== false) // إظهار الأقسام المرئية فقط
+            .map((cat) => (
+              <MealGrid
                 key={cat.id}
                 title={cat.title}
                 products={cat.meals}
                 sectionId={cat.id}
-                auto={cat.title === "الأكثر مبيعًا"}
+                
               />
             ))}
-          </section>
-        )}
-      </div>
-    </>
+        </section>
+      )}
+    </div>
   );
 };
 

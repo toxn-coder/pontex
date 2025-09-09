@@ -7,7 +7,7 @@ import BestSellersManager from '@/components/BestSellersManager';
 export default async function Page({ params }) {
   const decodedId = decodeURIComponent(params.id);
 
-  const docRef = doc(db, 'menuParts', decodedId);
+  const docRef = doc(db, 'Parts', decodedId);
   const docSnap = await getDoc(docRef);
 
   if (!docSnap.exists()) {

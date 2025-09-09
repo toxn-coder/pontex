@@ -7,7 +7,7 @@ import type { Metadata } from 'next';
 import { Toaster } from 'sonner';
 import { CartProvider } from './CartContext';
 import './globals.css';
-import { loadInfoApp } from '@/components/infoApp';
+import { infoApp, loadInfoApp } from '@/components/infoApp';
 import { headers } from 'next/headers';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -44,7 +44,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   const structuredData = {
     '@context': 'https://schema.org',
-    '@type': 'Restaurant',
+    '@type': 'Store',
     name: appInfo.name,
     description: `${appInfo.name}`,
     url: fullUrl,
@@ -56,7 +56,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="ar" dir="rtl">
       <head>
-        <title>{appInfo.name} - أفضل شاورما القاهرة أصلية</title>
+        <title>`${infoApp.name} - لبيع جميع المنتجات`</title>
         <link rel="icon" href={appInfo.logoUrl} sizes="any" />
         <script
           type="application/ld+json"

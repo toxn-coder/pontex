@@ -1,17 +1,18 @@
-'use client';
+"use client";
 
-import { db } from '@/app/api/firebase';
-import { useCart } from '@/app/CartContext';
-import MealSlider from '@/components/MealSlider';
-import ProgressAnim from '@/components/ProgressAnim';
-import { doc, getDoc } from 'firebase/firestore';
-import { ShoppingCart, Star } from 'lucide-react';
-import Head from 'next/head';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import useSWR from 'swr';
+import { db } from "@/app/api/firebase";
+import { useCart } from "@/app/CartContext";
+import MealSlider from "@/components/MealSlider";
+import ProgressAnim from "@/components/ProgressAnim";
+import ShareButton from "@/components/ShareButton";
+import { doc, getDoc } from "firebase/firestore";
+import { ShoppingCart, Star } from "lucide-react";
+import Head from "next/head";
+import Image from "next/image";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 // واجهات البيانات
 interface Meal {
@@ -32,18 +33,20 @@ interface Category {
 // دالة جلب البيانات
 const fetcher = async ({ sectionId }: { sectionId: string }) => {
   try {
-    const docRef = doc(db, 'menuParts', sectionId);
+    const docRef = doc(db, "Parts", sectionId);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       const data = docSnap.data();
-      const meals: Meal[] = (data.products || []).map((meal: Meal) => ({
-        id: meal.id || `temp-id-${Math.random().toString(36).substring(2)}`,
-        name: meal.name || 'بدون اسم',
-        description: meal.description || 'لا يوجد وصف',
-        image: meal.image || '/placeholder.svg',
-        price: meal.price || 'غير محدد',
-        rating: meal.rating || 'بدون تقييم',
-      }));
+      const meals: Meal[] = (data.products || [])
+        .filter((meal: Meal) => meal.id) // نتأكد أنو عندو id
+        .map((meal: Meal) => ({
+          id: meal.id, // بدون temp-id
+          name: meal.name || "بدون اسم",
+          description: meal.description || "لا يوجد وصف",
+          image: meal.image || "/placeholder.svg",
+          price: meal.price || "غير محدد",
+          rating: meal.rating || "بدون تقييم",
+        }));
       return {
         id: docSnap.id,
         title: data.name || docSnap.id,
@@ -59,28 +62,41 @@ const fetcher = async ({ sectionId }: { sectionId: string }) => {
 
 export default function ProductPage() {
   const { sectionId: rawSectionId, productId } = useParams();
-  const sectionId = rawSectionId ? decodeURIComponent(rawSectionId as string) : '';
+  const sectionId = rawSectionId
+    ? decodeURIComponent(rawSectionId as string)
+    : "";
   const { addToCart } = useCart();
-  const [initialData, setInitialData] = useState<Category | undefined>(undefined);
+  const [initialData, setInitialData] = useState<Category | undefined>(
+    undefined
+  );
   const [isCacheValid, setIsCacheValid] = useState(false);
-
 
   // تحميل البيانات من localStorage
   useEffect(() => {
-    if (typeof window !== 'undefined' && sectionId) {
+    if (typeof window !== "undefined" && sectionId) {
       const cachedData = localStorage.getItem(`category-${sectionId}`);
-      const cachedTimestamp = localStorage.getItem(`category-${sectionId}-timestamp`);
+      const cachedTimestamp = localStorage.getItem(
+        `category-${sectionId}-timestamp`
+      );
       const currentTime = new Date().getTime();
 
-      if (cachedData && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 60 * 60 * 1000) {
+      if (
+        cachedData &&
+        cachedTimestamp &&
+        currentTime - parseInt(cachedTimestamp) < 60 * 60 * 1000
+      ) {
         setInitialData(JSON.parse(cachedData));
         setIsCacheValid(true);
-      } else {
       }
     }
   }, [sectionId]);
 
-  const { data: category, error, isLoading, mutate } = useSWR(
+  const {
+    data: category,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR(
     sectionId ? { key: `category-${sectionId}`, sectionId } : null,
     fetcher,
     {
@@ -91,9 +107,12 @@ export default function ProductPage() {
       keepPreviousData: true,
       fallbackData: initialData,
       onSuccess: (data) => {
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
           localStorage.setItem(`category-${sectionId}`, JSON.stringify(data));
-          localStorage.setItem(`category-${sectionId}-timestamp`, new Date().getTime().toString());
+          localStorage.setItem(
+            `category-${sectionId}-timestamp`,
+            new Date().getTime().toString()
+          );
         }
       },
     }
@@ -109,7 +128,8 @@ export default function ProductPage() {
     return (
       <div className="min-h-screen bg-[var(--clr-primary)] flex justify-center items-center flex-col gap-4">
         <p className="text-red-400 text-lg">
-          {error?.message || 'حدث خطأ أثناء جلب البيانات. حاول مرة أخرى لاحقًا.'}
+          {error?.message ||
+            "حدث خطأ أثناء جلب البيانات. حاول مرة أخرى لاحقًا."}
         </p>
         <button
           onClick={() => mutate()}
@@ -117,7 +137,7 @@ export default function ProductPage() {
         >
           إعادة المحاولة
         </button>
-        <Link href="/menu" className="text-yellow-500 hover:underline mt-2">
+        <Link href="/products" className="text-yellow-500 hover:underline mt-2">
           العودة إلى القائمة
         </Link>
       </div>
@@ -128,7 +148,7 @@ export default function ProductPage() {
     return (
       <div className="min-h-screen bg-[var(--clr-primary)] flex justify-center items-center flex-col gap-4">
         <p className="text-gray-300 text-lg">المنتج غير موجود.</p>
-        <Link href="/menu" className="text-yellow-500 hover:underline">
+        <Link href="/products" className="text-yellow-500 hover:underline">
           العودة إلى القائمة
         </Link>
       </div>
@@ -140,19 +160,30 @@ export default function ProductPage() {
   return (
     <div className="min-h-screen bg-[var(--clr-primary)] py-8 px-4 sm:px-6">
       <Head>
-        <title>{`${product.name} - ${category.title} - مطعم والي دمشق`}</title>
+        <title>{`${product.name} - ${category.title} - سوق الكتروني`}</title>
         <meta
           name="description"
-          content={`${product.description} - استمتع بأشهى الأطباق السورية من ${category.title} في مطعم والي دمشق.`}
+          content={`${product.description} - استمتع بتسوق في متجرنا ${category.title} `}
         />
-        <meta name="keywords" content={`شاورما, ${product.name}, ${category.title}, مطعم شامي, أكل سوري`} />
-        <meta property="og:title" content={`${product.name} - ${category.title} - مطعم والي دمشق`} />
+        <meta
+          name="keywords"
+          content={`شاورما, ${product.name}, ${category.title}, متجر الكتروني`}
+        />
+        <meta
+          property="og:title"
+          content={`${product.name} - ${category.title}`}
+        />
         <meta
           property="og:description"
-          content={`${product.description} - استمتع بأشهى الأطباق السورية من ${category.title} في مطعم والي دمشق.`}
+          content={`${product.description} - تسوق منتجات فاخرة ${category.title} `}
         />
-        <meta property="og:image" content={product.image || '/logo.png'} />
-        <meta property="og:url" content={`https://waly-damascus.vercel.app/menu/${encodeURIComponent(sectionId)}/${productId}`} />
+        <meta property="og:image" content={product.image || "/logo.png"} />
+        <meta
+          property="og:url"
+          content={`https://waly-damascus.vercel.app/products/${encodeURIComponent(
+            sectionId
+          )}/${productId}`}
+        />
         <meta property="og:type" content="website" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta charSet="UTF-8" />
@@ -160,7 +191,10 @@ export default function ProductPage() {
 
       <div className="max-w-6xl mx-auto">
         {/* زر العودة */}
-        <Link href="/menu" className="text-yellow-500 hover:underline mb-4 block text-lg font-medium">
+        <Link
+          href="/products"
+          className="text-yellow-500 hover:underline mb-4 block text-lg font-medium"
+        >
           العودة إلى القائمة
         </Link>
 
@@ -169,7 +203,7 @@ export default function ProductPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 lg:gap-10">
             <div className="relative w-full aspect-[4/3]">
               <Image
-                src={product.image || '/placeholder.svg'}
+                src={product.image || "/placeholder.svg"}
                 alt={product.name}
                 fill
                 className="object-cover rounded-lg"
@@ -183,12 +217,23 @@ export default function ProductPage() {
             </div>
             <div className="flex flex-col justify-between gap-6">
               <div>
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-3 sm:mb-4 lg:mb-5">{product.name}</h1>
-                <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-5 lg:mb-6">{product.description || 'لا يوجد وصف'}</p>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-3 sm:mb-4 lg:mb-5">
+                  {product.name}
+                </h1>
+                <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-5 lg:mb-6">
+                  {product.description || "لا يوجد وصف"}
+                </p>
                 <p className="text-yellow-500 font-bold text-xl sm:text-2xl lg:text-3xl mb-4 sm:mb-5 lg:mb-6">
-                  {product.price || 'غير محدد'} جنيه
+                  {product.price || "غير محدد"} جنيه
                 </p>
               </div>
+              <ShareButton
+                url={`https://test-ecommerce-toxn.vercel.app/products/${encodeURIComponent(
+                  sectionId
+                )}/${product.id}`}
+                title={product.name}
+              />
+
               <button
                 onClick={() =>
                   addToCart({
@@ -211,14 +256,12 @@ export default function ProductPage() {
         {otherProducts.length > 0 && (
           <div className="mt-12">
             <h2 className="text-2xl font-bold text-white mb-6">
-              المزيد من <span className="text-yellow-500">{category.title}</span>
+              المزيد من{" "}
+              <span className="text-yellow-500">{category.title}</span>
             </h2>
             <MealSlider
               title={category.title}
-              products={otherProducts.map((meal) => ({
-                ...meal,
-                id: meal.id,
-              }))}
+              products={otherProducts}
               sectionId={sectionId}
               auto={false}
             />

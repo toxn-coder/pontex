@@ -2,13 +2,20 @@
 
 import { useEffect, useState } from 'react';
 import { db } from '@/app/api/firebase';
-import { collection, deleteDoc, doc, setDoc, getDoc, onSnapshot } from 'firebase/firestore';
-import { Loader2, Trash2, Edit2 } from 'lucide-react';
+import { collection, deleteDoc, doc, setDoc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { Loader2, Trash2, Edit2, Eye, EyeOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
+// تعريف واجهة Part
+interface Part {
+  id: string;
+  name?: string;
+  isVisible?: boolean;
+}
+
 const PartsList = () => {
-  const [parts, setParts] = useState<string[]>([]);
+  const [parts, setParts] = useState<Part[]>([]); // تحديد النوع صراحة
   const [loading, setLoading] = useState(true);
   const [showConfirm, setShowConfirm] = useState<string | null>(null);
   const [showEditDialog, setShowEditDialog] = useState<string | null>(null);
@@ -32,20 +39,24 @@ const PartsList = () => {
 
     fetchUserData();
 
-    // مراقبة التغييرات في مجموعة menuParts في الوقت الحقيقي
+    // مراقبة التغييرات في مجموعة Parts في الوقت الحقيقي
     const unsubscribe = onSnapshot(
-      collection(db, 'menuParts'),
+      collection(db, 'Parts'),
       (snapshot) => {
-        let partNames = snapshot.docs.map((doc) => doc.id);
+        const partData: Part[] = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          name: doc.data().name,
+          isVisible: doc.data().isVisible !== false, // قيمة افتراضية true
+        }));
 
         // فرز الأقسام بحيث يكون "الأكثر مبيعًا" في البداية
-        partNames = partNames.sort((a, b) => {
-          if (a === 'الأكثر مبيعًا') return -1;
-          if (b === 'الأكثر مبيعًا') return 1;
-          return a.localeCompare(b);
+        const sortedData = partData.sort((a, b) => {
+          if (a.id === 'الأكثر مبيعًا') return -1;
+          if (b.id === 'الأكثر مبيعًا') return 1;
+          return (a.name || a.id).localeCompare(b.name || b.id);
         });
 
-        setParts(partNames);
+        setParts(sortedData);
         setLoading(false);
       },
       (error) => {
@@ -54,22 +65,32 @@ const PartsList = () => {
       }
     );
 
-    // تنظيف المراقبة عند تفريغ المكون
     return () => unsubscribe();
   }, []);
 
-  const handleDelete = async (part: string) => {
+  const handleDelete = async (partId: string) => {
     try {
-      await deleteDoc(doc(db, 'menuParts', part));
+      await deleteDoc(doc(db, 'Parts', partId));
       setShowConfirm(null);
     } catch (error) {
       console.error('فشل في حذف القسم:', error);
     }
   };
 
-  const openEditDialog = (part: string) => {
-    setShowEditDialog(part);
-    setNewPartName(part);
+  const handleToggleVisibility = async (partId: string, currentVisibility?: boolean) => {
+    try {
+      const partRef = doc(db, 'Parts', partId);
+      await updateDoc(partRef, {
+        isVisible: !currentVisibility,
+      });
+    } catch (error) {
+      console.error('فشل في تبديل حالة الإظهار:', error);
+    }
+  };
+
+  const openEditDialog = (part: Part) => {
+    setShowEditDialog(part.id);
+    setNewPartName(part.name || part.id);
     setError('');
   };
 
@@ -85,25 +106,20 @@ const PartsList = () => {
     }
 
     try {
-      // جلب البيانات القديمة
-      const oldDocRef = doc(db, 'menuParts', showEditDialog as string);
+      const oldDocRef = doc(db, 'Parts', showEditDialog!);
       const oldDocSnap = await getDoc(oldDocRef);
       if (!oldDocSnap.exists()) {
         throw new Error('القسم غير موجود');
       }
 
-      // تحديث البيانات مع اسم القسم الجديد
       const oldData = oldDocSnap.data();
       const updatedData = {
         ...oldData,
-        name: newPartName, // تحديث حقل name ليعكس الاسم الجديد
+        name: newPartName,
       };
 
-      // نسخ البيانات إلى مستند جديد بالاسم الجديد
-      const newDocRef = doc(db, 'menuParts', newPartName);
+      const newDocRef = doc(db, 'Parts', newPartName);
       await setDoc(newDocRef, updatedData);
-
-      // حذف المستند القديم
       await deleteDoc(oldDocRef);
 
       setShowEditDialog(null);
@@ -131,7 +147,7 @@ const PartsList = () => {
           <AnimatePresence>
             {parts.map((part, index) => (
               <motion.div
-                key={part}
+                key={part.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -139,44 +155,63 @@ const PartsList = () => {
               >
                 <div className="relative bg-gray-700 shadow-lg rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
                   <div className="p-6 text-center">
-                    <p className="text-xl font-semibold text-white mb-4">{part}</p>
+                    <p className="text-xl font-semibold text-white mb-4">{part.name || part.id}</p>
                     <div className="flex justify-center gap-3">
-                      <Link href={`/auth/dashboard/${part}`}>
+                      <Link href={`/auth/dashboard/${part.id}`}>
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           className="bg-amber-600 text-white px-5 py-2 rounded-full text-sm font-medium shadow hover:bg-amber-700 transition-colors duration-200"
-                          aria-label={`عرض قسم ${part}`}
+                          aria-label={`عرض قسم ${part.name || part.id}`}
                         >
                           عرض القسم
                         </motion.button>
                       </Link>
-                      {currentUserRole === 'admin' && part !== 'الأكثر مبيعًا' && (
+                      {currentUserRole === 'admin' && (
                         <>
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => openEditDialog(part)}
-                            className="bg-green-600 text-white px-3 py-2 rounded-full text-sm font-medium shadow hover:bg-green-700 transition-colors duration-200"
-                            aria-label={`تعديل قسم ${part}`}
-                          >
-                            <Edit2 className="w-5 h-5" />
-                          </motion.button>
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => setShowConfirm(part)}
-                            className="bg-red-600 text-white px-3 py-2 rounded-full text-sm font-medium shadow hover:bg-red-700 transition-colors duration-200"
-                            aria-label={`حذف قسم ${part}`}
-                          >
-                            <Trash2 className="w-5 h-5" />
-                          </motion.button>
+                          {part.id === 'الأكثر مبيعًا' && (
+                            <motion.button
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              onClick={() => handleToggleVisibility(part.id, part.isVisible)}
+                              className={`${
+                                part.isVisible ? 'bg-yellow-600' : 'bg-gray-600'
+                              } text-white px-3 py-2 rounded-full text-sm font-medium shadow hover:${
+                                part.isVisible ? 'bg-yellow-700' : 'bg-gray-700'
+                              } transition-colors duration-200`}
+                              aria-label={part.isVisible ? `إخفاء قسم ${part.name || part.id}` : `إظهار قسم ${part.name || part.id}`}
+                            >
+                              {part.isVisible ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                            </motion.button>
+                          )}
+                          {part.id !== 'الأكثر مبيعًا' && (
+                            <>
+                              <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => openEditDialog(part)}
+                                className="bg-green-600 text-white px-3 py-2 rounded-full text-sm font-medium shadow hover:bg-green-700 transition-colors duration-200"
+                                aria-label={`تعديل قسم ${part.name || part.id}`}
+                              >
+                                <Edit2 className="w-5 h-5" />
+                              </motion.button>
+                              <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => setShowConfirm(part.id)}
+                                className="bg-red-600 text-white px-3 py-2 rounded-full text-sm font-medium shadow hover:bg-red-700 transition-colors duration-200"
+                                aria-label={`حذف قسم ${part.name || part.id}`}
+                              >
+                                <Trash2 className="w-5 h-5" />
+                              </motion.button>
+                            </>
+                          )}
                         </>
                       )}
                     </div>
                   </div>
 
-                  {showConfirm === part && currentUserRole === 'admin' && (
+                  {showConfirm === part.id && currentUserRole === 'admin' && (
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -184,14 +219,14 @@ const PartsList = () => {
                       className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-2xl"
                     >
                       <div className="bg-gray-800 p-6 rounded-xl shadow-xl">
-                        <p className="text-white font-medium mb-4">هل أنت متأكد من حذف قسم {part}؟</p>
+                        <p className="text-white font-medium mb-4">هل أنت متأكد من حذف قسم {part.name || part.id}؟</p>
                         <div className="flex justify-center gap-3">
                           <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            onClick={() => handleDelete(part)}
+                            onClick={() => handleDelete(part.id)}
                             className="bg-red-600 text-white px-4 py-2 rounded-full text-sm shadow hover:bg-red-700 transition-colors"
-                            aria-label={`تأكيد حذف قسم ${part}`}
+                            aria-label={`تأكيد حذف قسم ${part.name || part.id}`}
                           >
                             نعم، احذف
                           </motion.button>

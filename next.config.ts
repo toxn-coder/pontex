@@ -11,7 +11,6 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: ['via.placeholder.com'],
     remotePatterns: [
       {
         protocol: 'https',

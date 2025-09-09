@@ -12,6 +12,8 @@ import { useCart } from '@/app/CartContext';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import type { Swiper as SwiperType } from 'swiper';
+
 interface Meal {
   id: string;
   name: string;
@@ -33,7 +35,9 @@ export default function MealSlider({ auto = false, title, products = [], section
   const nextRef = useRef<HTMLButtonElement>(null);
   const mobilePrevRef = useRef<HTMLButtonElement>(null);
   const mobileNextRef = useRef<HTMLButtonElement>(null);
-  const swiperRef = useRef<any>(null);
+
+  const swiperRef = useRef<SwiperType | null>(null);
+
   const { addToCart } = useCart();
   const [isPrevDisabled, setIsPrevDisabled] = useState(true);
   const [isNextDisabled, setIsNextDisabled] = useState(false);
@@ -45,8 +49,9 @@ export default function MealSlider({ auto = false, title, products = [], section
       swiperRef.current.params.navigation &&
       typeof swiperRef.current.params.navigation !== 'boolean'
     ) {
-      swiperRef.current.params.navigation.prevEl = [prevRef.current, mobilePrevRef.current];
-      swiperRef.current.params.navigation.nextEl = [nextRef.current, mobileNextRef.current];
+      // استخدام CSS selectors بدلاً من عناصر DOM
+      swiperRef.current.params.navigation.prevEl = '.swiper-prev';
+      swiperRef.current.params.navigation.nextEl = '.swiper-next';
       swiperRef.current.navigation.init();
       swiperRef.current.navigation.update();
     }
@@ -69,7 +74,7 @@ export default function MealSlider({ auto = false, title, products = [], section
           <div className="hidden sm:flex gap-2">
             <button
               ref={prevRef}
-              className={`p-2 rounded-lg shadow-md transition text-white ${
+              className={`p-2 rounded-lg shadow-md transition text-white swiper-prev ${
                 isPrevDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-yellow-600 hover:bg-yellow-500'
               }`}
               disabled={isPrevDisabled}
@@ -79,7 +84,7 @@ export default function MealSlider({ auto = false, title, products = [], section
             </button>
             <button
               ref={nextRef}
-              className={`p-2 rounded-lg shadow-md transition text-white ${
+              className={`p-2 rounded-lg shadow-md transition text-white swiper-next ${
                 isNextDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-yellow-600 hover:bg-yellow-500'
               }`}
               disabled={isNextDisabled}
@@ -123,7 +128,7 @@ export default function MealSlider({ auto = false, title, products = [], section
             const price = Number(meal.price) || 0;
             const rating = Number(meal.rating) || 4.0;
 
-            const link = sectionId ? `/menu/${encodeURIComponent(sectionId)}/${meal.id}` : '#';
+            const link = sectionId ? `/products/${encodeURIComponent(sectionId)}/${meal.id}` : '#';
 
             return (
               <SwiperSlide key={meal.id}>
@@ -147,7 +152,7 @@ export default function MealSlider({ auto = false, title, products = [], section
 
                     <div className="p-5 flex flex-col flex-grow">
                       <h3 className="text-xl font-bold text-black mb-2">{name}</h3>
-                      <p className="text-gray-400 text-sm mb-4 flex-grow">{description}</p>
+                      <p className="text-gray-400 text-sm mb-4 flex-grow line-clamp-2">{description}</p>
 
                       <div className="flex justify-between items-center mt-auto">
                         <p className="text-yellow-500 font-bold text-lg">{price} جنيه</p>
@@ -177,7 +182,7 @@ export default function MealSlider({ auto = false, title, products = [], section
 
         <button
           ref={mobilePrevRef}
-          className={`absolute top-1/2 -translate-y-1/2 left-2 p-3 rounded-full shadow-md transition text-white z-20 sm:hidden ${
+          className={`absolute top-1/2 -translate-y-1/2 left-2 p-3 rounded-full shadow-md transition text-white z-20 sm:hidden swiper-prev ${
             isPrevDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-yellow-600 hover:bg-yellow-500'
           }`}
           disabled={isPrevDisabled}
@@ -187,7 +192,7 @@ export default function MealSlider({ auto = false, title, products = [], section
         </button>
         <button
           ref={mobileNextRef}
-          className={`absolute top-1/2 -translate-y-1/2 right-2 p-3 rounded-full shadow-md transition text-white z-20 sm:hidden ${
+          className={`absolute top-1/2 -translate-y-1/2 right-2 p-3 rounded-full shadow-md transition text-white z-20 sm:hidden swiper-next ${
             isNextDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-yellow-600 hover:bg-yellow-500'
           }`}
           disabled={isNextDisabled}
