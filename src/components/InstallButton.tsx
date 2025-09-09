@@ -9,6 +9,11 @@ const InstallButton = () => {
   const pathname = usePathname();
 
   useEffect(() => {
+    // ✅ منع الزر في WebView مثل Messenger / Instagram
+    const ua = navigator.userAgent || navigator.vendor;
+    const isInApp = /FBAN|FBAV|Instagram|Messenger/i.test(ua);
+    if (isInApp) return; // لا يظهر الزر
+
     const handleBeforeInstallPrompt = (event: Event) => {
       event.preventDefault();
       setDeferredPrompt(event);
@@ -32,11 +37,14 @@ const InstallButton = () => {
     }
   };
 
-
+  // ✅ إخفاء الزر في صفحات معينة
+  if (pathname.startsWith('/auth') || pathname.startsWith('/dashboard')) {
+    return null;
+  }
 
   return (
     showButton && (
-      <div className={"fixed bottom-5 left-1/2 -translate-x-1/2 z-50 " + (pathname.startsWith('/auth') || pathname.startsWith('/dashboard') ? ' hidden' : '')}>
+      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50">
         <div className="relative w-fit h-fit">
           {/* حلقات أنيميشن */}
           <span className="absolute top-1/2 left-1/2 w-[70%] h-[70%] bg-green-400 opacity-50 rounded-full -translate-x-1/2 -translate-y-1/2 animate-ping z-0"></span>

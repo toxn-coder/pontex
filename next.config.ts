@@ -1,9 +1,11 @@
 /** @type {import('next').NextConfig} */
 const withPWA = require('next-pwa')({
   dest: 'public',
-  disable: process.env.NODE_ENV === 'development',
+  disable: process.env.NODE_ENV === 'development', // تعطيل PWA في وضع التطوير
   register: true,
   skipWaiting: true,
+  // customWorkerRegistration: '/register.js', ❌ احذفها
+  inlineWorkboxRuntime: true, // ✅ بديل مناسب
 });
 
 const nextConfig = {

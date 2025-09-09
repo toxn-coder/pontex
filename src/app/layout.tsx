@@ -18,6 +18,9 @@ export async function generateMetadata(): Promise<Metadata> {
     description: `${appInfo.name}`,
     openGraph: {
       title: `${appInfo.name} - افضل المنتجات و الخدمات`,
+      description: `${appInfo.name}`,
+      url: '/',
+      type: 'website',
       images: [
         {
           url: appInfo.logoUrl,
@@ -27,19 +30,36 @@ export async function generateMetadata(): Promise<Metadata> {
         },
       ],
     },
+    twitter: {
+      card: 'summary_large_image',
+      site: '@your_twitter', // بدّلها بحسابك لو عندك
+      title: `${appInfo.name} - افضل المنتجات والخدمات`,
+      description: `${appInfo.name}`,
+      images: [appInfo.logoUrl],
+    },
     icons: {
       icon: appInfo.logoUrl,
+      apple: appInfo.logoUrl,
     },
+    manifest: '/manifest.json',
   };
+}
+
+// ✅ تسجيل الـ service worker
+if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+  navigator.serviceWorker
+    .register('/sw.js')
+    .then((reg) => console.log('SW registered:', reg))
+    .catch((err) => console.log('SW registration failed:', err));
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const appInfo = await loadInfoApp();
 
-  // ✅ لازم await هنا
+  // ✅ headers مع fallback لو ناقص
   const headersList = await headers();
-  const host = headersList.get('host');
-  const protocol = headersList.get('x-forwarded-proto') || 'http';
+  const host = headersList.get('host') || 'example.com';
+  const protocol = headersList.get('x-forwarded-proto') || 'https';
   const fullUrl = `${protocol}://${host}`;
 
   const structuredData = {
@@ -56,8 +76,25 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="ar" dir="rtl">
       <head>
-        <title>`${infoApp.name} - لبيع جميع المنتجات`</title>
+        <title>{`${appInfo.name} - لبيع جميع المنتجات`}</title>
+        
+        {/* ✅ meta tags الأساسية */}
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+        <meta name="theme-color" content="#000000" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content={appInfo.name} />
+        <meta name="application-name" content={appInfo.name} />
+        <meta name="description" content={`${appInfo.name}`} />
+
+        {/* أيقونات */}
         <link rel="icon" href={appInfo.logoUrl} sizes="any" />
+        <link rel="apple-touch-icon" href={appInfo.logoUrl} />
+        <link rel="manifest" href="/manifest.json" />
+
+        {/* JSON-LD Structured Data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
