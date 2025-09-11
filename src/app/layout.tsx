@@ -1,6 +1,6 @@
 import Cart from '@/components/Cart';
 import Footer from '@/components/Footer';
-import InstallButton from '@/components/InstallButton';
+// import InstallButton from '@/components/InstallButton';
 import Navbar from '@/components/NavBar';
 import NotificationListener from '@/components/NotificationListener';
 import type { Metadata } from 'next';
@@ -41,17 +41,17 @@ export async function generateMetadata(): Promise<Metadata> {
       icon: appInfo.logoUrl,
       apple: appInfo.logoUrl,
     },
-    manifest: '/manifest.json',
+    // manifest: '/manifest.json',
   };
 }
 
 // ✅ تسجيل الـ service worker
-if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-  navigator.serviceWorker
-    .register('/sw.js')
-    .then((reg) => console.log('SW registered:', reg))
-    .catch((err) => console.log('SW registration failed:', err));
-}
+// if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+//   navigator.serviceWorker
+//     .register('/sw.js')
+//     .then((reg) => console.log('SW registered:', reg))
+//     .catch((err) => console.log('SW registration failed:', err));
+// }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const appInfo = await loadInfoApp();
@@ -92,7 +92,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* أيقونات */}
         <link rel="icon" href={appInfo.logoUrl} sizes="any" />
         <link rel="apple-touch-icon" href={appInfo.logoUrl} />
-        <link rel="manifest" href="/manifest.json" />
+        {/* <link rel="manifest" href="/manifest.json" /> */}
 
         {/* JSON-LD Structured Data */}
         <script
@@ -103,7 +103,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="bg-[var(--foreground)] text-white font-cairo">
         <CartProvider>
           <Navbar name={appInfo.name} logoUrl={appInfo.logoUrl} aria-label="التنقل الرئيسي" />
-          <InstallButton />
+          {/* <InstallButton /> */}
           <main>{children}</main>
           <Footer name={appInfo.name} logoUrl={appInfo.logoUrl} aria-label="تذييل الموقع" />
           <Cart />
