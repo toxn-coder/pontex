@@ -161,15 +161,6 @@ useEffect(() => {
           <SocialLinksManager />
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 1.2 }}
-          className="bg-gray-800 rounded-2xl shadow-xl p-6 md:col-span-2"
-        >
-
-        <SendNotificationPanel />
-        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, x: 50 }}

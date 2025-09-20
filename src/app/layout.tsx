@@ -7,7 +7,7 @@ import type { Metadata } from 'next';
 import { Toaster } from 'sonner';
 import { CartProvider } from './CartContext';
 import './globals.css';
-import { infoApp, loadInfoApp } from '@/components/infoApp';
+import { loadInfoApp } from '@/components/infoApp';
 import { headers } from 'next/headers';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -15,10 +15,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: `${appInfo.name} - افضل المنتجات والخدمات`,
-    description: `${appInfo.name}`,
+    description: `${appInfo.name,'رواد في صناعة الأقمشة القطنية'}`,
     openGraph: {
       title: `${appInfo.name} - افضل المنتجات و الخدمات`,
-      description: `${appInfo.name}`,
+      description: `${appInfo.name ,"رواد في صناعة الأقمشة القطنية"}`,
       url: '/',
       type: 'website',
       images: [
@@ -34,7 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       site: '@your_twitter', // بدّلها بحسابك لو عندك
       title: `${appInfo.name} - افضل المنتجات والخدمات`,
-      description: `${appInfo.name}`,
+      description: `${appInfo.name,'رواد في صناعة الأقمشة القطنية'}`,
       images: [appInfo.logoUrl],
     },
     icons: {
@@ -70,13 +70,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     url: fullUrl,
     logo: appInfo.logoUrl,
     image: appInfo.imageHero,
-    telephone: '+2010 60462862',
+    telephone: '+201032334587',
   };
 
   return (
     <html lang="ar" dir="rtl">
       <head>
-        <title>{`${appInfo.name} - لبيع جميع المنتجات`}</title>
+        <title>{`${appInfo.name} - لبيع جميع انواع الأقمشة`}</title>
         
         {/* ✅ meta tags الأساسية */}
         <meta charSet="UTF-8" />

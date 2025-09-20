@@ -6,7 +6,7 @@ const CardAbout = () => {
           <h2 className="text-3xl font-bold text-amber-900 mb-8 text-center">عن مطعمنا</h2>
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <p className="text-gray-700 mb-6 leading-relaxed">
-              مرحباً بكم في مطعم الشرق، وجهتكم المميزة لتذوق أشهى الأطباق الشرقية الأصيلة. يقدم مطعمنا تجربة طعام فريدة تجمع بين النكهات التقليدية والأجواء الدافئة.
+              رواد في صناعة الأقمشة القطنية تصنيع محلي و مستورد
             </p>
             <p className="text-gray-700 mb-6 leading-relaxed">
               نحرص على استخدام أجود أنواع المكونات الطازجة واتباع الوصفات التقليدية التي توارثناها عبر الأجيال، مما يضمن لكم تجربة طعام لا تُنسى.

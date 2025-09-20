@@ -1,18 +1,10 @@
 'use client';
 
-import { db } from '@/app/api/firebase';
 import clsx from 'clsx';
-import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-
-interface Notification {
-  title: string;
-  body: string;
-  url: string;
-  createdAt: any;
-}
+import Image from 'next/image'; // ✅ استيراد مكوّن الصورة
 
 interface NavbarProps {
   name: string;
@@ -22,7 +14,7 @@ interface NavbarProps {
 export default function Navbar({ name, logoUrl }: NavbarProps) {
   const [scrolling, setScrolling] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [, setNotifications] = useState<Notification[]>([]);
+
   const pathname = usePathname();
 
   useEffect(() => {
@@ -33,20 +25,11 @@ export default function Navbar({ name, logoUrl }: NavbarProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    const q = query(collection(db, 'notifications'), orderBy('createdAt', 'desc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map((doc) => doc.data() as Notification);
-      setNotifications(data);
-    });
-    return () => unsubscribe();
-  }, []);
-
   return (
     <header
       className={clsx(
-        'sticky top-0 w-full z-50 px-4 py-4 shadow-md transition-all duration-300',
-        scrolling ? 'bg-[#1f1f1f]/90 backdrop-blur-md shadow-lg' : 'bg-[#1f1f1f]'
+        'sticky top-0 w-full z-50 px-4 py-4 shadow-md transition-all duration-300 ',
+        scrolling ? 'text-gray-600 backdrop-blur-md shadow-lg' : 'bg-[#ebebeb]'
       )}
     >
       <nav>
@@ -57,9 +40,9 @@ export default function Navbar({ name, logoUrl }: NavbarProps) {
             className="lg:hidden flex flex-col gap-1.5 p-2"
             aria-label="منتجاتنا"
           >
-            <span className="block w-6 h-0.5 bg-white rounded-full"></span>
-            <span className="block w-6 h-0.5 bg-white rounded-full"></span>
-            <span className="block w-6 h-0.5 bg-white rounded-full"></span>
+            <span className={clsx("block w-6 h-0.5 rounded-full transition-colors duration-300", scrolling ? 'bg-white' : 'bg-[#a0392a]')}></span>
+            <span className={clsx("block w-6 h-0.5 rounded-full transition-colors duration-300", scrolling ? 'bg-white' : 'bg-[#a0392a]')}></span>
+            <span className={clsx("block w-6 h-0.5 rounded-full transition-colors duration-300", scrolling ? 'bg-white' : 'bg-[#a0392a]')}></span>
           </button>
 
           {/* روابط التنقل */}
@@ -82,8 +65,15 @@ export default function Navbar({ name, logoUrl }: NavbarProps) {
                 key={link.href}
                 href={link.href}
                 className={clsx(
-                  'relative text-white hover:text-yellow-400 transition-colors py-2',
-                  pathname === link.href && 'text-yellow-400 border-b-2 border-yellow-400'
+                  'relative transition-colors py-2',
+                  scrolling 
+                    ? 'text-white hover:text-gray-300' 
+                    : 'text-[#a0392a] hover:text-[#e95640]',
+                  pathname === link.href && 
+                    (scrolling 
+                      ? 'text-gray-300 border-b-2 border-white' 
+                      : 'text-[#e95640] border-b-2 border-[#e95640]'
+                    )
                 )}
               >
                 {link.label}
@@ -98,8 +88,14 @@ export default function Navbar({ name, logoUrl }: NavbarProps) {
               scrolling ? 'scale-95' : 'scale-100'
             )}
           >
-            <img src={logoUrl} alt={name} className="w-10 h-10 mr-2 rounded object-contain" />
-            <span className="text-yellow-500">{name}</span>
+            <Image
+              src={logoUrl}
+              alt={name}
+              width={40}   // ✅ لازم تحدد العرض
+              height={40}  // ✅ لازم تحدد الطول
+              className="w-10 h-10 mr-2 rounded-full object-contain"
+            />
+            <span className={clsx("transition-colors duration-300 name-logo ", scrolling ? 'text-white' : 'text-[#a0392a]')}>{name}</span>
           </div>
         </div>
       </nav>

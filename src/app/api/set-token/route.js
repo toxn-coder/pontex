@@ -1,8 +1,7 @@
-// app/api/set-token/route.js
-export const runtime = "nodejs";
-
 import { NextResponse } from "next/server";
-import { auth, adminDb } from "../../../lib/firebase/firebase-admin";
+import { auth, adminDb } from "../../../lib/firebase/firebase-admin"; // 🟢 Alias أنظف
+
+export const runtime = "nodejs";
 
 export async function POST(request) {
   try {
@@ -11,11 +10,11 @@ export async function POST(request) {
       return NextResponse.json({ error: "No token provided" }, { status: 400 });
     }
 
-    // 🟢 التحقق من التوكن
+    // ✅ التحقق من التوكن
     const decodedToken = await auth.verifyIdToken(idToken);
     const uid = decodedToken.uid;
 
-    // 🟢 جلب الدور من Firestore
+    // ✅ جلب الدور من Firestore
     const userDoc = await adminDb.doc(`users/${uid}`).get();
     if (!userDoc.exists) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -24,12 +23,13 @@ export async function POST(request) {
     const userData = userDoc.data();
     const role = userData?.role || "none";
 
-    // 🟢 التحقق من الدور
-    if (!["admin", "supervisor"].includes(role)) {
+    // ✅ السماح فقط للأدوار المحددة
+    const allowedRoles = ["admin", "supervisor"];
+    if (!allowedRoles.includes(role)) {
       return NextResponse.json({ error: "Unauthorized role" }, { status: 403 });
     }
 
-    // 🟢 إعداد الكوكيز
+    // ✅ إعداد الكوكيز
     const response = NextResponse.json({
       message: "Token verified",
       uid,
@@ -40,17 +40,14 @@ export async function POST(request) {
 
     response.cookies.set("token", idToken, {
       httpOnly: true,
-      secure: isProduction, // 🟢 https فقط بالـ production
+      secure: isProduction,
       sameSite: isProduction ? "none" : "lax",
       path: "/",
       maxAge: 60 * 60 * 24, // 24 ساعة
     });
 
-    // 🟢 منع التخزين المؤقت
-    response.headers.set(
-      "Cache-Control",
-      "no-cache, no-store, must-revalidate"
-    );
+    // ✅ منع التخزين المؤقت
+    response.headers.set("Cache-Control", "no-cache, no-store, must-revalidate");
     response.headers.set("Pragma", "no-cache");
     response.headers.set("Expires", "0");
 

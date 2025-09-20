@@ -37,7 +37,7 @@ export default function Cart() {
   };
 
   // رابط WhatsApp مع رقم الهاتف
-  const whatsappLink = `https://wa.me/201008711638?text=${createWhatsAppMessage()}`;
+  const whatsappLink = `https://wa.me/201032334587?text=${createWhatsAppMessage()}`;
 
   return (
     <>

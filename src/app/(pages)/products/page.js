@@ -1,23 +1,23 @@
-import Menu from "@/components/Menu";
+import Menu from "../../../components/Menu";
 import Head from "next/head";
 
 const MenuPage = () => {
   return (
     <>
       <Head>
-        <title>منيو مطعم اسم مطعمك - قائمة الطعام</title>
+        <title>منتجات بون تكس | pon-tex</title>
         <meta
           name="description"
-          content="استمتع بقائمة طعام مطعم اسم مطعمك المليئة بالنكهات الشامية الأصيلة. اكتشف أطباق الشاورما، المقبلات، والوجبات الشهية."
+          content="رواد في صناعة الأقمشة القطنية تصنيع محلي و مستورد بون تكس"
         />
         <meta
           name="keywords"
-          content="منيو اسم مطعمك, قائمة طعام, شاورما, مطعم شامي, أكل سوري, وجبات, مقبلات"
+          content="منتجات بون تكس رواد في صناعة الأقمشة القطنية تصنيع محلي و مستورد"
         />
-        <meta property="og:title" content="منيو مطعم اسم مطعمك - النكهات الشامية الأصيلة" />
+        <meta property="og:title" content="منتجات بون تكس للأقمشة" />
         <meta
           property="og:description"
-          content="تصفح قائمة طعام اسم مطعمك واستمتع بأشهى الأطباق السورية من الشاورما إلى المقبلات والوجبات العائلية."
+          content="رواد في صناعة الأقمشة القطنية تصنيع محلي و مستورد بون تكس"
         />
         <meta property="og:image" content="/logo.png" /> 
         <meta property="og:url" content="https://waly-damascus.vercel.app/menu" /> 

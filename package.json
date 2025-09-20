@@ -1,6 +1,6 @@
 {
-  "name": "test-ecommerce",
-  "version": "0.1.1",
+  "name": "pon-tex",
+  "version": "0.1.2",
   "private": true,
   "scripts": {
     "dev": "next dev",

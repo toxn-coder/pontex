@@ -85,8 +85,8 @@ export default function HeroSection({ buttonText = "تسوق الآن" }) {
   if (!infoApp) return null;
 
   return (
-    <div className="relative overflow-hidden bg-[var(--clr-primary)] text-white">
-      <div className="absolute inset-0 opacity-10 bg-[url('/placeholder.svg')] bg-repeat"></div>
+    <div className="relative overflow-hidden text-white ">
+      <div className="absolute inset-0 bg-[url('/placeholder.webp')] bg-no-repeat bg-cover "></div>
 
       <div className="container mx-auto px-4 py-16 md:py-24 lg:py-32 relative z-10">
         <div className="flex flex-col lg:flex-row items-center">
@@ -111,21 +111,21 @@ export default function HeroSection({ buttonText = "تسوق الآن" }) {
               </div>
 
               <div className="flex items-center">
-                <MapPin className="text-amber-400 ml-2" size={20} />
+                <MapPin className="text-white ml-2" size={20} />
                 <span>{infoApp.address}</span>
               </div>
 
               <div className="flex items-center">
-                <Clock className="text-amber-400 ml-2" size={20} />
+                <Clock className="text-white ml-2" size={20} />
                 <span className="arabic">{infoApp.openingHours}</span>
               </div>
             </div>
 
             <div className="flex gap-4 justify-center lg:justify-end">
               <Link href="/products">
-                <button className="bg-amber-500 hover:bg-amber-600 text-white py-3 px-8 rounded-lg font-bold transition-all shadow-lg hover:shadow-xl flex items-center">
-                  {buttonText}
+                <button className="bg-white hover:bg-[#dfdfdf] hover:scale-110 text-[#a0392a] py-3 px-8 rounded-lg font-bold transition-all shadow-lg hover:shadow-xl flex items-center">
                   <ArrowRight className="mr-2" size={20} />
+                  {buttonText}
                 </button>
               </Link>
             </div>
@@ -133,10 +133,10 @@ export default function HeroSection({ buttonText = "تسوق الآن" }) {
 
           <div className="w-full lg:w-1/2 relative">
             <div className="relative w-full h-64 md:h-96 lg:h-auto aspect-square mx-auto lg:max-w-lg">
-              <div className="absolute inset-0 bg-[#1A1A1A] rounded-full overflow-hidden border-8 border-dashed border-amber-600 shadow-2xl">
+              <div className=" absolute inset-0 bg-[#a0392a rounded-full overflow-hidden border-8 border-dashed border-white shadow-2xl">
                 <Image
                   src={infoApp.imageHero}
-                  alt="طبق شهي من مطعمنا"
+                  alt="الأقمشة"
                   fill
                   style={{ objectFit: "cover" }}
                   priority
@@ -169,13 +169,13 @@ export default function HeroSection({ buttonText = "تسوق الآن" }) {
         >
           <path
             d="M0,96L48,85.3C96,75,192,53,288,53.3C384,53,480,75,576,80C672,85,768,75,864,64C960,53,1056,43,1152,48C1248,53,1344,75,1392,85.3L1440,96L1440,120L0,120Z"
-            fill="#1B1B1B"
+            fill="#EBEBEB"
             fillOpacity="1"
           />
           <path
             d="M0,96L48,85.3C96,75,192,53,288,53.3C384,53,480,75,576,80C672,85,768,75,864,64C960,53,1056,43,1152,48C1248,53,1344,75,1392,85.3L1440,96"
             fill="none"
-            stroke="#E17100"
+            stroke="#a0392a"
             strokeWidth="5"
           />
         </svg>

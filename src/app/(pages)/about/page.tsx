@@ -24,10 +24,10 @@ export default function AboutUs() {
     <>
       <Head>
         <title> حولنا {infoApp.name}</title>
-        <meta name="description" content="متجر الكتروني لبيع المنتجات المميزة" />
-        <meta name="keywords" content="متجر متجر الكنروني لبيع افضل المنتجات" />
-        <meta property="og:title" content="متجر مميز بافضل المنتجات" />
-        <meta property="og:description" content="متجر بيع المنتجات المميزة والافضل" />
+        <meta name="description" content="متجر الكتروني لبيع الأقمشة المميزة" />
+        <meta name="keywords" content="متجر متجر الكنروني لبيع افضل المنتجات رواد في صناعة الأقمشة القطنية pon-tex pon tex" />
+        <meta property="og:title" content="متجر مميز بافضل المنتجات رواد في صناعة الأقمشة القطنية" />
+        <meta property="og:description" content="متجر بيع المنتجات المميزة والافضل رواد في صناعة الأقمشة القطنية" />
         <meta property="og:image" content="logo.png" />
         <meta property="og:url" content="https://waly-damascus.com/about" />
       </Head>

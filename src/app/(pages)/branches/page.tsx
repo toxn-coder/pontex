@@ -40,13 +40,13 @@ export default async function BranchesPage() {
         <title>فروع {infoApp.name}</title>
         <meta
           name="description"
-          content="تعرف على فروع مطعم اسم مطعمك، مواقعها، أرقام التواصل، وساعات العمل."
+          content="رواد في صناعة الأقمشة القطنية تصنيع محلي و مستورد"
         />
-        <meta name="keywords" content="فروع, مطعم اسم مطعمك, شاورما,  " />
-        <meta property="og:title" content="فروع مطعم اسم مطعمك" />
+        <meta name="keywords" content="رواد في صناعة الأقمشة القطنية تصنيع محلي و مستورد pon tex pon-tex" />
+        <meta property="og:title" content="فروع pon-tex" />
         <meta
           property="og:description"
-          content="تعرف على فروع مطعم والي دمشق، مواقعها، أرقام التواصل، وساعات العمل."
+          content="تعرف على فروع pon tex والي دمشق، مواقعها، أرقام التواصل، وساعات العمل."
         />
         <meta property="og:image" content="/logo.png" />
         <meta property="og:url" content="https://waly-damascus.vercel.app/branches" />

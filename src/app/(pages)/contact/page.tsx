@@ -98,7 +98,7 @@ export default function ContactUs() {
         />
         <meta
           name="keywords"
-          content="مطعم شاورما, القاهرة , اتصل بنا, خدمة العملاء"
+          content=" محل أقمشة, القاهرة , اتصل بنا, خدمة العملاء pon tex بون تكس"
         />
         <meta name="robots" content="index, follow" />
         <meta property="og:title" content="اتصل بنا - " />

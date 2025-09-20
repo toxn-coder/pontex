@@ -2,10 +2,10 @@ import { InfoAppType } from '@/types/infoAppType';
 import { initInfoApp } from './infoAppClient';
 
 const defaultInfoApp: InfoAppType = {
-  name: 'Ecommerce',
+  name: 'Pon tex',
   logoUrl: '/logo.png',
   imageHero:
-    'https://res.cloudinary.com/do88eynar/image/upload/v1745641598/fhiuaa8jhvbuwszbdmwx.webp',
+    '/logo.png',
   ourStory: 'قصتنا الافتراضية', // إضافة قيمة افتراضية
   ourVision: 'رؤيتنا الافتراضية', // إضافة قيمة افتراضية
   aboutImage: '/placeholder-about.png', // إضافة قيمة افتراضية
