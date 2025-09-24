@@ -24,6 +24,9 @@ interface ContactInfo {
   instagram: string;
   twitter: string;
   whatsapp: string;
+  address: string;
+  googleMapsLink: string;
+  // openingHours: string; // ✅ هنا التعديل
 }
 
 // مدة صلاحية التخزين المؤقت (1 ساعة بالمللي ثانية)
