@@ -64,7 +64,7 @@ setContactInfo({
   emails: Array.isArray(data.emails) ? data.emails : [],
   address: typeof data.address === 'string' ? data.address : '',
   logo: typeof data.logo === 'string' ? data.logo : '',
-  openingHours: typeof data.openingHours === 'string' ? data.openingHours : '', // ✅ هنا التعديل
+  
 });
 
 
