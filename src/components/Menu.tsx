@@ -43,7 +43,7 @@ const fetcher = async () => {
         id: meal.id || `temp-id-${Math.random().toString(36).substring(2)}`,
         name: meal.name || 'بدون اسم',
         description: meal.description || 'لا يوجد وصف',
-        image: meal.image || '/placeholder.svg',
+        image: meal.image || '/placeholder.png',
         price: meal.price || 'غير محدد',
         rating: meal.rating || 'بدون تقييم',
       }));
@@ -136,7 +136,7 @@ const Menu = () => {
                 title={cat.title}
                 products={cat.meals}
                 sectionId={cat.id}
-                
+                isVisible={cat.isVisible} // تمرير خاصية isVisible
               />
             ))}
         </section>

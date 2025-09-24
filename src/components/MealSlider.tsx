@@ -124,7 +124,7 @@ export default function MealSlider({ auto = false, title, products = [], section
           {products.map((meal, index) => {
             const name = meal.name || 'بدون اسم';
             const description = meal.description || 'لا يوجد وصف';
-            const image = meal.image && meal.image.trim() !== '' ? meal.image : '/placeholder.svg';
+            const image = meal.image && meal.image.trim() !== '' ? meal.image : '/fiber.png';
             const price = Number(meal.price) || 0;
             const rating = Number(meal.rating) || 4.0;
 

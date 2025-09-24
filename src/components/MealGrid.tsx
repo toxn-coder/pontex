@@ -18,10 +18,16 @@ interface MealGridProps {
   title: string;
   products: Meal[];
   sectionId?: string;
+  isVisible?: boolean; // ✅ إضافة البروب الجديد
 }
 
-export default function MealGrid({ title, products = [], sectionId }: MealGridProps) {
+export default function MealGrid({ title, products = [], sectionId, isVisible = true }: MealGridProps) {
   const { addToCart } = useCart();
+
+  // ✅ لو isVisible = false ما يظهرش القسم
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <div className="max-w-6xl mx-auto py-12 px-4 bg-[var(--clr-primary)] rounded-xl shadow-2xl my-10">
@@ -37,11 +43,14 @@ export default function MealGrid({ title, products = [], sectionId }: MealGridPr
         {products.map((meal, index) => {
           const name = meal.name || "بدون اسم";
           const description = meal.description || "لا يوجد وصف";
-          const image = meal.image && meal.image.trim() !== "" ? meal.image : "/fiber.png";
+          const image =
+            meal.image && meal.image.trim() !== "" ? meal.image : "/placeholder.png";
           const price = Number(meal.price) || 0;
           const rating = Number(meal.rating) || 4.0;
 
-          const link = sectionId ? `/products/${encodeURIComponent(sectionId)}/${meal.id}` : "#";
+          const link = sectionId
+            ? `/products/${encodeURIComponent(sectionId)}/${meal.id}`
+            : "#";
 
           return (
             <Link
@@ -52,16 +61,28 @@ export default function MealGrid({ title, products = [], sectionId }: MealGridPr
             >
               <div className="bg-[var(--background)] rounded-2xl overflow-hidden transition-all duration-300 group h-full flex flex-col border border-[var(--secondry)]">
                 {/* صورة المنتج */}
-                <div className="relative w-full h-56 overflow-hidden">
-                  <Image
-                    src={image}
-                    alt={name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 400px"
-                    className="object-cover transform group-hover:scale-110 transition-transform duration-500"
-                    priority={index < 3} // أول 3 صور eager
-                    loading={index < 3 ? "eager" : "lazy"}
-                  />
+                <div className="relative w-full h-56 overflow-hidden flex justify-center items-center">
+                  {image === "/placeholder.png" ? (
+                    <Image
+                      src={image}
+                      alt={name}
+                      width={126}
+                      height={126}
+                      className="object-contain opacity-70"
+                      priority={index < 3}
+                    />
+                  ) : (
+                    <Image
+                      src={image}
+                      alt={name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 400px"
+                      className="object-cover transform group-hover:scale-110 transition-transform duration-500"
+                      priority={index < 3}
+                      loading={index < 3 ? "eager" : "lazy"}
+                    />
+                  )}
+
                   <div className="absolute top-3 right-3 bg-yellow-600 text-white rounded-full px-2 py-1 text-xs font-bold flex items-center gap-1">
                     <Star className="w-3 h-3 fill-white" />
                     {rating.toFixed(1)}

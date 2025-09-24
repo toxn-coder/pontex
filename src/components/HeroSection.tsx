@@ -14,7 +14,6 @@ export default function HeroSection({ buttonText = "تسوق الآن" }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log("HeroSection useEffect triggered");
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -64,7 +63,6 @@ export default function HeroSection({ buttonText = "تسوق الآن" }) {
     ]
   );
 
-  console.log("HeroSection rendered");
 
   if (loading) {
     return (
@@ -86,7 +84,7 @@ export default function HeroSection({ buttonText = "تسوق الآن" }) {
 
   return (
     <div className="relative overflow-hidden text-white ">
-      <div className="absolute inset-0 bg-[url('/placeholder.webp')] bg-no-repeat bg-cover "></div>
+      <div className="absolute inset-0 bg-[url('/pic.jpg')] bg-no-repeat bg-cover "></div>
 
       <div className="container mx-auto px-4 py-16 md:py-24 lg:py-32 relative z-10">
         <div className="flex flex-col lg:flex-row items-center">
@@ -95,7 +93,7 @@ export default function HeroSection({ buttonText = "تسوق الآن" }) {
               بيع جميع المنتجات
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight name-logo">
               {infoApp.name}
             </h1>
 

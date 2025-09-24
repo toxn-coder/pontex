@@ -184,67 +184,77 @@ export default function InfoAppEditor() {
     );
   }
 
-const saveField = async (field: keyof InfoAppDoc, value: string | boolean) => {
-  try {
-    // تحديث Firestore
-    await updateDoc(infoDocRef, { [field]: value || deleteField() });
+  const saveField = async (field: keyof InfoAppDoc, value: string | boolean) => {
+    try {
+      // تحديث Firestore
+      await updateDoc(infoDocRef, { [field]: value || deleteField() });
 
-    // تحديث الحالة المحلية
-    setData((prev) => {
-      if (!prev) {
-        // إذا كان prev يساوي null، أنشئ كائنًا جديدًا مع قيم افتراضية
-        const defaultInfoApp: InfoAppType = {
-          name: "",
-          logoUrl: "",
-          imageHero: "",
-          ourStory: "",
-          ourVision: "",
-          aboutImage: "",
-          slogan: "",
-          rating: "",
-          address: "",
-          openingHours: "",
-          card1Title: "",
-          card1Desc: "",
-          card1Show: true,
-          card2Title: "",
-          card2Desc: "",
-          card2Show: true,
-          card3Title: "",
-          card3Desc: "",
-          card3Show: true,
-        };
-        return { ...defaultInfoApp, [field]: value };
-      }
-      // إذا كان prev موجودًا، قم بتحديث الحقل المحدد فقط
-      return { ...prev, [field]: value };
-    });
+      // تحديث الحالة المحلية
+      setData((prev) => {
+        if (!prev) {
+          // إذا كان prev يساوي null، أنشئ كائنًا جديدًا مع قيم افتراضية
+          const defaultInfoApp: InfoAppType = {
+            name: "",
+            logoUrl: "",
+            imageHero: "",
+            ourStory: "",
+            ourVision: "",
+            aboutImage: "",
+            slogan: "",
+            rating: "",
+            address: "",
+            openingHours: "",
+            card1Title: "",
+            card1Desc: "",
+            card1Show: true,
+            card2Title: "",
+            card2Desc: "",
+            card2Show: true,
+            card3Title: "",
+            card3Desc: "",
+            card3Show: true,
+          };
+          return { ...defaultInfoApp, [field]: value };
+        }
+        // إذا كان prev موجودًا، قم بتحديث الحقل المحدد فقط
+        return { ...prev, [field]: value };
+      });
 
-    toast.success("تم الحفظ");
-  } catch (err: any) {
-    console.error(err);
-    toast.error(err?.message || "فشل الحفظ");
-  }
-};
+      toast.success("تم الحفظ");
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err?.message || "فشل الحفظ");
+    }
+  };
 
-  const deleteFieldWithCloudinary = async (field: "logoUrl" | "imageHero" | "aboutImage") => {
+const deleteFieldWithCloudinary = async (field: "logoUrl" | "imageHero" | "aboutImage") => {
   const url = field === "logoUrl" ? logoUrl : field === "imageHero" ? imageHero : aboutImage;
   try {
+    let cloudinarySuccess = true;
     if (url) {
       const publicId = getPublicIdFromUrl(url);
       if (publicId) {
         const res = await fetch("/api/delete-cloudinary", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ publicId }),
+          body: JSON.stringify({ publicId, url }), // Include URL for server-side extraction
         });
-        if (!res.ok) throw new Error("فشل حذف من Cloudinary");
+        if (!res.ok) {
+          const errorData = await res.json();
+          console.error("Cloudinary delete error:", errorData);
+          cloudinarySuccess = false;
+          toast.warning(`فشل حذف الصورة من Cloudinary: ${errorData.error || "خطأ غير معروف"}`);
+        }
+      } else {
+        console.warn("No valid publicId extracted from URL:", url);
+        cloudinarySuccess = false;
       }
     }
+
+    // Always delete from Firestore, even if Cloudinary deletion fails
     await updateDoc(infoDocRef, { [field]: deleteField() });
     setData((prev) => {
       if (!prev) {
-        // إذا كان prev يساوي null، أنشئ كائنًا جديدًا مع قيم افتراضية
         const defaultInfoApp: InfoAppType = {
           name: "",
           logoUrl: "",
@@ -268,15 +278,24 @@ const saveField = async (field: keyof InfoAppDoc, value: string | boolean) => {
         };
         return { ...defaultInfoApp, [field]: "" };
       }
-      // إذا كان prev موجودًا، قم بتحديث الحقل المحدد إلى سلسلة فارغة
       return { ...prev, [field]: "" };
     });
+
     if (field === "logoUrl") setLogoUrl("");
     else if (field === "imageHero") setImageHero("");
     else setAboutImage("");
-    toast.success(url ? "تم الحذف بنجاح" : "تم الحذف من Firestore");
+
+    if (url) {
+      if (cloudinarySuccess) {
+        toast.success("تم الحذف من Cloudinary و Firestore بنجاح");
+      } else {
+        toast.warning("تم الحذف من Firestore، لكن فشل الحذف من Cloudinary");
+      }
+    } else {
+      toast.success("تم الحذف من Firestore");
+    }
   } catch (err: any) {
-    console.error(err);
+    console.error("Delete error:", err);
     toast.error(err?.message || "فشل الحذف");
   }
 };

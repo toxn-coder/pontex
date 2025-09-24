@@ -65,7 +65,7 @@ export default async function BranchesPage() {
         </Link>
 
         <h1 className="text-3xl sm:text-4xl font-bold text-white mb-8 text-center">
-          فروع <span className="text-yellow-500">{infoApp.name}</span>
+          فروع <span className="text-yellow-500 name-logo">{infoApp.name}</span>
         </h1>
 
         {branchesList.length === 0 ? (

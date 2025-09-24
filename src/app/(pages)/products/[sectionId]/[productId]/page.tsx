@@ -43,7 +43,7 @@ const fetcher = async ({ sectionId }: { sectionId: string }) => {
           id: meal.id, // بدون temp-id
           name: meal.name || "بدون اسم",
           description: meal.description || "لا يوجد وصف",
-          image: meal.image || "/placeholder.svg",
+          image: meal.image || "/placeholder.png",
           price: meal.price || "غير محدد",
           rating: meal.rating || "بدون تقييم",
         }));

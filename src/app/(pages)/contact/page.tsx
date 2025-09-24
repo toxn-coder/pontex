@@ -1,14 +1,21 @@
 "use client";
 
-import { db } from '@/app/api/firebase';
-import ProgressAnim from '@/components/ProgressAnim';
-import { doc, DocumentData, getDoc } from 'firebase/firestore';
-import { motion } from 'framer-motion';
-import { Facebook, Instagram, MapPin, MessageCircle, Phone, Twitter } from 'lucide-react';
-import Head from 'next/head';
-import { useEffect, useState } from 'react';
-import useSWR from 'swr';
-import { infoApp } from '@/components/infoApp';
+import { db } from "@/app/api/firebase";
+import ProgressAnim from "@/components/ProgressAnim";
+import { doc, DocumentData, getDoc } from "firebase/firestore";
+import { motion } from "framer-motion";
+import {
+  Facebook,
+  Instagram,
+  MapPin,
+  MessageCircle,
+  Phone,
+  Twitter,
+} from "lucide-react";
+import Head from "next/head";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
+import { infoApp } from "@/components/infoApp";
 
 // واجهة لنوع البيانات المتوقع من Firestore
 interface ContactInfo {
@@ -23,46 +30,62 @@ interface ContactInfo {
 const CACHE_DURATION = 60 * 60 * 1000;
 
 const fetcher = async () => {
-  const docRef = doc(db, 'settings', 'contactInfo');
+  const docRef = doc(db, "settings", "contactInfo");
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
     const data: DocumentData = docSnap.data();
     const contactInfo: ContactInfo = {
       phones: Array.isArray(data.phones) ? data.phones : [],
-      facebook: typeof data.facebook === 'string' ? data.facebook : '',
-      instagram: typeof data.instagram === 'string' ? data.instagram : '',
-      twitter: typeof data.twitter === 'string' ? data.twitter : '',
-      whatsapp: typeof data.whatsapp === 'string' ? data.whatsapp : '',
+      facebook: typeof data.facebook === "string" ? data.facebook : "",
+      instagram: typeof data.instagram === "string" ? data.instagram : "",
+      twitter: typeof data.twitter === "string" ? data.twitter : "",
+      whatsapp: typeof data.whatsapp === "string" ? data.whatsapp : "",
+      address: typeof data.address === "string" ? data.address : "",
+      googleMapsLink:
+        typeof data.googleMapsLink === "string" ? data.googleMapsLink : "",
     };
     // تخزين البيانات في localStorage
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('contactInfoData', JSON.stringify(contactInfo));
-      localStorage.setItem('contactInfoDataTimestamp', new Date().getTime().toString());
+    if (typeof window !== "undefined") {
+      localStorage.setItem("contactInfoData", JSON.stringify(contactInfo));
+      localStorage.setItem(
+        "contactInfoDataTimestamp",
+        new Date().getTime().toString()
+      );
     }
     return contactInfo;
   } else {
-    throw new Error('لا توجد معلومات اتصال متاحة.');
+    throw new Error("لا توجد معلومات اتصال متاحة.");
   }
 };
 
 export default function ContactUs() {
-  const [initialData, setInitialData] = useState<ContactInfo | undefined>(undefined);
+  const [initialData, setInitialData] = useState<ContactInfo | undefined>(
+    undefined
+  );
   const [isCacheValid, setIsCacheValid] = useState(false);
-  const [url,setUrl] = useState('')
+  const [url, setUrl] = useState("");
 
   // تحميل البيانات من localStorage على جانب العميل فقط
   useEffect(() => {
-    const cachedData = localStorage.getItem('contactInfoData');
-    const cachedTimestamp = localStorage.getItem('contactInfoDataTimestamp');
+    const cachedData = localStorage.getItem("contactInfoData");
+    const cachedTimestamp = localStorage.getItem("contactInfoDataTimestamp");
     const currentTime = new Date().getTime();
 
-    if (cachedData && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < CACHE_DURATION) {
+    if (
+      cachedData &&
+      cachedTimestamp &&
+      currentTime - parseInt(cachedTimestamp) < CACHE_DURATION
+    ) {
       setInitialData(JSON.parse(cachedData));
       setIsCacheValid(true);
     }
   }, []);
 
-  const { data: contactInfo, error, isLoading } = useSWR('contactInfoData', fetcher, {
+  const {
+    data: contactInfo,
+    error,
+    isLoading,
+  } = useSWR("contactInfoData", fetcher, {
     refreshInterval: 60 * 60 * 1000, // تحديث كل ساعة
     revalidateOnFocus: false, // تعطيل إعادة التحقق عند التركيز
     revalidateOnMount: !isCacheValid, // عدم الجلب إذا كانت البيانات المخزنة صالحة
@@ -72,21 +95,16 @@ export default function ContactUs() {
   });
 
   useEffect(() => {
-    let url = location.origin
+    let url = location.origin;
 
-    setUrl(url)
-  },[])
+    setUrl(url);
+  }, []);
 
-  
-  console.log(infoApp.name);
-  
-
-
-
-
-  const address = 'القاهرة';
-  const googleMapsLink =
-    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d110502.61184989334!2d31.340866926736993!3d30.059611343835442!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14583fa60b21beeb%3A0x79dfb296e8423bba!2z2KfZhNmC2KfZh9ix2KnYjCDZhdit2KfZgdi42Kkg2KfZhNmC2KfZh9ix2KnigKw!5e0!3m2!1sar!2seg!4v1756914015727!5m2!1sar!2seg';
+  const isValidGoogleMapsLink = (link: string) => {
+    return (
+      link.includes("maps.google.com") || link.includes("google.com/maps/embed")
+    );
+  };
 
   return (
     <div className="min-h-screen bg-[var(--clr-primary)] py-12 px-4">
@@ -107,7 +125,7 @@ export default function ContactUs() {
           content="تواصلوا معنا عبر الهاتف أو زورونا في موقعنا. نحن هنا لخدمتكم!"
         />
         <meta property="og:image" content="/logo.png" />
-        <meta property="og:url" content={url+'/contact'} />
+        <meta property="og:url" content={url + "/contact"} />
         <meta property="og:type" content="website" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta charSet="UTF-8" />
@@ -132,14 +150,18 @@ export default function ContactUs() {
         {isLoading && !contactInfo ? (
           <ProgressAnim />
         ) : error ? (
-          <p className="text-center text-red-400 text-lg">لايوجد بيانات متاحة لعرضها</p>
+          <p className="text-center text-red-400 text-lg">
+            لايوجد بيانات متاحة لعرضها
+          </p>
         ) : !contactInfo ||
           (!contactInfo.phones.length &&
             !contactInfo.facebook &&
             !contactInfo.instagram &&
             !contactInfo.twitter &&
             !contactInfo.whatsapp) ? (
-          <p className="text-center text-gray-300 text-lg">لا توجد معلومات اتصال متاحة حاليًا.</p>
+          <p className="text-center text-gray-300 text-lg">
+            لا توجد معلومات اتصال متاحة حاليًا.
+          </p>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* معلومات التواصل */}
@@ -149,13 +171,17 @@ export default function ContactUs() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="bg-white rounded-2xl shadow-xl p-8"
             >
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">معلومات التواصل</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">
+                معلومات التواصل
+              </h2>
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <MapPin className="w-6 h-6 text-yellow-600" />
                   <div>
                     <p className="text-sm text-gray-600">العنوان</p>
-                    <p className="text-gray-800 font-medium">{address}</p>
+                    <p className="text-gray-800 font-medium">
+                      {contactInfo.address}
+                    </p>
                   </div>
                 </div>
                 {contactInfo.phones && contactInfo.phones.length > 0 && (
@@ -178,9 +204,14 @@ export default function ContactUs() {
                 )}
 
                 {/* قسم وسائل التواصل الاجتماعي */}
-                {(contactInfo.facebook || contactInfo.instagram || contactInfo.twitter || contactInfo.whatsapp) && (
+                {(contactInfo.facebook ||
+                  contactInfo.instagram ||
+                  contactInfo.twitter ||
+                  contactInfo.whatsapp) && (
                   <div className="mt-6">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4">وسائل التواصل الاجتماعي</h3>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                      وسائل التواصل الاجتماعي
+                    </h3>
                     <div className="space-y-4">
                       {contactInfo.facebook && (
                         <div className="flex items-center gap-3">
@@ -258,15 +289,21 @@ export default function ContactUs() {
               transition={{ duration: 0.5, delay: 0.4 }}
               className="bg-white rounded-2xl shadow-xl overflow-hidden"
             >
-              <iframe
-                src={googleMapsLink}
-                width="100%"
-                height="400"
-                style={{ border: 0 }}
-                allowFullScreen={true}
-                loading="lazy"
-                title="خريطة الموقع"
-              />
+              {contactInfo.googleMapsLink &&
+                isValidGoogleMapsLink(contactInfo.googleMapsLink) && (
+                  <div>
+                    <iframe
+                      src={contactInfo.googleMapsLink}
+                      width="100%"
+                      height="600"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      title="معاينة خريطة جوجل"
+                      className="rounded-lg"
+                    />
+                  </div>
+                )}
             </motion.div>
           </div>
         )}

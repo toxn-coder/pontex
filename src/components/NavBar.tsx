@@ -56,8 +56,8 @@ export default function Navbar({ name, logoUrl }: NavbarProps) {
           >
             {[
               { href: '/', label: 'الرئيسية' },
-              { href: '/products', label: 'تسوق' },
-              { href: '/about', label: 'حول' },
+              { href: '/products', label: 'منتجاتنا' },
+              { href: '/about', label: 'من نحن' },
               { href: '/contact', label: 'اتصل بنا' },
               { href: '/branches', label: 'الفروع' }
             ].map((link) => (

@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Facebook, Instagram, Twitter, MessageCircle, MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { db } from '@/app/api/firebase';
 import { doc, getDoc ,collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { loadInfoApp } from './infoApp';
 
 interface ContactInfo {
   facebook: string;
@@ -18,6 +19,11 @@ interface ContactInfo {
   address: string;
 }
 
+interface LoadedInfoApp {
+  name: string;
+  logoUrl: string;
+  openingHours: string;
+}
 interface FooterProps {
   name: string;
   logoUrl: string;
@@ -34,7 +40,13 @@ const Footer = ({ name, logoUrl }: FooterProps) => {
     logo: '',
     address: '',
   });
+  const [infoApp, setInfoApp] = useState<LoadedInfoApp>({
+    name: '',
+    logoUrl: '',
+    openingHours: '',
+  });
   const [isPWA, setIsPWA] = useState(false);
+
 
   useEffect(() => {
     const fetchContactInfo = async () => {
@@ -43,21 +55,42 @@ const Footer = ({ name, logoUrl }: FooterProps) => {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
-          setContactInfo({
-            facebook: typeof data.facebook === 'string' ? data.facebook : '',
-            instagram: typeof data.instagram === 'string' ? data.instagram : '',
-            twitter: typeof data.twitter === 'string' ? data.twitter : '',
-            whatsapp: typeof data.whatsapp === 'string' ? data.whatsapp : '',
-            phones: Array.isArray(data.phones) ? data.phones : [],
-            emails: Array.isArray(data.emails) ? data.emails : [],
-            address: typeof data.address === 'string' ? data.address : '',
-          });
+setContactInfo({
+  facebook: typeof data.facebook === 'string' ? data.facebook : '',
+  instagram: typeof data.instagram === 'string' ? data.instagram : '',
+  twitter: typeof data.twitter === 'string' ? data.twitter : '',
+  whatsapp: typeof data.whatsapp === 'string' ? data.whatsapp : '',
+  phones: Array.isArray(data.phones) ? data.phones : [],
+  emails: Array.isArray(data.emails) ? data.emails : [],
+  address: typeof data.address === 'string' ? data.address : '',
+  logo: typeof data.logo === 'string' ? data.logo : '',
+  openingHours: typeof data.openingHours === 'string' ? data.openingHours : '', // ✅ هنا التعديل
+});
+
+
+
         }
       } catch (error) {
         console.error('Error fetching contact info:', error);
       }
     };
     fetchContactInfo();
+  }, []);
+
+  useEffect(() => {
+    const fetchInfoApp = async () => {
+      try {
+        const data = await loadInfoApp();
+        setInfoApp({
+          name: data.name,
+          logoUrl: data.logoUrl,
+          openingHours: data.openingHours ?? '',
+        });
+      } catch (error) {
+        console.error('Error fetching infoApp:', error);
+      }
+    };
+    fetchInfoApp();
   }, []);
 
   useEffect(() => {
@@ -93,6 +126,9 @@ const Footer = ({ name, logoUrl }: FooterProps) => {
 };
 
 
+
+
+
   if (isPWA) return null;
 
   return (
@@ -126,7 +162,7 @@ const Footer = ({ name, logoUrl }: FooterProps) => {
 
             </div>
             <p className="text-gray-200 mb-4">
-              {name} - وجهتك الموثوقة للتسوق الإلكتروني. اكتشف تشكيلتنا الواسعة من الأقمشة عالية الجودة بأسعار تنافسية. تسوق بثقة مع خدمة عملاء ممتازة وتوصيل سريع.
+              <span className='name-logo'>{name}</span> - وجهتك الموثوقة للتسوق الإلكتروني. اكتشف تشكيلتنا الواسعة من الأقمشة عالية الجودة بأسعار تنافسية. تسوق بثقة مع خدمة عملاء ممتازة وتوصيل سريع.
             </p>
             <div className="flex gap-3 justify-center md:justify-start">
               {contactInfo.facebook && (
@@ -187,11 +223,11 @@ const Footer = ({ name, logoUrl }: FooterProps) => {
               ))}
               <li className="flex items-center gap-2 justify-center md:justify-start">
                 <MapPin size={16} />
-                <span>القاهرة، مصر {contactInfo.address}</span>
+                <span>{contactInfo.address}</span>
               </li>
               <li className="flex items-center gap-2 justify-center md:justify-start">
                 <Clock size={16} />
-                <span>السبت - الخميس: 9 صباحًا - 9 مساءً</span>
+                <span>{infoApp.openingHours}</span>
               </li>
             </ul>
           </div>

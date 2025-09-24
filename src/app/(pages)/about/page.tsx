@@ -42,7 +42,7 @@ export default function AboutUs() {
             className="text-center mb-12"
           >
             <h1 className="text-4xl md:text-5xl font-bold text-white">
-              <span className="text-yellow-500">حول</span>
+              <span className="text-yellow-500">من نحن</span>
             </h1>
             <p className="text-gray-300 mt-4 text-lg max-w-2xl mx-auto">
               {infoApp.name} 
@@ -58,17 +58,17 @@ export default function AboutUs() {
               className="space-y-8"
             >
               {/* قصة المطعم */}
-              <div className="bg-yellow-500 rounded-2xl shadow-xl p-8">
-                <h2 className="text-2xl font-bold text-white mb-4">قصتنا</h2>
-                <p className="text-gray-300 leading-relaxed">
+              <div className="bg-[#ebebeb] rounded-2xl shadow-xl p-8">
+                <h2 className="text-2xl font-bold text-[#a0392a] mb-4">قصتنا</h2>
+                <p className="text-[#4e4d4d] leading-relaxed">
                 {infoApp.name} , {infoApp.ourStory}
                 </p>
               </div>
 
               {/* الرؤية والقيم */}
-              <div className="bg-yellow-500 rounded-2xl shadow-xl p-8">
-                <h2 className="text-2xl font-bold text-white mb-4">رؤيتنا وقيمنا</h2>
-                <p className="text-gray-300 leading-relaxed">
+              <div className="bg-[#ebebeb] rounded-2xl shadow-xl p-8">
+                <h2 className="text-2xl font-bold text-[#a0392a] mb-4">رؤيتنا وقيمنا</h2>
+                <p className="text-[#4e4d4d] leading-relaxed">
                    {infoApp.ourVision}
                 </p>
               </div>

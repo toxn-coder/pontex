@@ -2,7 +2,6 @@ import Cart from '@/components/Cart';
 import Footer from '@/components/Footer';
 // import InstallButton from '@/components/InstallButton';
 import Navbar from '@/components/NavBar';
-import NotificationListener from '@/components/NotificationListener';
 import type { Metadata } from 'next';
 import { Toaster } from 'sonner';
 import { CartProvider } from './CartContext';
@@ -45,13 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// ✅ تسجيل الـ service worker
-// if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-//   navigator.serviceWorker
-//     .register('/sw.js')
-//     .then((reg) => console.log('SW registered:', reg))
-//     .catch((err) => console.log('SW registration failed:', err));
-// }
+
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const appInfo = await loadInfoApp();
@@ -107,7 +100,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <main>{children}</main>
           <Footer name={appInfo.name} logoUrl={appInfo.logoUrl} aria-label="تذييل الموقع" />
           <Cart />
-          <NotificationListener />
+
           <Toaster richColors position="top-center" duration={3000} closeButton />
         </CartProvider>
       </body>
