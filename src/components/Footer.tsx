@@ -136,7 +136,7 @@ setContactInfo({
       <div className="bg-[var(--clr-primary)] py-3">
         <div className="container mx-auto px-4 flex justify-center md:justify-between items-center flex-wrap">
           <div className="text-center md:text-right mb-4 md:mb-0">
-            <h3 className="text-xl font-bold">احصل على النتجات الفاخرة! اطلب الآن</h3>
+            <h3 className="text-xl font-bold">احصل على الأقمشة الفاخرة! اطلب الآن</h3>
           </div>
           <div className="flex gap-4">
             <Link href="/contact" className="bg-amber-600 text-white px-6 py-2 rounded-full inline-block hover:bg-amber-500 transition">

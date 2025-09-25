@@ -109,7 +109,7 @@ export default function ContactUs() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--clr-primary)] py-12 px-4">
+    <div className="min-h-screen py-12 px-4">
       <Head>
         <title>اتصل بنا - مطعم اسم مطعمك</title>
         <meta
@@ -144,7 +144,7 @@ export default function ContactUs() {
           <h1 className="text-4xl md:text-5xl font-bold text-white">
             <span className="text-yellow-500">اتصل بنا</span>
           </h1>
-          <p className="text-gray-300 mt-4 text-lg max-w-2xl mx-auto">
+          <p className="text-gray-900 mt-4 text-lg max-w-2xl mx-auto">
             تواصلوا معنا عبر الهاتف أو زورونا في موقعنا. نحن هنا لخدمتكم!
           </p>
         </motion.div>

@@ -32,7 +32,7 @@ export default function AboutUs() {
         <meta property="og:url" content="https://waly-damascus.com/about" />
       </Head>
       
-      <div className="min-h-screen bg-[var(--clr-primary)] py-12 px-4">
+      <div className="min-h-screen  py-12 px-4">
         <div className="max-w-6xl mx-auto">
           {/* رأس الصفحة */}
           <motion.div
@@ -44,7 +44,7 @@ export default function AboutUs() {
             <h1 className="text-4xl md:text-5xl font-bold text-white">
               <span className="text-yellow-500">من نحن</span>
             </h1>
-            <p className="text-gray-300 mt-4 text-lg max-w-2xl mx-auto">
+            <p className="text-gray-900 mt-4 text-lg max-w-2xl mx-auto name-logo">
               {infoApp.name} 
             </p>
           </motion.div>
