@@ -28,8 +28,8 @@ export default function Navbar({ name, logoUrl }: NavbarProps) {
   return (
     <header
       className={clsx(
-        'sticky top-0 w-full z-50 px-4 py-4 shadow-md transition-all duration-300 ',
-        scrolling ? 'text-gray-600 backdrop-blur-md shadow-lg' : 'bg-[#ebebeb]'
+        'fixed top-0 w-full z-50 px-4 py-4 shadow-md transition-all duration-300 ',
+        scrolling ? 'text-gray-600 backdrop-blur-md bg-[#a0392a] shadow-lg' : 'bg-[transparent]  shadow-none'
       )}
     >
       <nav>
@@ -59,7 +59,7 @@ export default function Navbar({ name, logoUrl }: NavbarProps) {
               { href: '/products', label: 'منتجاتنا' },
               { href: '/about', label: 'من نحن' },
               { href: '/contact', label: 'اتصل بنا' },
-              { href: '/branches', label: 'الفروع' }
+              { href: '/production', label: 'الأنتاج' }
             ].map((link) => (
               <Link
                 key={link.href}

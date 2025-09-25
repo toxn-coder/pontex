@@ -101,23 +101,7 @@ export default function HeroSection({ buttonText = "تسوق الآن" }) {
               {infoApp.slogan}
             </p>
 
-            <div className="flex flex-wrap justify-center lg:justify-end gap-6 mb-8">
-              <div className="flex items-center">
-                <Star className="text-amber-400 ml-2" size={20} fill="#fbbf24" />
-                <span className="font-bold text-lg">{infoApp.rating}</span>
-                <span className="text-amber-200 mr-1">/5</span>
-              </div>
 
-              <div className="flex items-center">
-                <MapPin className="text-white ml-2" size={20} />
-                <span>{infoApp.address}</span>
-              </div>
-
-              <div className="flex items-center">
-                <Clock className="text-white ml-2" size={20} />
-                <span className="arabic">{infoApp.openingHours}</span>
-              </div>
-            </div>
 
             <div className="flex gap-4 justify-center lg:justify-end">
               <Link href="/products">
@@ -129,20 +113,7 @@ export default function HeroSection({ buttonText = "تسوق الآن" }) {
             </div>
           </div>
 
-          <div className="w-full lg:w-1/2 relative">
-            <div className="relative w-full h-64 md:h-96 lg:h-auto aspect-square mx-auto lg:max-w-lg">
-              <div className=" absolute inset-0 bg-[#a0392a rounded-full overflow-hidden border-8 border-dashed border-white shadow-2xl">
-                <Image
-                  src={infoApp.imageHero}
-                  alt="الأقمشة"
-                  fill
-                  style={{ objectFit: "cover" }}
-                  priority
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-              </div>
-            </div>
-          </div>
+
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10 max-w-5xl mx-auto">
@@ -167,7 +138,7 @@ export default function HeroSection({ buttonText = "تسوق الآن" }) {
         >
           <path
             d="M0,96L48,85.3C96,75,192,53,288,53.3C384,53,480,75,576,80C672,85,768,75,864,64C960,53,1056,43,1152,48C1248,53,1344,75,1392,85.3L1440,96L1440,120L0,120Z"
-            fill="#EBEBEB"
+            fill="#fff"
             fillOpacity="1"
           />
           <path

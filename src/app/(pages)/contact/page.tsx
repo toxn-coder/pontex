@@ -15,7 +15,6 @@ import {
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import { infoApp } from "@/components/infoApp";
 
 // واجهة لنوع البيانات المتوقع من Firestore
 interface ContactInfo {
@@ -26,7 +25,7 @@ interface ContactInfo {
   whatsapp: string;
   address: string;
   googleMapsLink: string;
-  // openingHours: string; // ✅ هنا التعديل
+  
 }
 
 // مدة صلاحية التخزين المؤقت (1 ساعة بالمللي ثانية)

@@ -8,7 +8,6 @@ import ChangePassword from '@/components/ChangePassword';
 import InfoAppEditor from '@/components/InfoAppEditor';
 import PartsList from '@/components/PartList';
 import QRCodeGenerator from '@/components/QRCodeGenerator';
-import SendNotificationPanel from '@/components/SendNotificationPanel';
 import SocialLinksManager from '@/components/SocialLinksManager';
 import UserManager from '@/components/UserManager';
 import { signOut } from 'firebase/auth';
@@ -18,6 +17,8 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import SubscribersList from '@/components/subscribersEmail'
 import ClientWrapper from '@/components/ClientWrapper';
+import AdminAddSection from '@/components/AdminAddSection';
+import AdminEditSection from '@/components/AdminEditSection';
 
 
 
@@ -85,19 +86,19 @@ useEffect(() => {
   const pages = [
     { path: "", label: "الصفحة الرئيسية" },
     { path: "/products", label: "صفحة المنتجات" },
-    { path: "/about", label: "صفحة حول" },
+    { path: "/about", label: "صفحة من نحن" },
     { path: "/contact", label: "صفحة اتصل بنا" },
-    { path: "/branches", label: "صفحة الفروع" },
+    { path: "/production", label: "صفحة الأنتاج" },
   ];
 
   return (
     <ClientWrapper>
-    <div className="min-h-screen bg-[var(--clr-primary)] py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#fff] py-12 px-4 sm:px-6 lg:px-8">
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-6xl mx-auto mb-12"
+        className="max-w-6xl mx-auto mb-12 mt-12"
       >
         <div className="flex flex-col sm:flex-row justify-between items-center bg-gray-800 rounded-2xl shadow-xl p-6">
         <div className="text-center sm:text-right mb-4 sm:mb-0">
@@ -162,15 +163,7 @@ useEffect(() => {
         </motion.div>
 
 
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
-          className="bg-gray-800 rounded-2xl shadow-xl p-6 md:col-span-2"
-        >
-          <h2 className="text-2xl font-bold text-white mb-4">إدارة الفروع</h2>
-          <AdminBranchesManager />
-        </motion.div>
+
 
         {UserManager() ? (
   <motion.div
@@ -233,12 +226,28 @@ useEffect(() => {
           transition={{ duration: 0.5, delay: 1.2 }}
           className="bg-gray-800 rounded-2xl shadow-xl p-6 md:col-span-2"
         >
+        <AdminAddSection/>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 1.2 }}
+          className="bg-gray-800 rounded-2xl shadow-xl p-6 md:col-span-2"
+        >
+        <AdminEditSection/>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 1.2 }}
+          className="bg-gray-800 rounded-2xl shadow-xl p-6 md:col-span-2"
+        >
           <h2 className="text-2xl font-bold text-white mb-4">QR Code</h2>
           <QRCodeGenerator
   value={qrCodeValue} 
   size={250}
 />
-<div>
+<div className='mt-5'>
   <input onChange={(e)=>setInputQr(e.currentTarget.value.trim())} type='text'                 className="w-full px-4 py-2 rounded-lg text-white focus:outline-none border-2 border-amber-500"
  placeholder=' ادخل الرابط لتحويله الى رمز ضوئي '/>
 </div>
