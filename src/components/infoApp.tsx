@@ -5,7 +5,7 @@ const defaultInfoApp: InfoAppType = {
   name: 'Pon tex',
   logoUrl: '/logo.png',
   imageHero:
-    '/logo.png',
+    '/placeholder.webp',
   ourStory: 'قصتنا الافتراضية', // إضافة قيمة افتراضية
   ourVision: 'رؤيتنا الافتراضية', // إضافة قيمة افتراضية
   aboutImage: '/placeholder-about.png', // إضافة قيمة افتراضية

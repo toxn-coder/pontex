@@ -1,18 +1,40 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "KOMPAQ";
+  src: url("/fonts/KOMPAQ.woff2") format("woff2"),
+       url("/fonts/KOMPAQ.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Bukra";
+  src: url("/fonts/BUKRA.woff2") format("woff2"),
+       url("/fonts/BUKRA.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Manal";
+  src: url("/fonts/MANAL.woff2") format("woff2"),
+       url("/fonts/MANAL.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 
 :root {
-  --clr-primary: #a0392a;
-  --clr-dark-red: #a0392a;
-  --secondry: #a0392a;
+  --clr-primary: #511514;
+  --clr-dark-red: #511514;
+  --secondry: #511514;
   --radius: 0.625rem;
-  --background: #EBEBEB; /* خلفية بيضاء */
+  --background: #EBEBEB;
   --foreground: #EBEBEB;
-  --card: #ffffff; /* خلفية بيضاء */
+  --card: #ffffff;
   --card-foreground: #000000;
-  --popover: #ffffff; /* خلفية بيضاء */
+  --popover: #ffffff; 
   --popover-foreground: #000000;
-  --primary: #a0392a;
+  --primary: #511514;
   --primary-foreground: #ffffff;
   --secondary: #f0f0f0;
   --secondary-foreground: #000000;
@@ -23,20 +45,20 @@
   --destructive: #ff3333;
   --border: #e0e0e0;
   --input: #e0e0e0;
-  --ring: #a0392a;
+  --ring: #511514;
   --chart-1: #ff6384;
   --chart-2: #36a2eb;
   --chart-3: #ffcd56;
   --chart-4: #4bc0c0;
   --chart-5: #9966ff;
-  --sidebar: #ffffff; /* خلفية بيضاء */
+  --sidebar: #ffffff; 
   --sidebar-foreground: #000000;
-  --sidebar-primary: #a0392a;
+  --sidebar-primary: #511514;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #f0f0f0;
   --sidebar-accent-foreground: #000000;
   --sidebar-border: #e0e0e0;
-  --sidebar-ring: #a0392a;
+  --sidebar-ring: #511514;
 }
 
 @theme inline {
@@ -77,6 +99,11 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --font-Bukra: "Bukra", sans-serif;
+  --font-Cairo: "Cairo", sans-serif;
+  --font-KOMPAQ: "KOMPAQ", sans-serif;
+  --font-Manal: "Manal", sans-serif;
+
 }
 
 @layer base {
@@ -92,11 +119,8 @@
     @apply animate-pulse;
   }
 }
-body {
-  font-family: 'Cairo', sans-serif;
-}
 
-/* إذا كنت بحاجة إلى تخصيص أوزان معينة */
+
 .font-light {
   font-family: 'Cairo', sans-serif;
   font-weight: 400;
@@ -112,13 +136,7 @@ body {
   font-weight: 700;
 }
 
-@font-face {
-  font-family: "KOMPAQ";
-  src: url("/fonts/KOMPAQ.woff2") format("woff2"),
-       url("/fonts/KOMPAQ.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
+
 
 
 .name-logo {
@@ -126,5 +144,17 @@ body {
   font-weight: bold;
   font-style:normal;
   letter-spacing: 0.05em;
-  /* font-size: 1.5rem; يمكنك تعديل الحجم حسب الحاجة */
+
+}
+
+.font-Manal {
+  font-family: "Manal", sans-serif;
+}
+
+.font-Bukra {
+  font-family: "Bukra", sans-serif;
+}
+
+.font-KOMPAQ {
+  font-family: "KOMPAQ", sans-serif;
 }

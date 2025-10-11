@@ -1,3 +1,4 @@
+import '@/app/globals.css';
 import Cart from '@/components/Cart';
 import Footer from '@/components/Footer';
 // import InstallButton from '@/components/InstallButton';
@@ -5,7 +6,6 @@ import Navbar from '@/components/NavBar';
 import type { Metadata } from 'next';
 import { Toaster } from 'sonner';
 import { CartProvider } from './CartContext';
-import './globals.css';
 import { loadInfoApp } from '@/components/infoApp';
 import { headers } from 'next/headers';
 
@@ -13,6 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const appInfo = await loadInfoApp();
 
   return {
+    metadataBase: new URL(`https://localhost:3000` ),
     title: `${appInfo.name} - افضل المنتجات والخدمات`,
     description: `${appInfo.name,'رواد في صناعة الأقمشة القطنية'}`,
     openGraph: {
@@ -99,7 +100,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           {/* <InstallButton /> */}
           <main>{children}</main>
           <Footer name={appInfo.name} logoUrl={appInfo.logoUrl} aria-label="تذييل الموقع" />
-          <Cart />
+          
 
           <Toaster richColors position="top-center" duration={3000} closeButton />
         </CartProvider>

@@ -133,81 +133,73 @@ setContactInfo({
 
   return (
     <footer className="bg-gradient-to-r from-[var(--clr-dark-red)] to-[var(--clr-primary)] text-white">
-      <div className="bg-[var(--clr-primary)] py-3">
-        <div className="container mx-auto px-4 flex justify-center md:justify-between items-center flex-wrap">
-          <div className="text-center md:text-right mb-4 md:mb-0">
-            <h3 className="text-xl font-bold">احصل على الأقمشة الفاخرة! اطلب الآن</h3>
-          </div>
-          <div className="flex gap-4">
-            <Link href="/contact" className="bg-amber-600 text-white px-6 py-2 rounded-full inline-block hover:bg-amber-500 transition">
-              تواصل معنا
-            </Link>
-          </div>
-        </div>
-      </div>
 
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  border-b border-white">
           {/* شعار ووصف */}
-          <div className="text-center md:text-right">
+          <div className="text-center md:text-right border-x border-white p-4">
             <div className="flex justify-center md:justify-start mb-4">
-              <Image
+              {/* <Image
   src={logoUrl? logoUrl : "/logo.png"}
   alt="شعار الموقع"
   width={50}
   height={50}
   style={{ width: '50px', height: 'auto' }}
   className="object-contain rounded"
-/>
+/> */}
 
             </div>
-            <p className="text-gray-200 mb-4">
-              <span className='name-logo'>{name}</span> - وجهتك الموثوقة للتسوق الإلكتروني. اكتشف تشكيلتنا الواسعة من الأقمشة عالية الجودة بأسعار تنافسية. تسوق بثقة مع خدمة عملاء ممتازة وتوصيل سريع.
-            </p>
-            <div className="flex gap-3 justify-center md:justify-start">
+            <p className="text-gray-200 mb-4 text-center font-Bukra">
+              <span className='name-logo block text-center text-2xl'>{name}</span>
+              وجهتك الموثوقة للتسوق الإلكتروني.
+اكتشف تشكيلتنا الواسعة من الأقمشة
+عالية الجودة بأسعار تنافسية. تسوق بثقة
+مع خدمة عملاء ممتازة وتوصيل سريع
+              </p>
+            <div className="flex gap-3 justify-center md:justify-center">
               {contactInfo.facebook && (
-                <Link href={contactInfo.facebook} target="_blank" rel="noopener noreferrer" className="bg-white text-amber-800 p-2 rounded-full hover:bg-amber-100 transition">
+                <Link href={contactInfo.facebook} target="_blank" rel="noopener noreferrer" className="border-1 border-white text-white p-2 rounded-full hover:bg-amber-100 hover:text-[var(--clr-primary)] transition">
                   <Facebook size={20} />
                 </Link>
               )}
               {contactInfo.instagram && (
-                <Link href={contactInfo.instagram} target="_blank" rel="noopener noreferrer" className="bg-white text-amber-800 p-2 rounded-full hover:bg-amber-100 transition">
+                <Link href={contactInfo.instagram} target="_blank" rel="noopener noreferrer" className="border-1 border-white text-white p-2 rounded-full hover:bg-amber-100 hover:text-[var(--clr-primary)] transition">
                   <Instagram size={20} />
                 </Link>
               )}
               {contactInfo.twitter && (
-                <Link href={contactInfo.twitter} target="_blank" rel="noopener noreferrer" className="bg-white text-amber-800 p-2 rounded-full hover:bg-amber-100 transition">
+                <Link href={contactInfo.twitter} target="_blank" rel="noopener noreferrer" className="border-1 border-white text-white p-2 rounded-full hover:bg-amber-100 hover:text-[var(--clr-primary)] transition">
                   <Twitter size={20} />
                 </Link>
               )}
               {contactInfo.whatsapp && (
-                <Link href={contactInfo.whatsapp} target="_blank" rel="noopener noreferrer" className="bg-white text-amber-800 p-2 rounded-full hover:bg-amber-100 transition">
+                <Link href={contactInfo.whatsapp} target="_blank" rel="noopener noreferrer" className="border-1 border-white text-white p-2 rounded-full hover:bg-amber-100 hover:text-[var(--clr-primary)] transition">
                   <MessageCircle size={20} />
                 </Link>
               )}
             </div>
           </div>
           {/* باقي الأعمدة كما هي */}
-          <div className="text-center md:text-right">
+          <div className="text-center md:text-right border-l border-white p-4">
             
-            <h4 className="text-lg font-semibold mb-4">روابط سريعة</h4>
-            <ul className="space-y-2">
+            <h4 className="text-lg font-semibold mb-4 font-Bukra">روابط سريعة</h4>
+            <ul className="space-y-2 ">
               <li>
-                <Link href="/" className="hover:underline">الرئيسية</Link>
+                <Link href="/" className="hover:underline font-Bukra">الرئيسية</Link>
               </li>
               <li>
-                <Link href="/products" className="hover:underline">المنتجات</Link>
+                <Link href="/products" className="hover:underline font-Bukra">المنتجات</Link>
               </li>
               <li>
-                <Link href="/about" className="hover:underline">من نحن</Link>
+                <Link href="/about" className="hover:underline font-Bukra">من نحن</Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:underline">اتصل بنا</Link>
+                <Link href="/contact" className="hover:underline font-Bukra">اتصل بنا</Link>
               </li>
             </ul>
           </div>
-          <div className="text-center md:text-right">
-            <h4 className="text-lg font-semibold mb-4">معلومات الاتصال</h4>
+          <div className="text-center md:text-right border-l border-white p-4">
+            <h4 className="text-lg font-semibold mb-4 font-Bukra">معلومات الاتصال</h4>
             <ul className="space-y-2">
               {contactInfo.phones.map((phone, index) => (
                 <li key={index} className="flex items-center gap-2 justify-center md:justify-start">
@@ -231,25 +223,28 @@ setContactInfo({
               </li>
             </ul>
           </div>
-          <div className="text-center md:text-right">
-            <h4 className="text-lg font-semibold mb-4">اشترك في النشرة الإخبارية</h4>
-            <p className="text-gray-200 mb-4">كن أول من يعرف عن العروض والمنتجات الجديدة!</p>
+          <div className="text-center md:text-right border-l border-white p-4">
+            <h4 className="text-lg font-semibold mb-4 font-Bukra">اشترك ببريدك ليصلك احدث الاسعار والعروض</h4>
+            <p className="text-gray-200 mb-4 font-Bukra">كن أول من يعرف عن العروض والمنتجات الجديدة!</p>
             <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
               <input
                 type="email"
                 value={email}
                 placeholder="أدخل بريدك الإلكتروني"
-                className="w-full px-4 py-2 rounded-lg text-white focus:outline-none border-2 border-amber-500"
+                className="w-full px-4 py-2 rounded-lg text-white focus:outline-none bg-white/30"
                 required
                 onChange={(e) => setEmail(e.target.value)}
               />
               <button
                 type="submit"
-                className="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-500 transition"
+                className="bg-[#e7dfd6] text-[#511514] px-4 py-2 rounded-lg hover:bg-[#852220b9] hover:text-white transition"
               >
                 اشترك
               </button>
             </form>
+               <Link href="/contact" className="bg-[#e7dfd6] text-[#511514] px-6 py-2 rounded-[5px] inline-block hover:bg-[#852220b9] hover:text-white transition mt-4 w-full text-center">
+              تواصل معنا
+            </Link>
           </div>
         
         </div>

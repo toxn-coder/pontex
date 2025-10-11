@@ -8,7 +8,7 @@ export default async function Home() {
 
 
   return (
-      <div className="bg-white">
+      <div className="bg-[#e7dfd6]">
       <HeroSection/>
       <Menu />
       </div>

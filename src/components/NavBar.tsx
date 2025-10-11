@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Image from 'next/image'; // ✅ استيراد مكوّن الصورة
+import Cart from './Cart';
+
 
 interface NavbarProps {
   name: string;
@@ -28,8 +30,8 @@ export default function Navbar({ name, logoUrl }: NavbarProps) {
   return (
     <header
       className={clsx(
-        'fixed top-0 w-full z-50 px-4 py-4 shadow-md transition-all duration-300 ',
-        scrolling ? 'text-gray-600 backdrop-blur-md bg-[#a0392a] shadow-lg' : 'bg-[transparent]  shadow-none'
+        'fixed top-0 w-full z-50 px-2 py-2 shadow-md transition-all duration-300 font-Bukra',
+        scrolling ? 'text-gray-600 backdrop-blur-md bg-[#511514] shadow-lg' : 'bg-[transparent]  shadow-none'
       )}
     >
       <nav>
@@ -40,9 +42,9 @@ export default function Navbar({ name, logoUrl }: NavbarProps) {
             className="lg:hidden flex flex-col gap-1.5 p-2"
             aria-label="منتجاتنا"
           >
-            <span className={clsx("block w-6 h-0.5 rounded-full transition-colors duration-300", scrolling ? 'bg-white' : 'bg-[#a0392a]')}></span>
-            <span className={clsx("block w-6 h-0.5 rounded-full transition-colors duration-300", scrolling ? 'bg-white' : 'bg-[#a0392a]')}></span>
-            <span className={clsx("block w-6 h-0.5 rounded-full transition-colors duration-300", scrolling ? 'bg-white' : 'bg-[#a0392a]')}></span>
+            <span className={clsx("block w-6 h-0.5 rounded-full transition-colors duration-300", scrolling ? 'bg-white' : 'bg-[#511514]')}></span>
+            <span className={clsx("block w-6 h-0.5 rounded-full transition-colors duration-300", scrolling ? 'bg-white' : 'bg-[#511514]')}></span>
+            <span className={clsx("block w-6 h-0.5 rounded-full transition-colors duration-300", scrolling ? 'bg-white' : 'bg-[#511514]')}></span>
           </button>
 
           {/* روابط التنقل */}
@@ -54,6 +56,7 @@ export default function Navbar({ name, logoUrl }: NavbarProps) {
                 : 'hidden lg:flex'
             )}
           >
+            <Cart />
             {[
               { href: '/', label: 'الرئيسية' },
               { href: '/products', label: 'منتجاتنا' },
@@ -65,7 +68,7 @@ export default function Navbar({ name, logoUrl }: NavbarProps) {
                 key={link.href}
                 href={link.href}
                 className={clsx(
-                  'relative transition-colors py-2',
+                  'relative transition-colors py-2 font-Bukra font-bold',
                   scrolling 
                     ? 'text-white hover:text-gray-300' 
                     : 'text-[#a0392a] hover:text-[#e95640]',
@@ -79,23 +82,24 @@ export default function Navbar({ name, logoUrl }: NavbarProps) {
                 {link.label}
               </Link>
             ))}
+            
           </div>
 
-          {/* شعار المطعم */}
+          {/* شعار  */}
           <div
             className={clsx(
               'text-2xl font-bold flex items-center transition-all duration-300 ease-in-out gap-2',
               scrolling ? 'scale-95' : 'scale-100'
             )}
           >
+            <span className={clsx("transition-colors duration-300 name-logo ", scrolling ? 'text-white' : 'text-[#511514]')}>{name}</span>
             <Image
               src={logoUrl}
               alt={name}
               width={40}   // ✅ لازم تحدد العرض
               height={40}  // ✅ لازم تحدد الطول
-              className="w-10 h-10 mr-2 rounded-full object-contain"
+              className="mr-2 rounded-full object-contain"
             />
-            <span className={clsx("transition-colors duration-300 name-logo ", scrolling ? 'text-white' : 'text-[#a0392a]')}>{name}</span>
           </div>
         </div>
       </nav>

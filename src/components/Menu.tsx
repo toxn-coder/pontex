@@ -103,7 +103,7 @@ const Menu = () => {
   });
 
   return (
-    <div className="min-h-screen mt-22 bg-white">
+    <div className="min-h-screen mt-22 bg-[#e7dfd6]">
       {isLoading && !categories ? (
         <ProgressAnim />
       ) : error ? (
@@ -127,7 +127,7 @@ const Menu = () => {
           </button>
         </main>
       ) : (
-        <section aria-label="قائمة المنتجات" className='bg-white'>
+        <section aria-label="قائمة المنتجات">
           {categories
             .filter((cat) => cat.isVisible !== false) // إظهار الأقسام المرئية فقط
             .map((cat) => (

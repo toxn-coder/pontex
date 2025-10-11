@@ -3,13 +3,23 @@ import { FC, memo } from "react";
 interface CardHeroProps {
   title?: string;
   description?: string;
+  index: number;
 }
 
-const CardHero: FC<CardHeroProps> = ({ title, description }) => {
+const CardHero: FC<CardHeroProps> = ({ title, description,index }) => {
+
+  if (index === 1) {
+    return (
+    <div className="border-white border-x px-2 ">
+      <h3 className="font-bold text-3xl mb-2 text-center font-Bukra">{title ?? ""}</h3>
+      <p className="text-amber-100 text-2xl text-right font-['Cairo']">{description ?? ""}</p>
+    </div>
+  );
+  } 
   return (
-    <div className="m-auto bg-[var(--secondry)] backdrop-blur-sm p-6 rounded-xl shadow-lg w-64 transform hover:-translate-y-1 transition-transform">
-      <h3 className="font-bold text-lg mb-2">{title ?? ""}</h3>
-      <p className="text-amber-100">{description ?? ""}</p>
+    <div className="">
+      <h3 className="font-bold text-3xl mb-2 text-center font-Bukra">{title ?? ""}</h3>
+      <p className="text-amber-100 text-2xl text-right font-['Cairo']">{description ?? ""}</p>
     </div>
   );
 };
