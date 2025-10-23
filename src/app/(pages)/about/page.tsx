@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { loadInfoApp } from '@/components/infoApp';
-import { motion } from 'framer-motion';
+import { motion, easeOut, easeInOut } from 'framer-motion';
 import Image from 'next/image';
 import Head from 'next/head';
 
@@ -26,7 +26,7 @@ export default function AboutUs() {
     visible: {
       opacity: 1,
       x: 0,
-      transition: { duration: 0.7, ease: 'easeOut' },
+      transition: { duration: 0.7, ease: easeOut },
     },
   });
 
@@ -34,10 +34,7 @@ export default function AboutUs() {
     <>
       <Head>
         <title>من نحن {infoApp.name}</title>
-        <meta
-          name="description"
-          content="متجر الكتروني لبيع الأقمشة المميزة"
-        />
+        <meta name="description" content="متجر الكتروني لبيع الأقمشة المميزة" />
       </Head>
 
       <div className="min-h-screen py-12 px-4 text-center">
@@ -46,7 +43,7 @@ export default function AboutUs() {
           <motion.div
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.6, ease: easeOut }}
             className="text-center mb-12"
           >
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -62,7 +59,7 @@ export default function AboutUs() {
               animate={{ width: '100%' }}
               transition={{
                 duration: 0.8,
-                ease: 'easeInOut',
+                ease: easeInOut,
                 delay: 0.5,
               }}
               className="block h-[1px] bg-[#3a3a3a] mx-auto mt-6 rounded-full"
@@ -81,20 +78,21 @@ export default function AboutUs() {
 
           {/* القسم الأول */}
           <motion.div
-            className="mt-12 w-full flex flex-col md:flex-row items-center justify-between gap-8 will-change-transform"
+            className="mt-12 w-full flex flex-col md:flex-row items-center justify-between gap-8"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.3 }}
           >
             <motion.div
               variants={fadeFrom('right')}
-              className="relative w-[400px] h-[400px] bg-white rounded-2xl shadow-lg overflow-hidden flex-shrink-0"
+              className="relative w-full md:w-[420px] aspect-square bg-white rounded-2xl shadow-lg overflow-hidden flex-shrink-0 transition-transform duration-500 hover:scale-[1.03]"
             >
               <Image
                 src="/target.svg"
                 alt="about us"
                 fill
                 className="object-contain p-6"
+                priority
               />
             </motion.div>
 
@@ -112,14 +110,14 @@ export default function AboutUs() {
 
           {/* القسم الثاني */}
           <motion.div
-            className="mt-20 w-full flex flex-col md:flex-row-reverse items-center justify-between gap-8 will-change-transform"
+            className="mt-20 w-full flex flex-col md:flex-row-reverse items-center justify-between gap-8"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.3 }}
           >
             <motion.div
               variants={fadeFrom('left')}
-              className="relative w-[400px] h-[400px] bg-white rounded-2xl shadow-lg overflow-hidden flex-shrink-0"
+              className="relative w-full md:w-[420px] aspect-square bg-white rounded-2xl shadow-lg overflow-hidden flex-shrink-0 transition-transform duration-500 hover:scale-[1.03]"
             >
               <Image
                 src="/see.svg"
