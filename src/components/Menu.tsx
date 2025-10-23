@@ -103,7 +103,7 @@ const Menu = () => {
   });
 
   return (
-    <div className="min-h-screen mt-22 bg-[#e7dfd6]">
+    <div className="min-h-screen mt-22 ">
       {isLoading && !categories ? (
         <ProgressAnim />
       ) : error ? (

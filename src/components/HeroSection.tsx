@@ -150,7 +150,7 @@ export default function HeroSection({ buttonText = "تسوق الآن" }) {
         >
           <path
             d="M0,96L48,85.3C96,75,192,53,288,53.3C384,53,480,75,576,80C672,85,768,75,864,64C960,53,1056,43,1152,48C1248,53,1344,75,1392,85.3L1440,96L1440,120L0,120Z"
-            fill="#fff"
+            fill="#e7dfd6"
             fillOpacity="1"
           />
           <path

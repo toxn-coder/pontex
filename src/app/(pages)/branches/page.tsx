@@ -73,7 +73,10 @@ export default async function BranchesPage() {
             لا توجد فروع متاحة حاليًا.
           </p>
         ) : (
-          <BranchFilter branches={branchesList} />
+          <>
+            <p className='font-Bukra text-black'>الأنتاج</p>
+            <BranchFilter branches={branchesList} />
+          </>
         )}
       </div>
     </div>

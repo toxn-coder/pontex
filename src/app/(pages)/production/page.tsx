@@ -39,7 +39,19 @@ export default function Production() {
   if (loading) return <ProgressAnim />;
 
   return (
-    <div className="min-h-screen py-12">
+    <div className="min-h-screen pb-12 ">
+            <video
+        className="block inset-0 w-full h-[400px] object-cover"
+        src="/background.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+      />
+      <p className="mt-10 w-full font-Bukra font-bold text-4xl text-neutral-900 text-center">الإنتاج</p>
+      <p className="font-Bukra text-neutral-800 mt-5 text-2xl px-10 text-center">نحن نستخدم أنظمة أتمتة عالية الجودة ومتكاملة تكنولوجيا في كل مرحلة.
+        بصفتنا شركة تصنيع نسيج متكاملة، فإننا نجمع بين التكنولوجيا وخبرتنا و يتنازل عن جودة الإنتاج والتسليم السري
+      </p>
       {sections.map((section, index) => (
         <ImageTextSection
           key={index}

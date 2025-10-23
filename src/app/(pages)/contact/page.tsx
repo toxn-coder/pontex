@@ -3,7 +3,7 @@
 import { db } from "@/app/api/firebase";
 import ProgressAnim from "@/components/ProgressAnim";
 import { doc, getDoc } from "firebase/firestore";
-import { motion, easeOut, easeInOut } from 'framer-motion';
+import { motion, easeInOut } from 'framer-motion';
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import {
   Facebook,
