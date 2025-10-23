@@ -1,13 +1,12 @@
 "use client";
 
 import { loadInfoApp } from "@/components/infoApp";
-import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useMemo } from "react";
 import CardHero from "./CardHero";
 import ProgressAnim from "./ProgressAnim";
 import { InfoAppType } from "@/types/infoAppType";
-import img from "../../public/placeholder.webp";
+
 export default function HeroSection({ buttonText = "تسوق الآن" }) {
   const [infoApp, setInfoApp] = useState<InfoAppType | null>(null);
   const [loading, setLoading] = useState(true);
@@ -28,7 +27,6 @@ export default function HeroSection({ buttonText = "تسوق الآن" }) {
     fetchData();
   }, []);
 
-  // تجهيز الكروت
   const cards = useMemo(
     () =>
       infoApp
@@ -50,17 +48,7 @@ export default function HeroSection({ buttonText = "تسوق الآن" }) {
             },
           ]
         : [],
-    [
-      infoApp?.card1Title,
-      infoApp?.card1Desc,
-      infoApp?.card1Show,
-      infoApp?.card2Title,
-      infoApp?.card2Desc,
-      infoApp?.card2Show,
-      infoApp?.card3Title,
-      infoApp?.card3Desc,
-      infoApp?.card3Show,
-    ]
+    [infoApp]
   );
 
   if (loading) {
@@ -82,27 +70,22 @@ export default function HeroSection({ buttonText = "تسوق الآن" }) {
   if (!infoApp) return null;
 
   return (
-    <div className="w-full h-screen relative overflow-hidden text-white ">
-      {/* الخلفية */}
-  {/* <div
-    className="absolute inset-0 bg-no-repeat bg-cover bg-center"
-    style={{ backgroundImage: "url('/placeholder.webp')" }}
-  ></div> */}
-
-    <video
-    className="absolute inset-0 w-full h-full object-cover"
-    src="/background.mp4" // ← غيّر اسم الملف حسب الفيديو عندك
-    autoPlay
-    muted
-    loop
-    playsInline
-  />
+    <div className="w-full min-h-screen relative overflow-hidden text-white">
+      {/* خلفية الفيديو */}
+      <video
+        className="absolute inset-0 w-full h-full object-cover"
+        src="/background.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+      />
 
       {/* المحتوى */}
       <div className="container mx-auto px-4 py-16 md:py-24 lg:py-32 relative z-10">
-        <div className="flex flex-col  items-center">
-          <div className="w-full  text-center lg:text-right mb-10 lg:mb-0">
-            <div className="hidden  px-4 py-1 bg-[var(--secondry)] rounded-full text-sm font-bold mb-4">
+        <div className="flex flex-col items-center text-center lg:text-right">
+          <div className="mb-10">
+            <div className="hidden px-4 py-1 bg-[var(--secondry)] rounded-full text-sm font-bold mb-4">
               بيع جميع الأقمشة
             </div>
 
@@ -110,15 +93,32 @@ export default function HeroSection({ buttonText = "تسوق الآن" }) {
               {infoApp.name}
             </h1>
 
-            <p className="text-xl md:text-6xl text-amber-100  mb-6 justify-center lg:justify-center flex font-Manal text-shadow-lg/30 text-shaddow-black">
+            <p className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl text-amber-100 mb-6 font-Manal text-shadow-lg/30">
               {infoApp.slogan}
             </p>
-
           </div>
         </div>
 
         {/* الكروت */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10  mx-auto m-auto backdrop-blur-2xl  p-6 rounded-xl shadow-2xl bg-white/20 w-[760px] transform hover:-translate-y-1 transition-transform">
+        <div className="
+          grid 
+          grid-cols-1 
+          sm:grid-cols-2 
+          lg:grid-cols-3 
+          gap-6 
+          mt-10 
+          mx-auto 
+          backdrop-blur-2xl 
+          p-4 sm:p-6 
+          rounded-xl 
+          shadow-2xl 
+          bg-white/20 
+          w-full 
+          max-w-6xl
+          transform 
+          hover:-translate-y-1 
+          transition-transform
+        ">
           {cards
             .filter((c) => c.show)
             .map((card, i) => (
@@ -131,21 +131,20 @@ export default function HeroSection({ buttonText = "تسوق الآن" }) {
             ))}
         </div>
 
-            <div className="flex gap-4 justify-center mt-10 ">
-              <Link href="/products">
-                <button className="bg-white hover:bg-[#dfdfdf] hover:scale-110 text-[#a0392a] py-3 px-8 rounded-lg font-bold transition-all shadow-lg hover:shadow-xl flex items-center font-Bukra font-2xl">
-                  {buttonText}
-                </button>
-              </Link>
-            </div>
-
-
+        {/* الزر */}
+        <div className="flex justify-center mt-10">
+          <Link href="/products">
+            <button className="bg-white hover:bg-[#dfdfdf] hover:scale-110 text-[#a0392a] py-3 px-8 rounded-lg font-bold transition-all shadow-lg hover:shadow-xl flex items-center font-Bukra text-lg sm:text-xl">
+              {buttonText}
+            </button>
+          </Link>
+        </div>
       </div>
 
-      {/* التموج أسفل */}
-      <div className="hidden absolute bottom-0 w-full">
+      {/* تموج أسفل */}
+      <div className="absolute bottom-0 w-full">
         <svg
-          className="w-full h-24 md:h-32"
+          className="w-full h-16 sm:h-24 md:h-32"
           viewBox="0 0 1440 120"
           preserveAspectRatio="none"
         >
