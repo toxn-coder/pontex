@@ -19,7 +19,7 @@ import useSWR from "swr";
 import Image from "next/image";
 
 interface ContactInfo {
-  phones: string[];
+  phones: { description: string; value: string }[];
   facebook: string;
   instagram: string;
   twitter: string;

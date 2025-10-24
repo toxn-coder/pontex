@@ -26,16 +26,16 @@ interface ContactInfo {
   instagram: string;
   twitter: string;
   whatsapp: string;
-  phones: string[];
-  emails: string[];
+  phones: { description: string; value: string }[];
+  emails: { description: string; value: string }[];
   logo?: string;
-  address: string;
+  address?: string;
 }
 
 interface LoadedInfoApp {
   name: string;
   logoUrl: string;
-  openingHours: string;
+  openingHours?: string;
 }
 interface FooterProps {
   name: string;
