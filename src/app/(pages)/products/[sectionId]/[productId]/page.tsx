@@ -6,7 +6,7 @@ import MealSlider from "@/components/MealSlider";
 import ProgressAnim from "@/components/ProgressAnim";
 import ShareButton from "@/components/ShareButton";
 import { doc, getDoc } from "firebase/firestore";
-import { ShoppingCart, Star } from "lucide-react";
+import { ShoppingCart, ArrowRight, AlertCircle, Check, Heart, Truck, Ruler, Palette, Sparkles } from "lucide-react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,7 +14,6 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
-// واجهات البيانات
 interface Meal {
   id: string;
   name: string;
@@ -30,7 +29,6 @@ interface Category {
   meals: Meal[];
 }
 
-// دالة جلب البيانات
 const fetcher = async ({ sectionId }: { sectionId: string }) => {
   try {
     const docRef = doc(db, "Parts", sectionId);
@@ -38,9 +36,9 @@ const fetcher = async ({ sectionId }: { sectionId: string }) => {
     if (docSnap.exists()) {
       const data = docSnap.data();
       const meals: Meal[] = (data.products || [])
-        .filter((meal: Meal) => meal.id) // نتأكد أنو عندو id
+        .filter((meal: Meal) => meal.id)
         .map((meal: Meal) => ({
-          id: meal.id, // بدون temp-id
+          id: meal.id,
           name: meal.name || "بدون اسم",
           description: meal.description || "لا يوجد وصف",
           image: meal.image || "/placeholder.png",
@@ -62,41 +60,28 @@ const fetcher = async ({ sectionId }: { sectionId: string }) => {
 
 export default function ProductPage() {
   const { sectionId: rawSectionId, productId } = useParams();
-  const sectionId = rawSectionId
-    ? decodeURIComponent(rawSectionId as string)
-    : "";
+  const sectionId = rawSectionId ? decodeURIComponent(rawSectionId as string) : "";
   const { addToCart } = useCart();
-  const [initialData, setInitialData] = useState<Category | undefined>(
-    undefined
-  );
+  const [initialData, setInitialData] = useState<Category | undefined>(undefined);
   const [isCacheValid, setIsCacheValid] = useState(false);
+  const [addedToCart, setAddedToCart] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [isLiked, setIsLiked] = useState(false);
 
-  // تحميل البيانات من localStorage
   useEffect(() => {
     if (typeof window !== "undefined" && sectionId) {
       const cachedData = localStorage.getItem(`category-${sectionId}`);
-      const cachedTimestamp = localStorage.getItem(
-        `category-${sectionId}-timestamp`
-      );
+      const cachedTimestamp = localStorage.getItem(`category-${sectionId}-timestamp`);
       const currentTime = new Date().getTime();
 
-      if (
-        cachedData &&
-        cachedTimestamp &&
-        currentTime - parseInt(cachedTimestamp) < 60 * 60 * 1000
-      ) {
+      if (cachedData && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 60 * 60 * 1000) {
         setInitialData(JSON.parse(cachedData));
         setIsCacheValid(true);
       }
     }
   }, [sectionId]);
 
-  const {
-    data: category,
-    error,
-    isLoading,
-    mutate,
-  } = useSWR(
+  const { data: category, error, isLoading, mutate } = useSWR(
     sectionId ? { key: `category-${sectionId}`, sectionId } : null,
     fetcher,
     {
@@ -109,10 +94,7 @@ export default function ProductPage() {
       onSuccess: (data) => {
         if (typeof window !== "undefined") {
           localStorage.setItem(`category-${sectionId}`, JSON.stringify(data));
-          localStorage.setItem(
-            `category-${sectionId}-timestamp`,
-            new Date().getTime().toString()
-          );
+          localStorage.setItem(`category-${sectionId}-timestamp`, new Date().getTime().toString());
         }
       },
     }
@@ -120,37 +102,64 @@ export default function ProductPage() {
 
   const product = category?.meals.find((meal) => meal.id === productId);
 
+  const handleAddToCart = () => {
+    if (product) {
+      addToCart({
+        ...product,
+        id: product.id,
+        quantity: quantity,
+        price: Number(product.price) || 0,
+      });
+      setAddedToCart(true);
+      setTimeout(() => setAddedToCart(false), 2000);
+    }
+  };
+
   if (isLoading && !category) {
     return <ProgressAnim />;
   }
 
   if (error || !category) {
     return (
-      <div className="min-h-screen bg-[var(--clr-primary)] flex justify-center items-center flex-col gap-4">
-        <p className="text-red-400 text-lg">
-          {error?.message ||
-            "حدث خطأ أثناء جلب البيانات. حاول مرة أخرى لاحقًا."}
-        </p>
-        <button
-          onClick={() => mutate()}
-          className="bg-yellow-600 text-white px-4 py-2 rounded-lg"
-        >
-          إعادة المحاولة
-        </button>
-        <Link href="/products" className="text-yellow-500 hover:underline mt-2">
-          العودة إلى القائمة
-        </Link>
+      <div className="min-h-screen bg-[#faf8f6] flex justify-center items-center px-4 ">
+        <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-lg border border-[#511514]/10">
+          <div className="w-14 h-14 bg-[#511514]/10 rounded-full flex items-center justify-center mx-auto mb-3">
+            <AlertCircle className="w-7 h-7 text-[#511514]" />
+          </div>
+          <h3 className="text-lg font-bold text-gray-900 text-center mb-2">حدث خطأ!</h3>
+          <p className="text-gray-600 text-center text-sm mb-5">
+            {error?.message || "حدث خطأ أثناء جلب البيانات"}
+          </p>
+          <div className="flex gap-3">
+            <button
+              onClick={() => mutate()}
+              className="flex-1 bg-[#511514] hover:bg-[#3d0f0f] text-white px-5 py-2.5 rounded-lg font-semibold transition shadow-md"
+            >
+              إعادة المحاولة
+            </button>
+            <Link href="/products" className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 px-5 py-2.5 rounded-lg font-semibold transition text-center">
+              العودة
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-[var(--clr-primary)] flex justify-center items-center flex-col gap-4">
-        <p className="text-gray-300 text-lg">المنتج غير موجود.</p>
-        <Link href="/products" className="text-yellow-500 hover:underline">
-          العودة إلى القائمة
-        </Link>
+      <div className="min-h-screen bg-[#faf8f6] flex justify-center items-center px-4 pt-20">
+        <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-lg border border-[#511514]/10 text-center">
+          <div className="w-14 h-14 bg-[#511514]/10 rounded-full flex items-center justify-center mx-auto mb-3">
+            <AlertCircle className="w-7 h-7 text-[#511514]" />
+          </div>
+          <h3 className="text-lg font-bold text-gray-900 mb-2">المنتج غير موجود</h3>
+          <p className="text-gray-600 text-sm mb-5">عذراً، لم نتمكن من العثور على هذا المنتج</p>
+          <Link href="/products" className="inline-flex items-center gap-2 text-gray-600 hover:text-[#511514] mb-6 transition group bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg shadow-sm"
+>
+            العودة إلى القائمة
+          </Link>
+        </div>
       </div>
     );
   }
@@ -158,105 +167,139 @@ export default function ProductPage() {
   const otherProducts = category.meals.filter((meal) => meal.id !== productId);
 
   return (
-    <div className="min-h-screen py-8 px-4 sm:px-6">
+    <div className="min-h-screen bg-[#faf8f6] py-4 px-4 sm:px-6 lg:px-8 pt-20">
       <Head>
-        <title>{`${product.name} - ${category.title} - سوق الكتروني`}</title>
-        <meta
-          name="description"
-          content={`${product.description} - استمتع بتسوق في متجرنا ${category.title} `}
-        />
-        <meta
-          name="keywords"
-          content={`شاورما, ${product.name}, ${category.title}, متجر الكتروني`}
-        />
-        <meta
-          property="og:title"
-          content={`${product.name} - ${category.title}`}
-        />
-        <meta
-          property="og:description"
-          content={`${product.description} - تسوق منتجات فاخرة ${category.title} `}
-        />
+        <title>{`${product.name} - ${category.title}`}</title>
+        <meta name="description" content={product.description} />
+        <meta property="og:title" content={`${product.name} - ${category.title}`} />
+        <meta property="og:description" content={product.description} />
         <meta property="og:image" content={product.image || "/logo.png"} />
-        <meta
-          property="og:url"
-          content={`https://waly-damascus.vercel.app/products/${encodeURIComponent(
-            sectionId
-          )}/${productId}`}
-        />
-        <meta property="og:type" content="website" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta charSet="UTF-8" />
       </Head>
 
       <div className="max-w-6xl mx-auto">
-        {/* زر العودة */}
+        {/* Navigation */}
         <Link
           href="/products"
-          className="text-[var(--clr-primary)] hover:underline mt-6 mb-4 block text-lg font-medium"
+          className="inline-flex items-center gap-2 text-gray-600 hover:text-[#511514] mb-6 transition group bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg shadow-sm"
         >
-          العودة إلى القائمة
+          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          <span className="text-sm font-medium">العودة إلى المنتجات</span>
         </Link>
 
-        {/* تفاصيل المنتج */}
-        <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8 mb-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 lg:gap-10">
-            <div className="relative w-full aspect-[4/3]">
-              <Image
-                src={product.image || "/placeholder.svg"}
-                alt={product.name}
-                fill
-                className="object-cover rounded-lg"
-                priority
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 40vw"
-              />
-              <div className="absolute top-3 right-3 hidden text-white rounded-full px-3 py-1 text-sm font-bold flex items-center gap-1">
-                <Star className="w-4 h-4 fill-white" />
-                {product.rating || 4.0}
+        {/* Product Hero Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 mb-12">
+          {/* Image Gallery */}
+          <div className="order-2 lg:order-1">
+            <div className="lg:sticky lg:top-4">
+              <div className="relative aspect-square rounded-2xl overflow-hidden bg-white shadow-lg group border border-gray-100">
+                <Image
+                  src={product.image || "/placeholder.svg"}
+                  alt={product.name}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+                
+                {/* Like Button */}
+                <button
+                  onClick={() => setIsLiked(!isLiked)}
+                  className="absolute top-3 right-3 w-10 h-10 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
+                >
+                  <Heart className={`w-5 h-5 ${isLiked ? 'fill-[#511514] text-[#511514]' : 'text-gray-600'}`} />
+                </button>
+
+                {/* Quality Badge */}
+                <div className="absolute top-3 left-3 bg-[#511514] text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-md flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  جودة ممتازة
+                </div>
               </div>
             </div>
-            <div className="flex flex-col justify-between gap-6">
-              <div>
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-3 sm:mb-4 lg:mb-5">
-                  {product.name}
-                </h1>
-                <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-5 lg:mb-6">
-                  {product.description || "لا يوجد وصف"}
-                </p>
-      
-              </div>
-              <ShareButton
-                url={`https://test-ecommerce-toxn.vercel.app/products/${encodeURIComponent(
-                  sectionId
-                )}/${product.id}`}
-                title={product.name}
-              />
+          </div>
 
-              <button
-                onClick={() =>
-                  addToCart({
-                    ...product,
-                    id: product.id,
-                    quantity: 1,
-                    price: Number(product.price) || 0,
-                  })
-                }
-                className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-3 w-full sm:w-auto text-base sm:text-lg lg:text-xl shadow-md hover:shadow-lg"
-              >
-                <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />
-                <span>أضف للسلة</span>
-              </button>
+          {/* Product Info */}
+          <div className="order-1 lg:order-2">
+            <div className="lg:sticky lg:top-4 space-y-4">
+              {/* Category Badge */}
+              <div className="inline-flex items-center gap-2 bg-[#511514]/5 text-[#511514] px-4 py-2 rounded-full text-sm font-bold border border-[#511514]/10">
+                <Palette className="w-3.5 h-3.5" />
+                {category.title}
+              </div>
+
+              {/* Title */}
+              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight">
+                {product.name}
+              </h1>
+
+              {/* Description */}
+              <p className="text-gray-600 text-base leading-relaxed">
+                {product.description}
+              </p>
+
+
+
+              {/* Action Buttons */}
+              <div className="space-y-2.5">
+                <button
+                  onClick={handleAddToCart}
+                  disabled={addedToCart}
+                  className={`w-full py-3 rounded-xl font-bold text-base transition-all duration-300 flex items-center justify-center gap-2.5 shadow-md ${
+                    addedToCart
+                      ? 'bg-green-600 text-white scale-95'
+                      : 'bg-[#511514] hover:bg-[#3d0f0f] text-white hover:shadow-lg hover:scale-[1.02] active:scale-95'
+                  }`}
+                >
+                  {addedToCart ? (
+                    <>
+                      <Check className="w-5 h-5" />
+                      <span>تمت الإضافة ✓</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingCart className="w-5 h-5" />
+                      <span>أضف إلى السلة</span>
+                    </>
+                  )}
+                </button>
+
+                <ShareButton
+                  url={`https://test-ecommerce-toxn.vercel.app/products/${encodeURIComponent(sectionId)}/${product.id}`}
+                  title={product.name}
+                />
+              </div>
+
+              {/* Features */}
+              <div className="grid grid-cols-3 gap-3 bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+                <div className="text-center">
+                  <Truck className="w-6 h-6 text-[#511514] mx-auto mb-1.5" />
+                  <p className="text-xs font-bold text-gray-900">توصيل سريع</p>
+                  <p className="text-xs text-gray-500 mt-0.5">لجميع البلدان</p>
+                </div>
+                <div className="text-center">
+                  <Ruler className="w-6 h-6 text-[#511514] mx-auto mb-1.5" />
+                  <p className="text-xs font-bold text-gray-900">كميات كبيرة</p>
+                  <p className="text-xs text-gray-500 mt-0.5">حسب الطلب</p>
+                </div>
+                <div className="text-center">
+                  <Palette className="w-6 h-6 text-[#511514] mx-auto mb-1.5" />
+                  <p className="text-xs font-bold text-gray-900">ألوان متنوعة</p>
+                  <p className="text-xs text-gray-500 mt-0.5">خيارات كثيرة</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* باقي المنتجات في القسم */}
+        {/* Related Products */}
         {otherProducts.length > 0 && (
-          <div className="mt-12">
-            <h2 className="text-2xl font-bold text-white mb-6">
-              المزيد من{" "}
-              <span className="text-yellow-500">{category.title}</span>
-            </h2>
+          <div>
+            <div className="mb-6">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
+                أقمشة مشابهة
+              </h2>
+              <p className="text-gray-600 text-sm">من قسم {category.title}</p>
+            </div>
             <MealSlider
               title={category.title}
               products={otherProducts}
