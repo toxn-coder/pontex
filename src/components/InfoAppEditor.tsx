@@ -527,7 +527,7 @@ const deleteFieldWithCloudinary = async (field: "logoUrl" | "imageHero" | "about
       </motion.div>
 
       {/* صورة الصفحة الرئيسية */}
-      <motion.div
+      {/* <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl border bg-neutral-900 p-6"
@@ -608,7 +608,7 @@ const deleteFieldWithCloudinary = async (field: "logoUrl" | "imageHero" | "about
             <p>تأكد من تباين النص فوق الصورة.</p>
           </div>
         </div>
-      </motion.div>
+      </motion.div> */}
 
       {/* الكروت */}
       <motion.div

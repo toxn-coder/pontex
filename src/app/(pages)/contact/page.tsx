@@ -59,6 +59,9 @@ const fetcher = async () => {
 
 
 
+
+
+
 export default function ContactUs() {
   const [initialData, setInitialData] = useState<ContactInfo | undefined>();
   const [isCacheValid, setIsCacheValid] = useState(false);
@@ -180,15 +183,18 @@ export default function ContactUs() {
                     <Phone className="w-12 h-12 text-white border-1 border-neutral-800 p-2 rounded-full bg-neutral-900" />
                     <div>
                       <p className="text-sm text-gray-600">أرقام الهاتف</p>
-                      {contactInfo.phones.map((phone) => (
+                      {contactInfo.phones.map((phone,index) => (
+                        <div key={index} className="mt-2">
+                        <p className="text-sm text-black font-Bukra">{phone.description}</p>
                         <a
-                          href={`tel:${phone}`}
-                          key={phone}
-                          className="block text-gray-800 font-medium hover:text-yellow-600 transition-colors"
+                          href={`tel:${phone.value}`}
+                          key={phone.value}
+                          className="block text-gray-800 font-medium hover:text-[#511514] transition-colors"
                           dir="ltr"
                         >
-                          {phone}
+                          {phone.value}
                         </a>
+                        </div>
                       ))}
                     </div>
                   </div>
@@ -207,59 +213,66 @@ export default function ContactUs() {
                 {/* وسائل التواصل */}
                 <p className="text-2xl font-Bukra text-black font-bold">وسائل التواصل الأجتماعي</p>
                 <div className="flex flex-row gap-3">
-                  {contactInfo.facebook && (
-                    <div className="flex items-center gap-3">
-                      <a
-                        href={contactInfo.facebook}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-gray-800 font-medium hover:text-yellow-600 transition-colors"
-                      >
-                        <Facebook className="w-10 h-10 text-neutral-800 border-1 border-neutral-800 p-2 rounded-full hover:bg-neutral-800 hover:text-white" />
+  {contactInfo.facebook && (
+    <div className="tooltip">
+      <a
+        href={contactInfo.facebook}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-gray-800 font-medium hover:text-yellow-600 transition-colors"
+      >
+        <Facebook className="w-10 h-10 text-neutral-800 border-1 border-neutral-800 p-2 rounded-full hover:bg-neutral-800 hover:text-white" />
+      </a>
+      <span className="tooltip-text">Facebook</span>
+    </div>
+  )}
 
-                      </a>
-                    </div>
-                  )}
-                  {contactInfo.instagram && (
-                    <div className="flex items-center gap-3">
-                      <a
-                        href={contactInfo.instagram}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-gray-800 font-medium hover:text-yellow-600 transition-colors"
-                      >
+  {contactInfo.instagram && (
+    <div className="tooltip">
+      <a
+        href={contactInfo.instagram}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-gray-800 font-medium hover:text-yellow-600 transition-colors"
+      >
+        <Instagram className="w-10 h-10 text-neutral-800 border-1 border-neutral-800 p-2 rounded-full hover:bg-neutral-800 hover:text-white" />
+      </a>
+      <span className="tooltip-text">Instagram</span>
+    </div>
+  )}
 
-                        <Instagram className="w-10 h-10 text-neutral-800 border-1 border-neutral-800 p-2 rounded-full hover:bg-neutral-800 hover:text-white" />
-                      </a>
-                    </div>
-                  )}
-                  {contactInfo.twitter && (
-                    <div className="flex items-center gap-3">
-                      <a
-                        href={contactInfo.twitter}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-gray-800 font-medium hover:text-yellow-600 transition-colors"
-                      >
+  {contactInfo.twitter && (
+    <div className="tooltip">
+      <a
+        href={contactInfo.twitter}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-gray-800 font-medium hover:text-yellow-600 transition-colors"
+      >
+        {/* <Twitter className="w-10 h-10 text-neutral-800 border-1 border-neutral-800 p-2 rounded-full hover:bg-neutral-800 hover:text-white" /> */}
+        <svg className="w-10 h-10 text-neutral-800 border-1 border-neutral-800 p-2 rounded-full hover:bg-neutral-800 hover:text-white stroke-black hover:stroke-white" width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M16.8217 5.1344C16.0886 4.29394 15.6479 3.19805 15.6479 2H14.7293M16.8217 5.1344C17.4898 5.90063 18.3944 6.45788 19.4245 6.67608C19.7446 6.74574 20.0786 6.78293 20.4266 6.78293V10.2191C18.645 10.2191 16.9932 9.64801 15.6477 8.68211V15.6707C15.6477 19.1627 12.8082 22 9.32386 22C7.50043 22 5.85334 21.2198 4.69806 19.98C3.64486 18.847 2.99994 17.3331 2.99994 15.6707C2.99994 12.2298 5.75592 9.42509 9.17073 9.35079M16.8217 5.1344C16.8039 5.12276 16.7861 5.11101 16.7684 5.09914M6.9855 17.3517C6.64217 16.8781 6.43802 16.2977 6.43802 15.6661C6.43802 14.0734 7.73249 12.7778 9.32394 12.7778C9.62087 12.7778 9.9085 12.8288 10.1776 12.9124V9.40192C9.89921 9.36473 9.61622 9.34149 9.32394 9.34149C9.27287 9.34149 8.86177 9.36884 8.81073 9.36884M14.7244 2H12.2097L12.2051 15.7775C12.1494 17.3192 10.8781 18.5591 9.32386 18.5591C8.35878 18.5591 7.50971 18.0808 6.98079 17.3564"  strokeLinejoin="round"/>
+</svg>
+      </a>
+      <span className="tooltip-text">TikTok</span>
+    </div>
+  )}
 
-                        <Twitter className="w-10 h-10 text-neutral-800 border-1 border-neutral-800 p-2 rounded-full hover:bg-neutral-800 hover:text-white" />
-                      </a>
-                    </div>
-                  )}
-                  {contactInfo.whatsapp && (
-                    <div className="flex items-center gap-3">
-                      <a
-                        href={contactInfo.whatsapp}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-gray-800 font-medium hover:text-yellow-600 transition-colors"
-                      >
-                        <MessageCircle className="w-10 h-10 text-neutral-800 border-1 border-neutral-800 p-2 rounded-full hover:bg-neutral-800 hover:text-white" />
+  {contactInfo.whatsapp && (
+    <div className="tooltip">
+      <a
+        href={contactInfo.whatsapp}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-gray-800 font-medium hover:text-yellow-600 transition-colors"
+      >
+        <MessageCircle className="w-10 h-10 text-neutral-800 border-1 border-neutral-800 p-2 rounded-full hover:bg-neutral-800 hover:text-white" />
+      </a>
+      <span className="tooltip-text">WhatsApp</span>
+    </div>
+  )}
+</div>
 
-                      </a>
-                    </div>
-                  )}
-                </div>
               </div>
             </div>
                 <form onSubmit={handleSubmit} className="bg-gray-200 h-40 p-6">

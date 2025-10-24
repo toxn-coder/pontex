@@ -141,7 +141,7 @@ export default function AboutEditor() {
         </button>
       </motion.div>
 
-      {/* الصورة */}
+      {/* الصورة
       <motion.div className="p-6 rounded-2xl border bg-neutral-900 space-y-3">
         <h2 className="text-lg font-bold text-white">صورة عنّا</h2>
         <div className="relative w-full max-w-lg aspect-[16/9] bg-neutral-800 rounded-xl overflow-hidden">
@@ -191,7 +191,7 @@ export default function AboutEditor() {
         >
           <Save className="w-4 h-4" /> حفظ الرابط
         </button>
-      </motion.div>
+      </motion.div> */}
     </div>
   );
 }

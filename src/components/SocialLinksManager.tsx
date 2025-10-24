@@ -6,6 +6,7 @@ import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { Instagram, Twitter, Facebook, Send, Mail, Phone, Plus, Save, Trash2, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
+import Image from 'next/image';
 
 export default function SocialLinksManager() {
   const [socialLinks, setSocialLinks] = useState({
@@ -16,12 +17,12 @@ export default function SocialLinksManager() {
     googleMapsLink: '',
     address: '',
   });
-  const [phones, setPhones] = useState(['']);
-  const [emails, setEmails] = useState(['']);
+  const [phones, setPhones] = useState([{ value: '', description: '' }]);
+  const [emails, setEmails] = useState([{ value: '', description: '' }]);
   const [isSaving, setIsSaving] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
 
-  // جلب البيانات من Firestore عند تحميل المكون
+  // جلب البيانات من Firestore مع ضمان وجود حقل description
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -29,6 +30,7 @@ export default function SocialLinksManager() {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
+          // تعيين روابط التواصل الاجتماعي
           setSocialLinks({
             whatsapp: data.whatsapp || '',
             instagram: data.instagram || '',
@@ -37,12 +39,28 @@ export default function SocialLinksManager() {
             googleMapsLink: data.googleMapsLink || '',
             address: data.address || '',
           });
-          setPhones(data.phones || ['']);
-          setEmails(data.emails || ['']);
+          // التأكد من أن كل phone وemail يحتوي على value وdescription
+          const normalizedPhones = (data.phones && Array.isArray(data.phones) && data.phones.length > 0
+            ? data.phones
+            : [{ value: '', description: '' }]).map((phone: any) => ({
+              value: phone.value || '',
+              description: phone.description ?? '',
+            }));
+          const normalizedEmails = (data.emails && Array.isArray(data.emails) && data.emails.length > 0
+            ? data.emails
+            : [{ value: '', description: '' }]).map((email: any) => ({
+              value: email.value || '',
+              description: email.description ?? '',
+            }));
+          setPhones(normalizedPhones);
+          setEmails(normalizedEmails);
+        } else {
+          // إذا لم يكن المستند موجودًا، يتم الإبقاء على القيم الافتراضية
+          toast.info('لم يتم العثور على بيانات في Firestore، يتم استخدام القيم الافتراضية.');
         }
       } catch (error) {
         console.error('Error fetching contact info:', error);
-        toast.error('فشل جلب معلومات التواصل');
+        toast.error('فشل جلب معلومات التواصل. تحقق من الاتصال بـ Firestore.');
       }
     };
     fetchData();
@@ -75,15 +93,15 @@ export default function SocialLinksManager() {
   };
 
   // التعامل مع تغيير أرقام الهواتف
-  const handlePhoneChange = (index: number, value: string) => {
+  const handlePhoneChange = (index: number, field: 'value' | 'description', inputValue: string) => {
     const newPhones = [...phones];
-    newPhones[index] = value;
+    newPhones[index] = { ...newPhones[index], [field]: inputValue };
     setPhones(newPhones);
   };
 
   // إضافة رقم هاتف جديد
   const addPhone = () => {
-    setPhones([...phones, '']);
+    setPhones([...phones, { value: '', description: '' }]);
   };
 
   // حذف رقم هاتف
@@ -96,15 +114,15 @@ export default function SocialLinksManager() {
   };
 
   // التعامل مع تغيير الإيميلات
-  const handleEmailChange = (index: number, value: string) => {
+  const handleEmailChange = (index: number, field: 'value' | 'description', inputValue: string) => {
     const newEmails = [...emails];
-    newEmails[index] = value;
+    newEmails[index] = { ...newEmails[index], [field]: inputValue };
     setEmails(newEmails);
   };
 
   // إضافة إيميل جديد
   const addEmail = () => {
-    setEmails([...emails, '']);
+    setEmails([...emails, { value: '', description: '' }]);
   };
 
   // حذف إيميل
@@ -124,22 +142,22 @@ export default function SocialLinksManager() {
       if (socialLinks.googleMapsLink && !isValidGoogleMapsLink(socialLinks.googleMapsLink)) {
         throw new Error('رابط خريطة جوجل غير صالح.');
       }
-      const validPhones = phones.filter((phone) => phone.trim() !== '');
+      const validPhones = phones.filter((phone) => phone.value.trim() !== '');
       if (validPhones.length === 0) {
         throw new Error('يجب إدخال رقم هاتف واحد على الأقل.');
       }
       for (const phone of validPhones) {
-        if (!isValidPhone(phone)) {
-          throw new Error(`رقم الهاتف "${phone}" غير صالح.`);
+        if (!isValidPhone(phone.value)) {
+          throw new Error(`رقم الهاتف "${phone.value}" غير صالح.`);
         }
       }
-      const validEmails = emails.filter((email) => email.trim() !== '');
+      const validEmails = emails.filter((email) => email.value.trim() !== '');
       if (validEmails.length === 0) {
         throw new Error('يجب إدخال بريد إلكتروني واحد على الأقل.');
       }
       for (const email of validEmails) {
-        if (!isValidEmail(email)) {
-          throw new Error(`البريد الإلكتروني "${email}" غير صالح.`);
+        if (!isValidEmail(email.value)) {
+          throw new Error(`البريد الإلكتروني "${email.value}" غير صالح.`);
         }
       }
 
@@ -202,7 +220,19 @@ export default function SocialLinksManager() {
               />
             </div>
             <div className="flex items-center gap-3">
-              <Twitter className="w-6 h-6 text-amber-500 flex-shrink-0" />
+              <svg
+                width="30px"
+                height="30px"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M16.8217 5.1344C16.0886 4.29394 15.6479 3.19805 15.6479 2H14.7293M16.8217 5.1344C17.4898 5.90063 18.3944 6.45788 19.4245 6.67608C19.7446 6.74574 20.0786 6.78293 20.4266 6.78293V10.2191C18.645 10.2191 16.9932 9.64801 15.6477 8.68211V15.6707C15.6477 19.1627 12.8082 22 9.32386 22C7.50043 22 5.85334 21.2198 4.69806 19.98C3.64486 18.847 2.99994 17.3331 2.99994 15.6707C2.99994 12.2298 5.75592 9.42509 9.17073 9.35079M16.8217 5.1344C16.8039 5.12276 16.7861 5.11101 16.7684 5.09914M6.9855 17.3517C6.64217 16.8781 6.43802 16.2977 6.43802 15.6661C6.43802 14.0734 7.73249 12.7778 9.32394 12.7778C9.62087 12.7778 9.9085 12.8288 10.1776 12.9124V9.40192C9.89921 9.36473 9.61622 9.34149 9.32394 9.34149C9.27287 9.34149 8.86177 9.36884 8.81073 9.36884M14.7244 2H12.2097L12.2051 15.7775C12.1494 17.3192 10.8781 18.5591 9.32386 18.5591C8.35878 18.5591 7.50971 18.0808 6.98079 17.3564"
+                  stroke="#FE9A00"
+                  strokeLinejoin="round"
+                />
+              </svg>
               <input
                 type="text"
                 name="twitter"
@@ -256,7 +286,6 @@ export default function SocialLinksManager() {
               className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
             />
           </div>
-          {/* معاينة الخريطة */}
           {socialLinks.googleMapsLink && isValidGoogleMapsLink(socialLinks.googleMapsLink) && (
             <div className="mt-4">
               <h4 className="text-sm text-gray-300 mb-2">معاينة الخريطة:</h4>
@@ -285,8 +314,15 @@ export default function SocialLinksManager() {
               <Phone className="w-6 h-6 text-amber-500 flex-shrink-0" />
               <input
                 type="text"
-                value={phone}
-                onChange={(e) => handlePhoneChange(index, e.target.value)}
+                value={phone.description ?? ''}
+                onChange={(e) => handlePhoneChange(index, 'description', e.target.value)}
+                placeholder="الوصف (مثال: مبيعات)"
+                className="flex-1 px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+              />
+              <input
+                type="text"
+                value={phone.value ?? ''}
+                onChange={(e) => handlePhoneChange(index, 'value', e.target.value)}
                 placeholder="أدخل رقم الهاتف (مثال: +966123456789)"
                 className="flex-1 px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
@@ -316,9 +352,16 @@ export default function SocialLinksManager() {
             <div key={index} className="flex items-center gap-3 mb-4">
               <Mail className="w-6 h-6 text-amber-500 flex-shrink-0" />
               <input
+                type="text"
+                value={email.description ?? ''}
+                onChange={(e) => handleEmailChange(index, 'description', e.target.value)}
+                placeholder="الوصف (مثال: دعم فني)"
+                className="flex-1 px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+              />
+              <input
                 type="email"
-                value={email}
-                onChange={(e) => handleEmailChange(index, e.target.value)}
+                value={email.value ?? ''}
+                onChange={(e) => handleEmailChange(index, 'value', e.target.value)}
                 placeholder="أدخل البريد الإلكتروني (مثال: example@domain.com)"
                 className="flex-1 px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
