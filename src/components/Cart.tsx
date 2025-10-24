@@ -33,19 +33,30 @@ export default function Cart() {
     <Dialog.Root open={open} onOpenChange={setOpen}>
       {/* زر السلة داخل الـNavbar */}
       <Dialog.Trigger asChild>
-        <button className="relative border-l-2 pl-3 border-white flex items-center justify-center">
-          {/* أيقونة السلة */}
-          <div
-            className="w-[30px] h-[30px] bg-white transition-all duration-200 transform hover:scale-105 z-50 flex items-center justify-center shadow-lg"
-            style={{
-              maskImage: "url('/cart.svg')",
-              WebkitMaskImage: "url('/cart.svg')",
-              maskRepeat: "no-repeat",
-              WebkitMaskRepeat: "no-repeat",
-              maskSize: "contain",
-              WebkitMaskSize: "contain",
-            }}
-          ></div>
+        <button className="relative flex items-center justify-center group">
+  {/* خلفية شفافة وفلتر لتوضيح الأيقونة */}
+  <div
+    className={clsx(
+      "w-[34px] h-[34px] rounded-full flex items-center justify-center transition-all duration-300 shadow-md",
+      "bg-white backdrop-blur-sm group-hover:bg-gray-100",
+      "dark:bg-white dark:backdrop-blur-lg"
+    )}
+  >
+    {/* الأيقونة */}
+    <div
+      className="w-[20px] h-[20px] bg-[#511514] dark:bg-bg-[#511514] transition-all duration-200 group-hover:scale-110"
+      style={{
+        maskImage: "url('/cart.svg')",
+        WebkitMaskImage: "url('/cart.svg')",
+        maskRepeat: "no-repeat",
+        WebkitMaskRepeat: "no-repeat",
+        maskSize: "contain",
+        WebkitMaskSize: "contain",
+        maskPosition: "center",
+        WebkitMaskPosition: "center",
+      }}
+    ></div>
+    </div>
 
           {/* شارة عدد العناصر */}
           {totalItems > 0 && (

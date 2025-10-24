@@ -191,7 +191,7 @@ export default function ProductPage() {
           {/* Image Gallery */}
           <div className="order-2 lg:order-1">
             <div className="lg:sticky lg:top-4">
-              <div className="relative aspect-square rounded-2xl overflow-hidden bg-white shadow-lg group border border-gray-100">
+              <div className="relative aspect-square rounded-2xl overflow-hidden bg-white shadow-lg group border border-gray-100 max-w-sm mx-auto">
                 <Image
                   src={product.image || "/placeholder.svg"}
                   alt={product.name}
@@ -210,7 +210,7 @@ export default function ProductPage() {
                 </button>
 
                 {/* Quality Badge */}
-                <div className="absolute top-3 left-3 bg-[#511514] text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-md flex items-center gap-1.5">
+                <div className="absolute top-3 left-3 bg-[#511514]/80 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-md flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5" />
                   جودة ممتازة
                 </div>
@@ -253,7 +253,7 @@ export default function ProductPage() {
                   {addedToCart ? (
                     <>
                       <Check className="w-5 h-5" />
-                      <span>تمت الإضافة ✓</span>
+                      <span>تمت الإضافة </span>
                     </>
                   ) : (
                     <>

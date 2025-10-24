@@ -52,7 +52,7 @@ export default function Navbar({ name, logoUrl }: NavbarProps) {
             className={clsx(
               'flex items-center gap-6 font-medium transition-opacity duration-300',
               isMenuOpen
-                ? 'absolute top-full right-0 left-0 flex flex-col bg-[#1f1f1f] shadow-lg p-4 gap-4 border-t border-gray-700'
+                ? 'absolute top-full right-0 left-0 flex flex-col bg-[#511514] shadow-lg p-4 gap-4 border-t border-gray-700'
                 : 'hidden lg:flex'
             )}
           >
