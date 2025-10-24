@@ -277,7 +277,7 @@ export default function ProductPage() {
                 </button>
 
                 <ShareButton
-                  url={`https://test-ecommerce-toxn.vercel.app/products/${encodeURIComponent(sectionId)}/${product.id}`}
+                  url={`https://pontex-woad.vercel.app//products/${encodeURIComponent(sectionId)}/${product.id}`}
                   title={product.name}
                 />
               </div>
