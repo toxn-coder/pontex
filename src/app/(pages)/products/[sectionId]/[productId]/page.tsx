@@ -6,7 +6,7 @@ import MealSlider from "@/components/MealSlider";
 import ProgressAnim from "@/components/ProgressAnim";
 import ShareButton from "@/components/ShareButton";
 import { doc, getDoc } from "firebase/firestore";
-import { ShoppingCart, ArrowRight, AlertCircle, Check, Heart, Truck, Ruler, Palette, Sparkles } from "lucide-react";
+import { ShoppingCart, ArrowRight, AlertCircle, Check, Heart, Truck, Ruler, Palette, Sparkles, Box, Aperture } from "lucide-react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
@@ -223,7 +223,8 @@ export default function ProductPage() {
 
                 {/* Quality Badge */}
                 <div className="absolute top-3 left-3 bg-[#511514]/80 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-md flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5" />
+                  {/* <Sparkles className="w-3.5 h-3.5" /> */}
+                  <Aperture className="w-3.5 h-3.5" />
                   جودة ممتازة
                 </div>
               </div>
@@ -235,7 +236,7 @@ export default function ProductPage() {
             <div className="lg:sticky lg:top-4 space-y-4">
               {/* Category Badge */}
               <div className="inline-flex items-center gap-2 bg-[#511514]/5 text-[#511514] px-4 py-2 rounded-full text-sm font-bold border border-[#511514]/10">
-                <Palette className="w-3.5 h-3.5" />
+                <Box className="w-3.5 h-3.5" />
                 {category.title}
               </div>
 

@@ -10,7 +10,6 @@ export default function Cart() {
   const [open, setOpen] = useState(false);
   const {
     cartItems,
-    totalPrice,
     totalItems,
     cartBadgeAnimation,
     updateQuantity,
@@ -62,7 +61,7 @@ export default function Cart() {
           {totalItems > 0 && (
             <span
               className={clsx(
-                'absolute -top-3 left-9 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center z-50',
+                'absolute -top-2 left-7 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center z-50',
                 cartBadgeAnimation && 'animate-ping'
               )}
             >

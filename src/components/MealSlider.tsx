@@ -190,17 +190,6 @@ export default function MealSlider({ auto = false, products = [], sectionId }: M
       {/* Mobile Navigation */}
       <div className="flex md:hidden justify-center gap-3 mt-4">
         <button
-          onClick={() => swiperRef.current?.slidePrev()}
-          disabled={isPrevDisabled}
-          className={`w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-md ${
-            isPrevDisabled
-              ? 'bg-gray-200 cursor-not-allowed text-gray-400'
-              : 'bg-white hover:bg-[#511514] hover:text-white text-gray-700'
-          }`}
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </button>
-        <button
           onClick={() => swiperRef.current?.slideNext()}
           disabled={isNextDisabled}
           className={`w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-md ${
@@ -210,6 +199,17 @@ export default function MealSlider({ auto = false, products = [], sectionId }: M
           }`}
         >
           <ChevronRight className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => swiperRef.current?.slidePrev()}
+          disabled={isPrevDisabled}
+          className={`w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-md ${
+            isPrevDisabled
+              ? 'bg-gray-200 cursor-not-allowed text-gray-400'
+              : 'bg-white hover:bg-[#511514] hover:text-white text-gray-700'
+          }`}
+        >
+          <ChevronLeft className="w-4 h-4" />
         </button>
       </div>
     </div>
