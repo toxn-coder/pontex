@@ -13,6 +13,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
+import Lightbox from 'yet-another-react-lightbox';
+import 'yet-another-react-lightbox/styles.css';
 
 interface Meal {
   id: string;
@@ -67,6 +69,7 @@ export default function ProductPage() {
   const [addedToCart, setAddedToCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [isLiked, setIsLiked] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined" && sectionId) {
@@ -199,8 +202,17 @@ export default function ProductPage() {
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                   priority
                   sizes="(max-width: 1024px) 100vw, 50vw"
+                  onClick={() => setOpen(true)}
                 />
-                
+                <Lightbox
+        open={open}
+        close={() => setOpen(false)}
+        slides={[
+          { src: product.image || '/placeholder.svg' },
+          // { src: product.image || '/placeholder.svg' },
+          // { src: product.image || '/placeholder.svg' },
+        ]}
+      />
                 {/* Like Button */}
                 <button
                   onClick={() => setIsLiked(!isLiked)}
