@@ -158,7 +158,7 @@ export default function ProductPage() {
   const otherProducts = category.meals.filter((meal) => meal.id !== productId);
 
   return (
-    <div className="min-h-screen bg-[var(--clr-primary)] py-8 px-4 sm:px-6">
+    <div className="min-h-screen py-8 px-4 sm:px-6">
       <Head>
         <title>{`${product.name} - ${category.title} - سوق الكتروني`}</title>
         <meta
@@ -193,7 +193,7 @@ export default function ProductPage() {
         {/* زر العودة */}
         <Link
           href="/products"
-          className="text-yellow-500 hover:underline mb-4 block text-lg font-medium"
+          className="text-[var(--clr-primary)] hover:underline mt-6 mb-4 block text-lg font-medium"
         >
           العودة إلى القائمة
         </Link>
@@ -210,7 +210,7 @@ export default function ProductPage() {
                 priority
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 40vw"
               />
-              <div className="absolute top-3 right-3 bg-yellow-600 text-white rounded-full px-3 py-1 text-sm font-bold flex items-center gap-1">
+              <div className="absolute top-3 right-3 hidden text-white rounded-full px-3 py-1 text-sm font-bold flex items-center gap-1">
                 <Star className="w-4 h-4 fill-white" />
                 {product.rating || 4.0}
               </div>
@@ -223,9 +223,7 @@ export default function ProductPage() {
                 <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-5 lg:mb-6">
                   {product.description || "لا يوجد وصف"}
                 </p>
-                <p className="text-yellow-500 font-bold text-xl sm:text-2xl lg:text-3xl mb-4 sm:mb-5 lg:mb-6">
-                  {product.price || "غير محدد"} جنيه
-                </p>
+      
               </div>
               <ShareButton
                 url={`https://test-ecommerce-toxn.vercel.app/products/${encodeURIComponent(
