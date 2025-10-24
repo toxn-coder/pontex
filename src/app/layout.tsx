@@ -16,20 +16,27 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(`https://localhost:3000` ),
     title: `${appInfo.name} - افضل المنتجات والخدمات`,
     description: `${appInfo.name,'رواد في صناعة الأقمشة القطنية'}`,
-    openGraph: {
-      title: `${appInfo.name} - افضل المنتجات و الخدمات`,
-      description: `${appInfo.name ,"رواد في صناعة الأقمشة القطنية"}`,
-      url: '/',
-      type: 'website',
-      images: [
-        {
-          url: appInfo.logoUrl,
-          width: 1200,
-          height: 630,
-          alt: `${appInfo.name}`,
-        },
-      ],
+openGraph: {
+  title: `${appInfo.name} - افضل المنتجات و الخدمات`,
+  description: `${appInfo.name} , "رواد في صناعة الأقمشة القطنية"}`,
+  url: '/',
+  type: 'website',
+  images: [
+    {
+      url: appInfo.logoUrl || 'https://pontex-woad.vercel.app/logo.png', // ✅ تأكد أنه رابط مطلق
+      width: 1200,
+      height: 630,
+      alt: `${appInfo.name}`,
     },
+    {
+      url: '/logo.png', // ✅ fallback في حال الصورة الأولى لا تُحمّل
+      width: 256,
+      height: 256,
+      alt: 'Favicon',
+    },
+  ],
+},
+
     twitter: {
       card: 'summary_large_image',
       site: '@your_twitter', // بدّلها بحسابك لو عندك
