@@ -171,13 +171,29 @@ export default function ProductPage() {
 
   return (
     <div className="min-h-screen bg-[#faf8f6] py-4 px-4 sm:px-6 lg:px-8 pt-20">
-      <Head>
-        <title>{`${product.name} - ${category.title}`}</title>
-        <meta name="description" content={product.description} />
-        <meta property="og:title" content={`${product.name} - ${category.title}`} />
-        <meta property="og:description" content={product.description} />
-        <meta property="og:image" content={product.image || "/logo.png"} />
-      </Head>
+ <Head>
+  <title>{`${product.name} - ${category.title}`}</title>
+  <meta name="description" content={product.description} />
+
+  {/* ✅ Open Graph (Facebook / WhatsApp / Telegram) */}
+  <meta property="og:type" content="product" />
+  <meta property="og:title" content={`${product.name} - ${category.title}`} />
+  <meta property="og:description" content={product.description} />
+  <meta property="og:image" content={product.image || "/logo.png"} />
+  <meta property="og:url" content={`https://pontex-woad.vercel.app/products/${encodeURIComponent(sectionId)}/${product.id}`} />
+  <meta property="og:site_name" content="PonTex" />
+  <meta property="og:locale" content="ar_AR" />
+
+  {/* ✅ Twitter Cards */}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={`${product.name} - ${category.title}`} />
+  <meta name="twitter:description" content={product.description} />
+  <meta name="twitter:image" content={product.image || "/logo.png"} />
+
+  {/* ✅ تحسين لمحركات البحث */}
+  <link rel="canonical" href={`https://pontex-woad.vercel.app/products/${encodeURIComponent(sectionId)}/${product.id}`} />
+</Head>
+
 
       <div className="max-w-6xl mx-auto">
         {/* Navigation */}
