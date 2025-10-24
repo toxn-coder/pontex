@@ -191,7 +191,7 @@ export default function ProductPage() {
   <meta name="twitter:image" content={product.image || "/logo.png"} />
 
   {/* ✅ تحسين لمحركات البحث */}
-  <link rel="canonical" href={`https://pontex-woad.vercel.app/products/${encodeURIComponent(sectionId)}/${product.id}`} />
+  <link rel="canonical" href={`https://pontex-woad.vercel.app/products${encodeURIComponent(sectionId)}/${product.id}`} />
 </Head>
 
 
