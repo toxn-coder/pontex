@@ -292,10 +292,6 @@ export default function ProductPage() {
                   )}
                 </button>
 
-                <ShareButton
-                  url={`https://pontex-woad.vercel.app//products/${encodeURIComponent(sectionId)}/${product.id}`}
-                  title={product.name}
-                />
               </div>
 
               {/* Features */}
@@ -316,6 +312,11 @@ export default function ProductPage() {
                   <p className="text-xs text-gray-500 mt-0.5">خيارات كثيرة</p>
                 </div>
               </div>
+        <ShareButton
+          url={`https://pontex-woad.vercel.app//products/${encodeURIComponent(sectionId)}/${product.id}`}
+          title={product.name}
+        />
+
             </div>
           </div>
         </div>
