@@ -1,20 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { doc, updateDoc, arrayRemove, arrayUnion, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '@/app/api/firebase';
 import { Pencil, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import EditProductDialog from './EditProductDialog';
-
-interface Product {
-  name: string;
-  price: string;
-  image: string;
-  description: string;
-  rating: number;
-}
+import { Product } from '@/types/product';
 
 interface ProductListProps {
   sectionId: string;
@@ -22,7 +15,7 @@ interface ProductListProps {
 
 export default function ProductList({ sectionId }: ProductListProps) {
   const [products, setProducts] = useState<Product[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<Product & { oldProduct?: Product } | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentUserRole, setCurrentUserRole] = useState('');
@@ -46,7 +39,13 @@ export default function ProductList({ sectionId }: ProductListProps) {
       (snap) => {
         if (snap.exists()) {
           const data = snap.data();
-          setProducts(data.products || []);
+          const fetchedProducts: Product[] = data.products || [];
+          // التأكد من أن كل منتج له id فريد
+          const uniqueProducts = fetchedProducts.map((p, index) => ({
+            ...p,
+            id: p.id || `fallback-${sectionId}-${index}`, // fallback إذا فقد id
+          }));
+          setProducts(uniqueProducts);
           setLoading(false);
         }
       },
@@ -59,13 +58,26 @@ export default function ProductList({ sectionId }: ProductListProps) {
     return () => unsubscribe();
   }, [sectionId]);
 
-  const handleDelete = async (product: Product) => {
+  const handleDelete = async (productToDelete: Product) => {
+    const productId = productToDelete.id;
+    if (!productId) {
+      console.error('المنتج لا يحتوي على id');
+      return;
+    }
+
     setLoading(true);
     try {
       const ref = doc(db, 'Parts', sectionId);
-      await updateDoc(ref, {
-        products: arrayRemove(product),
-      });
+      const snap = await getDoc(ref);
+      if (!snap.exists()) return;
+
+      const data = snap.data();
+      const currentProducts: Product[] = data.products || [];
+
+      const updatedProducts = currentProducts.filter(p => p.id !== productId);
+
+      await updateDoc(ref, { products: updatedProducts });
+      setProducts(updatedProducts); // تحديث محلي
     } catch (error) {
       console.error('فشل في حذف المنتج:', error);
     } finally {
@@ -74,19 +86,36 @@ export default function ProductList({ sectionId }: ProductListProps) {
   };
 
   const handleEdit = (product: Product) => {
-    setSelectedProduct({ ...product, oldProduct: product });
+    setSelectedProduct(product);
     setEditDialogOpen(true);
   };
 
-  const handleUpdate = async (updatedProduct: Product, oldProduct?: Product) => {
+  const handleUpdate = async (updatedProduct: Product) => {
+    const productId = updatedProduct.id;
+    if (!productId) {
+      console.error('المنتج المعدل لا يحتوي على id');
+      return;
+    }
+
     setLoading(true);
     try {
       const ref = doc(db, 'Parts', sectionId);
-      if (oldProduct) {
-        await updateDoc(ref, { products: arrayRemove(oldProduct) });
+      const snap = await getDoc(ref);
+      if (!snap.exists()) {
+        console.error('القسم غير موجود');
+        return;
       }
-      await updateDoc(ref, { products: arrayUnion(updatedProduct) });
 
+      const data = snap.data();
+      const currentProducts: Product[] = data.products || [];
+
+      const updatedProducts = currentProducts.map((p: Product) =>
+        p.id === productId ? updatedProduct : p
+      );
+
+      await updateDoc(ref, { products: updatedProducts });
+
+      setProducts(updatedProducts);
       setEditDialogOpen(false);
       setSelectedProduct(null);
     } catch (error) {
@@ -111,13 +140,13 @@ export default function ProductList({ sectionId }: ProductListProps) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto max-h-[70vh] pr-2">
           <AnimatePresence>
-            {products.map((product: Product, idx) => (
+            {products.map((product: Product) => (
               <motion.div
-                key={idx}
+                key={product.id} // key فريد بناءً على id فقط
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3, delay: idx * 0.1 }}
+                transition={{ duration: 0.3 }}
                 className="bg-gray-700 rounded-lg shadow p-4 flex flex-col justify-between"
               >
                 <Image
@@ -156,11 +185,13 @@ export default function ProductList({ sectionId }: ProductListProps) {
         </div>
       )}
 
-      {/* Dialog التعديل */}
       {editDialogOpen && selectedProduct && (
         <EditProductDialog
           product={selectedProduct}
-          onClose={() => setEditDialogOpen(false)}
+          onClose={() => {
+            setEditDialogOpen(false);
+            setSelectedProduct(null);
+          }}
           onSave={handleUpdate}
         />
       )}
