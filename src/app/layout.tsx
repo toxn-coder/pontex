@@ -1,5 +1,4 @@
-import '@/app/globals.css';
-import Cart from '@/components/Cart';
+import "./globals.css";
 import Footer from '@/components/Footer';
 // import InstallButton from '@/components/InstallButton';
 import Navbar from '@/components/NavBar';
@@ -13,12 +12,12 @@ export async function generateMetadata(): Promise<Metadata> {
   const appInfo = await loadInfoApp();
 
   return {
-    metadataBase: new URL(`https://localhost:3000` ),
+    metadataBase: new URL(`https://pontex-woad.vercel.app/` ),
     title: `${appInfo.name} - افضل المنتجات والخدمات`,
     description: `${appInfo.name,'رواد في صناعة الأقمشة القطنية'}`,
 openGraph: {
   title: `${appInfo.name} - افضل المنتجات و الخدمات`,
-  description: `${appInfo.name} , "رواد في صناعة الأقمشة القطنية"}`,
+  description: `${appInfo.name} , رواد في صناعة الأقمشة القطنية`,
   url: '/',
   type: 'website',
   images: [
@@ -59,7 +58,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   // ✅ headers مع fallback لو ناقص
   const headersList = await headers();
-  const host = headersList.get('host') || 'example.com';
+  const host = headersList.get('host') || 'pontex-woad.vercel.app';
   const protocol = headersList.get('x-forwarded-proto') || 'https';
   const fullUrl = `${protocol}://${host}`;
 

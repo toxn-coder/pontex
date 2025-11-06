@@ -4,7 +4,11 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import useSWR from 'swr';
 import { db } from '@/app/api/firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import {
+  collection,
+  getDocs,
+  Timestamp,
+} from 'firebase/firestore';
 import ProgressAnim from './ProgressAnim';
 import MealGrid from './MealGrid';
 
@@ -22,19 +26,27 @@ interface Category {
   title: string;
   isVisible: boolean;
   meals: Meal[];
+  createdAt: Date; // للترتيب
 }
 
 const CACHE_DURATION = 60 * 60 * 1000; // ساعة واحدة
 
-const fetcher = async () => {
+const fetcher = async (): Promise<Category[]> => {
   const menuPartsRef = collection(db, 'Parts');
   const snapshot = await getDocs(menuPartsRef);
   if (snapshot.empty) return [];
 
   const data: Category[] = snapshot.docs.map((doc) => {
     const categoryData = doc.data();
+
+    // جلب تاريخ الإضافة (Timestamp → Date)
+    const createdAt: Date =
+      categoryData.createdAt instanceof Timestamp
+        ? categoryData.createdAt.toDate()
+        : new Date(0); // fallback قديم جدًا
+
     const meals: Meal[] = categoryData.products || [];
-    const formattedMeals: Meal[] = meals.map((meal: Meal) => ({
+    const formattedMeals: Meal[] = meals.map((meal: any) => ({
       id: meal.id || `temp-id-${Math.random().toString(36).substring(2)}`,
       name: meal.name || 'بدون اسم',
       description: meal.description || 'لا يوجد وصف',
@@ -42,43 +54,48 @@ const fetcher = async () => {
       price: meal.price || 'غير محدد',
       rating: meal.rating || 'بدون تقييم',
     }));
+
     return {
       id: doc.id,
       title: categoryData.name || doc.id,
       isVisible: categoryData.isVisible !== false,
       meals: formattedMeals,
+      createdAt,
     };
   });
 
-  // فرز بحيث يكون "الأكثر مبيعًا" أولاً
+  // الترتيب المطلوب:
+  // 1. "الأكثر مبيعًا" دائمًا أولًا
+  // 2. باقي الأقسام حسب تاريخ الإضافة (الأحدث أولًا)
   return data.sort((a, b) => {
     if (a.title === 'الأكثر مبيعًا') return -1;
     if (b.title === 'الأكثر مبيعًا') return 1;
-    return a.title.localeCompare(b.title, 'ar');
+    return a.createdAt.getTime() - b.createdAt.getTime();
   });
 };
 
 export default function Menu() {
-  const pathname = usePathname(); // 👈 لمعرفة الصفحة الحالية
-  const isHomePage = pathname === '/'; // 👈 تحقق إن كنا في الصفحة الرئيسية
+  const pathname = usePathname();
+  const isHomePage = pathname === '/';
 
-  const [initialData, setInitialData] = useState<Category[]>();
+  const [initialData, setInitialData] = useState<Category[] | undefined>();
   const [isCacheValid, setIsCacheValid] = useState(false);
 
+  // جلب البيانات من localStorage (إن وجدت)
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const cachedData = localStorage.getItem('menuData');
-      const cachedTimestamp = localStorage.getItem('menuDataTimestamp');
-      const currentTime = new Date().getTime();
+    if (typeof window === 'undefined') return;
 
-      if (
-        cachedData &&
-        cachedTimestamp &&
-        currentTime - parseInt(cachedTimestamp) < CACHE_DURATION
-      ) {
-        setInitialData(JSON.parse(cachedData));
-        setIsCacheValid(true);
-      }
+    const cachedData = localStorage.getItem('menuData');
+    const cachedTimestamp = localStorage.getItem('menuDataTimestamp');
+    const currentTime = new Date().getTime();
+
+    if (
+      cachedData &&
+      cachedTimestamp &&
+      currentTime - parseInt(cachedTimestamp) < CACHE_DURATION
+    ) {
+      setInitialData(JSON.parse(cachedData));
+      setIsCacheValid(true);
     }
   }, []);
 
@@ -90,6 +107,14 @@ export default function Menu() {
     keepPreviousData: true,
     fallbackData: initialData,
   });
+
+  // حفظ البيانات في localStorage بعد كل جلب ناجح
+  useEffect(() => {
+    if (categories) {
+      localStorage.setItem('menuData', JSON.stringify(categories));
+      localStorage.setItem('menuDataTimestamp', new Date().getTime().toString());
+    }
+  }, [categories]);
 
   if (isLoading && !categories) return <ProgressAnim />;
 
@@ -127,7 +152,6 @@ export default function Menu() {
           <MealGrid
             key={cat.id}
             title={cat.title}
-            // 👇 إذا كنا في الصفحة الرئيسية، نعرض فقط 3 منتجات
             products={isHomePage ? cat.meals.slice(0, 3) : cat.meals}
             sectionId={cat.id}
             isVisible={cat.isVisible}

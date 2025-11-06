@@ -20,7 +20,7 @@ const MenuPage = () => {
           content="رواد في صناعة الأقمشة القطنية تصنيع محلي و مستورد بون تكس"
         />
         <meta property="og:image" content="/logo.png" /> 
-        <meta property="og:url" content="https://waly-damascus.vercel.app/menu" /> 
+        <meta property="og:url" content="https://pontex-woad.vercel.app/" /> 
         <meta property="og:type" content="website" />
         <meta name="robots" content="index, follow" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
