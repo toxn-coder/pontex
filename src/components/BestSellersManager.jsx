@@ -14,7 +14,7 @@ export default function BestSellersManager() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // جلب بيانات المستخدم الحالي وجميع المنتجات
+ 
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -154,7 +154,7 @@ export default function BestSellersManager() {
                   )}
                   <div>
                     <h4 className="text-white font-semibold">{product.name}</h4>
-                    <p className="text-gray-300">{product.price} ريال</p>
+                    
                   </div>
                 </div>
                 {canEdit && (

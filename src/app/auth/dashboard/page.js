@@ -19,6 +19,7 @@ import SubscribersList from '@/components/subscribersEmail'
 import ClientWrapper from '@/components/ClientWrapper';
 import AdminAddSection from '@/components/AdminAddSection';
 import AdminEditSection from '@/components/AdminEditSection';
+import BestSellersManager from '@/components/BestSellersManager';
 
 
 
@@ -151,6 +152,7 @@ useEffect(() => {
         >
           <PartsList />
         </motion.div>
+       
 
         <motion.div
           initial={{ opacity: 0, x: 50 }}
